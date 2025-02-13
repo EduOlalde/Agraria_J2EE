@@ -1,4 +1,4 @@
-package com.ecofield.models;
+package com.ecofield.modelos;
 
 import com.ecofield.enums.EstadoTrabajo;
 import java.util.Date;

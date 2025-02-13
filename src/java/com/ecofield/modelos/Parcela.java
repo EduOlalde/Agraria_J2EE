@@ -1,4 +1,4 @@
-package com.ecofield.models;
+package com.ecofield.modelos;
 
 /**
  * Representa una parcela en el sistema.

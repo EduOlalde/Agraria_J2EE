@@ -1,5 +1,5 @@
 
-package com.ecofield.models;
+package com.ecofield.modelos;
 
 /**
  * Representa un usuario en el sistema.
