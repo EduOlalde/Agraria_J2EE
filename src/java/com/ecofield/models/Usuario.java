@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.ecofield.models;
 
 /**
+ * Representa un usuario en el sistema.
  *
  * @author Eduardo Olalde
  */
 public class Usuario {
+
     private int id;
     private String nombre;
     private String email;
@@ -62,5 +61,10 @@ public class Usuario {
     public void setHabilitado(boolean habilitado) {
         this.habilitado = habilitado;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasenia=" + contrasenia + ", habilitado=" + habilitado + '}';
+    }
+
 }
