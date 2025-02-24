@@ -127,6 +127,15 @@ button[type="button"]:hover {
     font-weight: bold;
 }
 
+/* Estilos para el mensaje de éxito */
+.success-message {
+    background-color: #66bb6a; /* Verde suave */
+    color: white; /* Texto blanco */
+    padding: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
 /* Media Queries para Pantallas Pequeñas */
 @media screen and (max-width: 768px) {
     /* Ajustar padding del contenedor principal */

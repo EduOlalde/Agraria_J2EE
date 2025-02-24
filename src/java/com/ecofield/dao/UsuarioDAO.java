@@ -16,12 +16,20 @@ import java.sql.SQLException;
  * @author Eduardo Olalde
  */
 public class UsuarioDAO {
+    
+    private Connection conn;
+
+    public UsuarioDAO(Connection conn) {
+        this.conn = conn;
+    }
+    
+    
 
     public Usuario obtenerUsuarioPorNombre(String nombre) {
         Usuario usuario = null;
         String sql = "SELECT * FROM Usuarios WHERE Nombre = ?";
 
-        try (Connection conn = ConexionDB.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, nombre);
             ResultSet rs = stmt.executeQuery();
@@ -46,7 +54,7 @@ public class UsuarioDAO {
 
     public boolean registrarUsuario(String nombre, String contrasenia, String telefono, String email) {
         String sql = "INSERT INTO Usuarios (Nombre, contrasenia, telefono, email) VALUES (?, ?, ?, ?)";
-        try (Connection conn = ConexionDB.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, nombre);
             stmt.setString(2, contrasenia);

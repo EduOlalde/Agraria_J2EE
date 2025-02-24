@@ -1,24 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package com.ecofield.controladores;
 
 import com.ecofield.dao.UsuarioDAO;
-import com.ecofield.modelos.Usuario;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.sql.Connection;
 
 /**
  *
  * @author Eduardo Olalde
  */
-public class ServletLogin extends HttpServlet {
+public class RegistroServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,19 +26,34 @@ public class ServletLogin extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
 
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
-        Usuario usuario = usuarioDAO.obtenerUsuarioPorNombre(username);
+        // Obtén los parámetros del formulario
+        String nombre = request.getParameter("nombre");
+        String contrasenia = request.getParameter("contrasenia");
+        String telefono = request.getParameter("telefono");
+        String email = request.getParameter("email");
 
-        if (usuario != null && usuario.verificarContrasena(password)) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user_id", usuario.getId());
-            response.sendRedirect("index.jsp");
-        } else {
-            request.getSession().setAttribute("error", "Credenciales incorrectas");
+        // Recuperar la conexión desde el ServletContext
+        Connection conn = (Connection) getServletContext().getAttribute("conexion");
+        
+        // Verifica si la conexión está disponible
+        if (conn == null) {
+            request.getSession().setAttribute("error", "No se pudo obtener la conexión a la base de datos.");
+            response.sendRedirect("registro.jsp");
+            return;
+        }
+
+        // Crear una instancia de UsuarioDAO y pasarle la conexión
+        UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+        
+        // Registrar al usuario
+        boolean exito = usuarioDAO.registrarUsuario(nombre, contrasenia, telefono, email);
+        if (exito) {
+            request.getSession().setAttribute("mensaje", "Usuario registrado correctamente");
             response.sendRedirect("login.jsp");
+        } else {
+            request.getSession().setAttribute("error", "Error en el registro");
+            response.sendRedirect("registro.jsp");
         }
     }
 

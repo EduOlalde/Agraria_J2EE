@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="form-container">
-        <form action="ServletRegistro" method="POST">
+        <form action="RegistroServlet" method="POST">
             <h2>Registro de usuario</h2>
 
             <% if (error != null) { %>

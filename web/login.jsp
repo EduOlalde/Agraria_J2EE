@@ -28,8 +28,14 @@
                 <% session.removeAttribute("error"); %>
             </div>
         <% } %>
+        <% if (session.getAttribute("mensaje") != null) { %>
+            <div class="success-message">
+                <%= session.getAttribute("mensaje") %>
+                <% session.removeAttribute("mensaje"); %>
+            </div>
+        <% } %>
 
-        <form action="ServletLogin" method="POST">
+        <form action="LoginServlet" method="POST">
             <h2>Iniciar sesión</h2>
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" required><br><br>
