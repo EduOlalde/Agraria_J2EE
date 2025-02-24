@@ -1,4 +1,3 @@
-
 package com.ecofield.modelos;
 
 /**
@@ -12,14 +11,27 @@ public class Usuario {
     private String nombre;
     private String email;
     private String contrasenia;
+    private int telefono;
     private boolean habilitado;
 
-    public Usuario(int id, String nombre, String email, String contrasenia, boolean habilitado) {
+    public Usuario(String nombre, String email, String contrasenia, int telefono) {
+        this.nombre = nombre;
+        this.email = email;
+        this.contrasenia = contrasenia;
+        this.telefono = telefono;
+    }
+
+    public Usuario(int id, String nombre, String email, String contrasenia, int telefono, boolean habilitado) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
+        this.telefono = telefono;
         this.habilitado = habilitado;
+    }
+    
+    public boolean verificarContrasena(String passwordIngresada) {
+        return passwordIngresada.equals(this.contrasenia);
     }
 
     public int getId() {
@@ -54,6 +66,14 @@ public class Usuario {
         this.contrasenia = contrasenia;
     }
 
+    public int getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(int telefono) {
+        this.telefono = telefono;
+    }
+
     public boolean isHabilitado() {
         return habilitado;
     }
@@ -64,7 +84,7 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasenia=" + contrasenia + ", habilitado=" + habilitado + '}';
+        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasenia=" + contrasenia + ", telefono=" + telefono + ", habilitado=" + habilitado + '}';
     }
 
 }

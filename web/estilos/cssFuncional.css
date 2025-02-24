@@ -1,0 +1,414 @@
+/* =============================== 
+   ESTILOS GENERALES
+   =============================== */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* =============================== 
+   BARRA DE NAVEGACIÓN
+   =============================== */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #43a047; /* Verde brillante */
+    padding: 15px 20px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.app-name {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #3e2723; /* Marrón tierra */
+}
+
+.nav-right {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-button {
+    background-color: #66bb6a; /* Verde brillante */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-button:hover {
+    background-color: #388e3c; /* Verde más intenso */
+}
+
+/* =============================== 
+   CONTENIDO PRINCIPAL
+   =============================== */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.content-area {
+    width: 100%;
+    max-width: 900px; /* Máximo ancho */
+    background: #81c784; /* Verde brillante */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+h2, h3 {
+    color: #3e2723; /* Marrón tierra */
+}
+
+.section-content, .sub-section-content {
+    display: none;
+    padding: 10px;
+    border-top: 1px solid #43a047; /* Verde brillante */
+}
+
+/* =============================== 
+   ESTILO DE FORMULARIOS
+   =============================== */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], select {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #66bb6a;
+    border-radius: 5px;
+    background-color: #f1f8e9;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus, select:focus {
+    border-color: #388e3c;
+    outline: none;
+}
+
+button[type="submit"], input[type="submit"] {
+    background-color: #66bb6a;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.1em;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover, input[type="submit"]:hover {
+    background-color: #388e3c; /* Verde más oscuro */
+}
+
+/* =============================== 
+   ESTILO DE CHECKBOXES
+   =============================== */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #66bb6a;
+    border-radius: 5px;
+    background-color: #f1f8e9;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+/* Estado marcado */
+input[type="checkbox"]:checked {
+    background-color: #388e3c; /* Verde oscuro */
+    border-color: #4caf50;
+}
+
+/* Marca de verificación */
+input[type="checkbox"]:checked::before {
+    content: '\2714'; /* Símbolo de check */
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    left: 4px;
+    transform: translateY(3px);
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre checkbox y texto */
+}
+
+/* =============================== 
+   ESTILO DE TABLAS
+   =============================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #66bb6a;
+    border-radius: 5px;
+    background-color: #f1f8e9;
+}
+
+th {
+    background-color: #66bb6a;
+    color: white;
+}
+
+td {
+    background-color: #ffffff;
+}
+
+/* =============================== 
+   ESTILO DE FOOTER
+   =============================== */
+footer {
+    background-color: #43a047;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: auto;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* =============================== 
+   MENSAJES DE ERROR Y ÉXITO
+   =============================== */
+.error-message, .success-message {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.error-message {
+    background-color: #f44336;
+    color: white;
+    border: 1px solid #e53935;
+}
+
+.success-message {
+    background-color: #66bb6a;
+    color: white;
+    border: 1px solid #388e3c;
+}
+
+/* =============================== 
+   MEDIA QUERIES (RESPONSIVE)
+   =============================== */
+@media screen and (max-width: 768px) {
+    /* Ajustes para pantallas pequeñas */
+    .main-content {
+        padding: 10px;
+    }
+
+    .content-area {
+        width: 90%;
+    }
+
+    .button-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button {
+        flex: 1 1 100%;
+    }
+
+    table {
+        font-size: 0.9em;
+    }
+
+    td input[type="text"], td input[type="email"], td input[type="password"] {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Ajustes para pantallas más pequeñas */
+    .main-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .app-name {
+        font-size: 1.2em;
+    }
+
+    .content-area {
+        padding: 15px;
+    }
+}
+
+/* =============================== 
+   MENSAJES
+   =============================== */
+#mensajeExito, #mensajeError {
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+#mensajeExito {
+    color: #388e3c;
+    background: #e8f5e9;
+}
+
+#mensajeError {
+    color: #b71c1c;
+    background: #f8d7da;
+}
+
+/* =============================== 
+   ESTILO DE BOTONES EN TABLAS
+   =============================== */
+table button[type="submit"] {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: inline-block;
+    margin: 0;
+}
+
+table button[type="submit"]:hover {
+    background-color: #d32f2f;
+}
+
+table td form {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+/* Botón "Asignar" */
+form button[type="submit"] {
+    background-color: #66bb6a;
+    color: white;
+    padding: 5px 15px;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+    background-color: #388e3c;
+}
+
+/* Estilo de botón "Quitar" */
+table td form button[type="submit"] {
+    background-color: #e57373;
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+table td form button[type="submit"]:hover {
+    background-color: #d32f2f;
+}
+
+/* Botón "Asignar" en tabla */
+table td form button[type="submit"][name="asignar_especialidad"] {
+    background-color: #66bb6a;
+}
+
+table td form button[type="submit"][name="asignar_especialidad"]:hover {
+    background-color: #388e3c;
+}
+
+/* =============================== 
+   ESTILO DE INPUTS TIPO NUMBER
+   =============================== */
+input[type="number"] {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #66bb6a;
+    border-radius: 5px;
+    background-color: #f1f8e9;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="number"]:focus {
+    border-color: #388e3c;
+    outline: none;
+}
+/* Estilo para los botones de subsección dentro del Administrador */
+.sub-section-btn {
+    margin-bottom: 15px; /* Añadir margen inferior entre los botones */
+}
+
+/* Aumentar separación superior para los botones en la segunda fila */
+#sec_administrador .sub-section-btn:nth-child(n+5) {
+    margin-top: 20px; /* Más separación superior para los botones en la segunda fila */
+}
+
+/* Aumentar margen entre los botones en la misma fila */
+#sec_administrador .sub-section-btn {
+    margin-right: 15px; /* Añadir margen derecho entre los botones */
+}
+
+/* Asegurarse de que los botones se alineen bien en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+    #sec_administrador .sub-section-btn {
+        margin-right: 0; /* Eliminar margen derecho en pantallas pequeñas */
+        width: 100%; /* Hacer que los botones ocupen todo el ancho disponible */
+    }
+}
