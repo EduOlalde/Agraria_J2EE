@@ -30,7 +30,7 @@ public class RegistroServlet extends HttpServlet {
         // Obtén los parámetros del formulario
         String nombre = request.getParameter("nombre");
         String contrasenia = request.getParameter("contrasenia");
-        String telefono = request.getParameter("telefono");
+        int telefono = Integer.parseInt(request.getParameter("telefono"));
         String email = request.getParameter("email");
 
         // Recuperar la conexión desde el ServletContext

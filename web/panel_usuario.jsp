@@ -18,7 +18,7 @@
 
 <div class="sidebar">
     <h2>Modificar Datos</h2>
-    <form action="UsuarioServlet" method="post">
+    <form action="PanelUsuarioServlet" method="post">
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" value="<%= usuario.getNombre() %>">
 

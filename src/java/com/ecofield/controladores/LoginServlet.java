@@ -45,7 +45,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
 
             // Guardamos la conexión en la sesión para usarla en futuras peticiones
-            session.setAttribute("db_connection", conn);
+            session.setAttribute("conexion", conn);
             session.setAttribute("usuario", usuario);
 
             // Redirigimos al usuario a la página principal
