@@ -46,10 +46,10 @@ public class LoginServlet extends HttpServlet {
 
             // Guardamos la conexión en la sesión para usarla en futuras peticiones
             session.setAttribute("db_connection", conn);
-            session.setAttribute("user_id", usuario.getId());
+            session.setAttribute("usuario", usuario);
 
             // Redirigimos al usuario a la página principal
-            response.sendRedirect("index.jsp");
+            response.sendRedirect("DashboardServlet");
         } else {
             // Si las credenciales son incorrectas, redirigimos de vuelta al login
             request.getSession().setAttribute("error", "Credenciales incorrectas");

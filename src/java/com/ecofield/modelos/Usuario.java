@@ -1,5 +1,8 @@
 package com.ecofield.modelos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Representa un usuario en el sistema.
  *
@@ -13,6 +16,7 @@ public class Usuario {
     private String contrasenia;
     private int telefono;
     private boolean habilitado;
+    private List<Rol> roles = new ArrayList<>();
 
     public Usuario(String nombre, String email, String contrasenia, int telefono) {
         this.nombre = nombre;
@@ -82,9 +86,17 @@ public class Usuario {
         this.habilitado = habilitado;
     }
 
+    public List<Rol> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Rol> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasenia=" + contrasenia + ", telefono=" + telefono + ", habilitado=" + habilitado + '}';
+        return "Usuario{" + "id=" + id + ", nombre=" + nombre + ", email=" + email + ", contrasenia=" + contrasenia + ", telefono=" + telefono + ", habilitado=" + habilitado + ", roles=" + roles + '}';
     }
 
 }

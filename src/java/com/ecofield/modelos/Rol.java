@@ -12,9 +12,9 @@ package com.ecofield.modelos;
 public class Rol {
 
     private final int idRol;
-    private final Rol nombre;
+    private final String nombre;
 
-    public Rol(int idRol, Rol nombre) {
+    public Rol(int idRol, String nombre) {
         this.idRol = idRol;
         this.nombre = nombre;
     }
@@ -23,7 +23,7 @@ public class Rol {
         return idRol;
     }
 
-    public Rol getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
