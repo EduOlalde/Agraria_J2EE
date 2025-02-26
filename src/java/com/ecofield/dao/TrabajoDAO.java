@@ -20,14 +20,14 @@ public class TrabajoDAO {
 
     private final Connection conn;
 
-    public TrabajoDAO() {
-        conn = ConexionDB.conectar();
+    public TrabajoDAO(Connection conn) {
+        this.conn = conn;
     }
 
     // Obtener trabajos pendientes
     public List<Trabajo> obtenerTrabajosPendientes(int idMaquinista) throws SQLException {
         List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado "
+        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado "
                 + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
                 + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Pendiente'";
 
@@ -38,7 +38,11 @@ public class TrabajoDAO {
             while (rs.next()) {
                 Trabajo trabajo = new Trabajo();
                 trabajo.setId(rs.getInt("ID_Trabajo"));
-                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+
+                // Obtener el ID del tipo de trabajo (ID_Tipo_Trabajo)
+                int tipoTrabajoId = rs.getInt("ID_Tipo_Trabajo");
+                trabajo.setTipoTrabajo(tipoTrabajoId);  // Asignar directamente el ID (int) al atributo
+
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
                 trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
                 trabajos.add(trabajo);
@@ -50,7 +54,7 @@ public class TrabajoDAO {
     // Obtener trabajos en curso
     public List<Trabajo> obtenerTrabajosEnCurso(int idMaquinista) throws SQLException {
         List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado "
+        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado "
                 + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
                 + "WHERE t.ID_Maquinista = ? AND t.Estado = 'En curso'";
 
@@ -61,7 +65,7 @@ public class TrabajoDAO {
             while (rs.next()) {
                 Trabajo trabajo = new Trabajo();
                 trabajo.setId(rs.getInt("ID_Trabajo"));
-                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+                trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
                 trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
                 trabajos.add(trabajo);
@@ -73,7 +77,7 @@ public class TrabajoDAO {
     // Obtener historial de trabajos finalizados
     public List<Trabajo> obtenerHistorialTrabajos(int idMaquinista) throws SQLException {
         List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado, "
+        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado, "
                 + "t.Fec_Inicio, t.Fec_Fin, t.Horas "
                 + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
                 + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Finalizado'";
@@ -85,7 +89,7 @@ public class TrabajoDAO {
             while (rs.next()) {
                 Trabajo trabajo = new Trabajo();
                 trabajo.setId(rs.getInt("ID_Trabajo"));
-                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+                trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
                 trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
                 trabajo.setFecInicio(rs.getDate("Fec_Inicio"));

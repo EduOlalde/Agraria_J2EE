@@ -4,13 +4,15 @@
     Author     : Eduardo Olalde
 --%>
 
+<%@page import="com.mysql.jdbc.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, com.ecofield.modelos.Trabajo, com.ecofield.dao.TrabajoDAO" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
 
 <%
     int idMaquinista = (int) session.getAttribute("user_id");
-    TrabajoDAO trabajoDAO = new TrabajoDAO();
+    Connection conn = (Connection) session.getAttribute("conexion");
+    TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
 
     // Obtener trabajos pendientes
     List<Trabajo> trabajosPendientes = trabajoDAO.obtenerTrabajosPendientes(idMaquinista);
@@ -39,7 +41,7 @@
         <td><%= trabajo.getNumParcela()%></td>
         <td><%= trabajo.getEstado()%></td>
         <td>
-            <form method="post" action="IniciarTrabajoServlet">
+            <form method="post" action="IniciarTrabajoServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
                 <input type="hidden" name="id_trabajo" value="<%= trabajo.getId()%>">
                 <label>Fecha Inicio:</label>
                 <input type="date" name="fecha_inicio">
@@ -70,7 +72,7 @@
         <td><%= trabajo.getNumParcela()%></td>
         <td><%= trabajo.getEstado()%></td>
         <td>
-            <form method="post" action="FinalizarTrabajoServlet">
+            <form method="post" action="FinalizarTrabajoServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
                 <input type="hidden" name="id_trabajo" value="<%= trabajo.getId()%>">
                 <label>Fecha Fin:</label>
                 <input type="date" name="fecha_fin">

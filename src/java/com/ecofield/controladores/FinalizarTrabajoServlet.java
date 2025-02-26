@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Eduardo Olalde
  */
-public class IniciarTrabajoServlet extends HttpServlet {
+public class FinalizarTrabajoServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,8 +37,8 @@ public class IniciarTrabajoServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Integer idMaquinista = (Integer) session.getAttribute("user_id");
         Connection conn = (Connection) session.getAttribute("conexion");
-
-        if (conn == null) {
+        
+        if(conn == null){
             session.setAttribute("error", "Error: No hay conexión a la base de datos.");
             request.getRequestDispatcher("dashboard.jsp").forward(request, response);
             return;
@@ -51,26 +51,35 @@ public class IniciarTrabajoServlet extends HttpServlet {
         }
 
         int idTrabajo;
-        String fechaInicioString = request.getParameter("fecha_inicio");
+        String fechaFinString = request.getParameter("fecha_fin");
+        String horasString = request.getParameter("horas");
 
-        if (fechaInicioString == null || fechaInicioString.trim().isEmpty()) {
-            session.setAttribute("error", "Debe ingresar una fecha de inicio.");
+        if (fechaFinString == null || fechaFinString.trim().isEmpty()
+                || horasString == null || horasString.trim().isEmpty()) {
+            session.setAttribute("error", "Todos los campos son obligatorios.");
             request.getRequestDispatcher("dashboard.jsp").forward(request, response);
             return;
         }
 
         try {
             idTrabajo = Integer.parseInt(request.getParameter("id_trabajo"));
-            Date fechaInicio = Date.valueOf(fechaInicioString);
+            Date fechaFin = Date.valueOf(fechaFinString);
+            int horas = Integer.parseInt(horasString);
+
+            if (horas <= 0) {
+                session.setAttribute("error", "Las horas deben ser mayores a 0.");
+                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+                return;
+            }
 
             TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
-            boolean trabajoIniciado = trabajoDAO.iniciarTrabajo(idTrabajo, fechaInicio, idMaquinista);
+            boolean trabajoFinalizado = trabajoDAO.finalizarTrabajo(idTrabajo, fechaFin, horas, idMaquinista);
 
-            if (trabajoIniciado) {
-                session.setAttribute("mensaje", "Trabajo iniciado correctamente.");
+            if (trabajoFinalizado) {
+                session.setAttribute("mensaje", "Trabajo finalizado correctamente.");
                 response.sendRedirect("dashboard.jsp");
             } else {
-                session.setAttribute("error", "Hubo un error al iniciar el trabajo.");
+                session.setAttribute("error", "Hubo un error al finalizar el trabajo.");
                 request.getRequestDispatcher("dashboard.jsp").forward(request, response);
             }
         } catch (NumberFormatException | SQLException e) {
