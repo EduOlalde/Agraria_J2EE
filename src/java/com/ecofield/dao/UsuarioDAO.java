@@ -249,23 +249,59 @@ public class UsuarioDAO {
     }
 
     // Eliminar usuario (evitando eliminar admin)
-    public boolean eliminarUsuario(int id) {
-        String sqlRoles = "DELETE FROM usuarios_roles WHERE id_usuario = ?";
-        String sqlUsuario = "DELETE FROM usuarios WHERE id_usuario=? AND nombre != 'admin'";
+    public String eliminarUsuario(int id) {
+        if (esAdmin(id)) {
+            return "No se puede eliminar al usuario 'admin'.";
+        }
 
-        try (PreparedStatement stmtRoles = conn.prepareStatement(sqlRoles)) {
+        if (tieneTrabajosAsignados(id)) {
+            return "No se puede eliminar al usuario porque tiene trabajos asignados.";
+        }
 
-            stmtRoles.setInt(1, id);
-            stmtRoles.executeUpdate();
+        return ejecutarEliminacion(id);
+    }
 
-            try (PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario)) {
-                stmtUsuario.setInt(1, id);
-                return stmtUsuario.executeUpdate() > 0;
-            }
+    private boolean esAdmin(int id) {
+        String sql = "SELECT COUNT(*) FROM usuarios WHERE id_usuario = ? AND nombre = 'admin'";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-
     }
+
+    private boolean tieneTrabajosAsignados(int id) {
+        String sql = "SELECT COUNT(*) FROM trabajos WHERE id_maquinista = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
+    }
+
+    private String ejecutarEliminacion(int id) {
+        try (PreparedStatement stmtRoles = conn.prepareStatement("DELETE FROM usuarios_roles WHERE id_usuario = ?")) {
+            stmtRoles.setInt(1, id);
+            stmtRoles.executeUpdate();
+
+            try (PreparedStatement stmtUsuario = conn.prepareStatement("DELETE FROM usuarios WHERE id_usuario = ?")) {
+                stmtUsuario.setInt(1, id);
+                if (stmtUsuario.executeUpdate() > 0) {
+                    return "Usuario eliminado satisfactoriamente.";
+                } else {
+                    return "Error al eliminar el usuario, puede que no exista.";
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return "Error en la base de datos al eliminar el usuario.";
+        }
+    }
+
 }
