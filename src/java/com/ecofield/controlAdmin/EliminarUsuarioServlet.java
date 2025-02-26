@@ -2,13 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.ecofield.controlMaquinista;
+package com.ecofield.controlAdmin;
 
-import com.ecofield.dao.TrabajoDAO;
+import com.ecofield.dao.UsuarioDAO;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.SQLException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Eduardo Olalde
  */
-public class IniciarTrabajoServlet extends HttpServlet {
+public class EliminarUsuarioServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,49 +32,19 @@ public class IniciarTrabajoServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        
         HttpSession session = request.getSession(false);
-        Integer idMaquinista = (Integer) session.getAttribute("user_id");
         Connection conn = (Connection) session.getAttribute("conexion");
+        UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+        
+        int idUsuario = Integer.parseInt(request.getParameter("id"));
+        boolean exito = usuarioDAO.eliminarUsuario(idUsuario);
 
-        if (conn == null) {
-            session.setAttribute("error", "Error: No hay conexión a la base de datos.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-            return;
-        }
-
-        if (idMaquinista == null) {
-            session.setAttribute("error", "Error: No hay usuario autenticado.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-            return;
-        }
-
-        int idTrabajo;
-        String fechaInicioString = request.getParameter("fecha_inicio");
-
-        if (fechaInicioString == null || fechaInicioString.trim().isEmpty()) {
-            session.setAttribute("error", "Debe ingresar una fecha de inicio.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-            return;
-        }
-
-        try {
-            idTrabajo = Integer.parseInt(request.getParameter("id_trabajo"));
-            Date fechaInicio = Date.valueOf(fechaInicioString);
-
-            TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
-            boolean trabajoIniciado = trabajoDAO.iniciarTrabajo(idTrabajo, fechaInicio, idMaquinista);
-
-            if (trabajoIniciado) {
-                session.setAttribute("mensaje", "Trabajo iniciado correctamente.");
-                response.sendRedirect("dashboard.jsp");
-            } else {
-                session.setAttribute("error", "Hubo un error al iniciar el trabajo.");
-                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-            }
-        } catch (NumberFormatException | SQLException e) {
-            e.printStackTrace();
-            session.setAttribute("error", "Error al procesar la solicitud.");
+        if (exito) {
+            session.setAttribute("mensaje", "Usuario eliminado con éxito.");
+            response.sendRedirect("AdminUsuarioServlet");
+        } else {
+            session.setAttribute("error", "No se pudo eliminar el usuario.");
             request.getRequestDispatcher("dashboard.jsp").forward(request, response);
         }
     }

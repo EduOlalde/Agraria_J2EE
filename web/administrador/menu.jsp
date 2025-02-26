@@ -5,13 +5,16 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
-</html>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_usuarios')">Gestión de Usuarios</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_maquinistas')">Maquinistas</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_parcelas')">Parcelas</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_maquinas')">Máquinas</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_gestion_solicitudes')">Solicitudes de Trabajo</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_lista_trabajos')">Listar Trabajos</button>
+<button class="nav-button sub-section-btn" onclick="showSubSection('admin_facturacion')">Facturación</button>
+
+<!-- Sub-secciones de Administrador -->
+<div id="admin_usuarios" class="sub-section-content" style="display: none;">
+    <jsp:include page="admin_usuarios.jsp" />
+</div>
+

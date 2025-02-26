@@ -14,18 +14,18 @@ public class Usuario {
     private String nombre;
     private String email;
     private String contrasenia;
-    private int telefono;
+    private String telefono;
     private boolean habilitado;
     private List<Rol> roles = new ArrayList<>();
 
-    public Usuario(String nombre, String email, String contrasenia, int telefono) {
+    public Usuario(String nombre, String email, String contrasenia, String telefono) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
         this.telefono = telefono;
     }
 
-    public Usuario(int id, String nombre, String email, String contrasenia, int telefono, boolean habilitado) {
+    public Usuario(int id, String nombre, String email, String contrasenia, String telefono, boolean habilitado) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -70,11 +70,11 @@ public class Usuario {
         this.contrasenia = contrasenia;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
