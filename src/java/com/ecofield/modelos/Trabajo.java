@@ -20,6 +20,9 @@ public class Trabajo {
     private int tipoTrabajo;
     private EstadoTrabajo estado;
 
+    public Trabajo() {
+    }
+
     public Trabajo(int id, int numParcela, int idMaquina, int idMaquinista, Date fecInicio, Date fecFin, int horas, int tipoTrabajo, EstadoTrabajo estado) {
         this.id = id;
         this.numParcela = numParcela;

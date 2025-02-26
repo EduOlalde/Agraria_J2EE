@@ -7,12 +7,9 @@ package com.ecofield.dao;
 import com.ecofield.enums.EstadoTrabajo;
 import com.ecofield.modelos.Trabajo;
 import com.ecofield.utils.ConexionDB;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,73 +17,143 @@ import java.util.List;
  * @author Eduardo Olalde
  */
 public class TrabajoDAO {
-    
-    private Connection conn;
 
-    public TrabajoDAO() throws SQLException {
-        this.conn = ConexionDB.conectar();
+    private final Connection conn;
+
+    public TrabajoDAO() {
+        conn = ConexionDB.conectar();
     }
 
-    private static final String SELECT_TRABAJOS_SOLICITADOS = "SELECT * FROM trabajos_solicitados WHERE Propietario = ? AND (Estado = 'En revision' OR Estado = 'Rechazado')";
-    private static final String SELECT_TRABAJOS_APROBADOS = "SELECT * FROM trabajos WHERE Propietario = ? AND Estado = 'Aprobado'";
-
-    public List<Trabajo> obtenerTrabajosSolicitados(int idUsuario, int tipoTrabajo, String fechaInicio, String fechaFin) throws SQLException {
+    // Obtener trabajos pendientes
+    public List<Trabajo> obtenerTrabajosPendientes(int idMaquinista) throws SQLException {
         List<Trabajo> trabajos = new ArrayList<>();
-        try (
-             PreparedStatement stmt = conn.prepareStatement(SELECT_TRABAJOS_SOLICITADOS)) {
-            stmt.setInt(1, idUsuario);
-            // Aplica filtros si es necesario
-            if (tipoTrabajo != 0) {
-                stmt.setInt(2, tipoTrabajo);
-            }
-            if (fechaInicio != null) {
-                stmt.setString(3, fechaInicio);
-            }
-            if (fechaFin != null) {
-                stmt.setString(4, fechaFin);
-            }
+        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado "
+                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
+                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Pendiente'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idMaquinista);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                trabajos.add(mapRowToTrabajo(rs));
+                Trabajo trabajo = new Trabajo();
+                trabajo.setId(rs.getInt("ID_Trabajo"));
+                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajos.add(trabajo);
             }
         }
         return trabajos;
     }
 
-    public List<Trabajo> obtenerTrabajosAprobados(int idUsuario, int tipoTrabajo, String fechaInicio, String fechaFin) throws SQLException {
+    // Obtener trabajos en curso
+    public List<Trabajo> obtenerTrabajosEnCurso(int idMaquinista) throws SQLException {
         List<Trabajo> trabajos = new ArrayList<>();
-        try (
-             PreparedStatement stmt = conn.prepareStatement(SELECT_TRABAJOS_APROBADOS)) {
-            stmt.setInt(1, idUsuario);
-            // Aplica filtros si es necesario
-            if (tipoTrabajo != 0) {
-                stmt.setInt(2, tipoTrabajo);
-            }
-            if (fechaInicio != null) {
-                stmt.setString(3, fechaInicio);
-            }
-            if (fechaFin != null) {
-                stmt.setString(4, fechaFin);
-            }
+        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado "
+                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
+                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'En curso'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idMaquinista);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                trabajos.add(mapRowToTrabajo(rs));
+                Trabajo trabajo = new Trabajo();
+                trabajo.setId(rs.getInt("ID_Trabajo"));
+                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajos.add(trabajo);
             }
         }
         return trabajos;
     }
 
-    private Trabajo mapRowToTrabajo(ResultSet rs) throws SQLException {
-        int id = rs.getInt("ID_Trabajo");
-        int numParcela = rs.getInt("Num_Parcela");
-        int idMaquina = rs.getInt("ID_Maquina");
-        int idMaquinista = rs.getInt("ID_Maquinista");
-        Date fecInicio = rs.getDate("Fec_inicio");
-        Date fecFin = rs.getDate("Fec_fin");
-        int horas = rs.getInt("Horas");
-        int tipoTrabajo = rs.getInt("ID_Tipo_Trabajo");
-        EstadoTrabajo estado = EstadoTrabajo.valueOf(rs.getString("Estado").toUpperCase());
-        
-        return new Trabajo(id, numParcela, idMaquina, idMaquinista, fecInicio, fecFin, horas, tipoTrabajo, estado);
+    // Obtener historial de trabajos finalizados
+    public List<Trabajo> obtenerHistorialTrabajos(int idMaquinista) throws SQLException {
+        List<Trabajo> trabajos = new ArrayList<>();
+        String sql = "SELECT t.ID_Trabajo, tt.Nombre AS Tipo_Trabajo, t.Num_Parcela, t.Estado, "
+                + "t.Fec_Inicio, t.Fec_Fin, t.Horas "
+                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
+                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Finalizado'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idMaquinista);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Trabajo trabajo = new Trabajo();
+                trabajo.setId(rs.getInt("ID_Trabajo"));
+                trabajo.setTipoTrabajo(Integer.parseInt(rs.getString("Tipo_Trabajo")));
+                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
+                trabajo.setFecFin(rs.getDate("Fec_Fin"));
+                trabajo.setHoras(rs.getInt("Horas"));
+                trabajos.add(trabajo);
+            }
+        }
+        return trabajos;
+    }
+
+    // Iniciar trabajo
+    public boolean iniciarTrabajo(int idTrabajo, Date fechaInicio, int idMaquinista) throws SQLException {
+        String sql = "UPDATE trabajos SET Estado = 'En curso', Fec_Inicio = ? WHERE ID_Trabajo = ? AND ID_Maquinista = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDate(1, fechaInicio);
+            stmt.setInt(2, idTrabajo);
+            stmt.setInt(3, idMaquinista);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    // Finalizar trabajo
+    public boolean finalizarTrabajo(int idTrabajo, Date fechaFin, double horas, int idMaquinista) throws SQLException {
+        conn.setAutoCommit(false);
+        try {
+            // Actualizar estado de trabajo
+            String sql = "UPDATE trabajos SET Estado = 'Finalizado', Fec_Fin = ?, Horas = ? WHERE ID_Trabajo = ? AND ID_Maquinista = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setDate(1, fechaFin);
+                stmt.setDouble(2, horas);
+                stmt.setInt(3, idTrabajo);
+                stmt.setInt(4, idMaquinista);
+                stmt.executeUpdate();
+            }
+
+            // Obtener ID de la máquina
+            String sqlMaquina = "SELECT ID_Maquina FROM trabajos WHERE ID_Trabajo = ?";
+            int idMaquina = 0;
+            try (PreparedStatement stmt = conn.prepareStatement(sqlMaquina)) {
+                stmt.setInt(1, idTrabajo);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    idMaquina = rs.getInt("ID_Maquina");
+                }
+            }
+
+            // Actualizar estado de la máquina
+            String sqlUpdateMaquina = "UPDATE maquinas SET Estado = 'Disponible' WHERE ID_Maquina = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlUpdateMaquina)) {
+                stmt.setInt(1, idMaquina);
+                stmt.executeUpdate();
+            }
+
+            // Insertar factura
+            String sqlFactura = "INSERT INTO facturas (ID_Trabajo) VALUES (?)";
+            try (PreparedStatement stmt = conn.prepareStatement(sqlFactura)) {
+                stmt.setInt(1, idTrabajo);
+                stmt.executeUpdate();
+            }
+
+            conn.commit();
+            return true;
+        } catch (SQLException e) {
+            conn.rollback();
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
     }
 }

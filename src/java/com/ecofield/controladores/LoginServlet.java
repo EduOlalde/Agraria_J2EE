@@ -46,6 +46,7 @@ public class LoginServlet extends HttpServlet {
 
             // Guardamos la conexión en la sesión para usarla en futuras peticiones
             session.setAttribute("conexion", conn);
+            session.setAttribute("user_id", usuario.getId());
             session.setAttribute("usuario", usuario);
 
             // Redirigimos al usuario a la página principal

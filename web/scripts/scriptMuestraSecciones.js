@@ -58,7 +58,6 @@ function mostrarSeccionActiva() {
 
 function inicio() {
     mostrarSeccionActiva();
-    limpiarParametros();
 
     document.querySelectorAll(".selectEstadoMaquinas").forEach(select => {
         select.addEventListener("change", (ev) => {

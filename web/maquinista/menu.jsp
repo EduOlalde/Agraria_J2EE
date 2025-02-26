@@ -5,13 +5,12 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
-</html>
+<%@ page import="java.util.List" %>
+<%@ page import="com.ecofield.modelos.Rol" %>
+
+<button class="nav-button" onclick="showSubSection('maquinista_trabajos')">Mis Trabajos</button>
+
+<!-- Sub-sección de Maquinista -->
+<div id="maquinista_trabajos" class="sub-section-content">
+    <jsp:include page="maq_trabajos.jsp" />
+</div>
