@@ -29,10 +29,6 @@
         <servlet-class>com.ecofield.controlMaquinista.FinalizarTrabajoServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>EliminarUsuarioServlet</servlet-name>
-        <servlet-class>com.ecofield.controlAdmin.EliminarUsuarioServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AdminUsuarioServlet</servlet-name>
         <servlet-class>com.ecofield.controlAdmin.AdminUsuarioServlet</servlet-class>
     </servlet>
@@ -63,10 +59,6 @@
     <servlet-mapping>
         <servlet-name>FinalizarTrabajoServlet</servlet-name>
         <url-pattern>/FinalizarTrabajoServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>EliminarUsuarioServlet</servlet-name>
-        <url-pattern>/EliminarUsuarioServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AdminUsuarioServlet</servlet-name>

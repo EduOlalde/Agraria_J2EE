@@ -36,7 +36,7 @@ public class AdminUsuarioServlet extends HttpServlet {
         List<Rol> roles = obtenerRolesDesdeParametros(rolesSeleccionados);
 
         return usuarioDAO.registrarUsuario(usuario, roles);
-        
+
     }
 
     private boolean modificarUsuario(HttpServletRequest request, UsuarioDAO usuarioDAO) {
@@ -53,9 +53,15 @@ public class AdminUsuarioServlet extends HttpServlet {
         return usuarioDAO.actualizarUsuario(usuario);
     }
 
-    private boolean eliminarUsuario(HttpServletRequest request, UsuarioDAO usuarioDAO) {
+    private void eliminarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
-        return usuarioDAO.eliminarUsuario(idUsuario);
+        String mensaje = usuarioDAO.eliminarUsuario(idUsuario);
+
+        if (mensaje.equals("Usuario eliminado satisfactoriamente.")) {
+            session.setAttribute("mensaje", mensaje);
+        } else {
+            session.setAttribute("error", mensaje);
+        }
     }
 
     private List<Rol> obtenerRolesDesdeParametros(String[] rolesSeleccionados) {
@@ -93,26 +99,22 @@ public class AdminUsuarioServlet extends HttpServlet {
 
         switch (accion) {
             case "crear":
-                if(crearUsuario(request, usuarioDAO)){
+                if (crearUsuario(request, usuarioDAO)) {
                     session.setAttribute("mensaje", "Usuario creado.");
                 } else {
                     session.setAttribute("error", "Error al crear el usuario.");
                 }
                 break;
             case "modificar":
-                if(modificarUsuario(request, usuarioDAO)) {
+                if (modificarUsuario(request, usuarioDAO)) {
                     session.setAttribute("mensaje", "Usuario modificado satisfactoriamente.");
                 } else {
-                    session.setAttribute("error", "Error al modificar el usuario.");                
+                    session.setAttribute("error", "Error al modificar el usuario.");
                 }
-                    ;
+                ;
                 break;
             case "eliminar":
-                if(eliminarUsuario(request, usuarioDAO)){
-                    session.setAttribute("mensaje", "Usuario eliminado satisfactoriamente.");
-                } else {
-                    session.setAttribute("error", "Error al eliminar el usuario.");                               
-                };
+                eliminarUsuario(request, session, usuarioDAO);
                 break;
         }
 
