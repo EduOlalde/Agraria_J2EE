@@ -55,13 +55,6 @@ function mostrarSeccionActiva() {
 
 }
 
-// Elimina parámetros GET de la URL sin recargar la página
-function limpiarParametros() {
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.pathname);
-    }
-}
-
 
 function inicio() {
     mostrarSeccionActiva();

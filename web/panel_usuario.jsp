@@ -18,7 +18,11 @@
 
 <div class="sidebar">
     <h2>Modificar Datos</h2>
-    <form action="PanelUsuarioServlet" method="post">
+    <form action="PanelUsuarioServlet" method="post" onsubmit="guardarSeccionActiva('sec_usuario', '')">
+        <label for="nombre">Contraseña actual:</label>
+        <input type="text" name="passActual">
+        <br>
+        
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" value="<%= usuario.getNombre() %>">
 

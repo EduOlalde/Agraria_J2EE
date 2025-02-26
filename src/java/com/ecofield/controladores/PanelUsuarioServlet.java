@@ -47,37 +47,42 @@ public class PanelUsuarioServlet extends HttpServlet {
         int userId = usuario.getId();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            // Captura de parámetros del formulario
-            String nombre = request.getParameter("nombre");
-            int telefono = Integer.parseInt(request.getParameter("telefono"));
-            String email = request.getParameter("email");
+            
+            String passActual = request.getParameter("passActual");
             String contrasenia = request.getParameter("contrasenia");
             String repetirContrasenia = request.getParameter("repetir_contrasenia");
 
-            usuario.setNombre(nombre);
-            usuario.setTelefono(telefono);
-            usuario.setEmail(email);
-
-            // Validación de contraseña
-            if (!contrasenia.isEmpty() && contrasenia.equals(repetirContrasenia)) {
-                usuario.setContrasenia(contrasenia);
-            } else if (!contrasenia.isEmpty()) {
-                request.setAttribute("error", "Las contraseñas no coinciden.");
-            }
-
-            // Intentar actualizar el usuario
-            boolean actualizado = usuarioDAO.actualizarUsuario(usuario);
-            request.setAttribute("mensaje", actualizado ? "Datos actualizados con éxito." : "Error al actualizar los datos.");
+            if (!passActual.equals(usuario.getContrasenia())) {
+                session.setAttribute("error", "Contraseña incorrecta.");
+            } else if (!contrasenia.isEmpty() && !contrasenia.equals(repetirContrasenia)) {
+                session.setAttribute("error", "Las contraseñas no coinciden.");
+            } else {
+                
+                String nombre = request.getParameter("nombre");
+                int telefono = Integer.parseInt(request.getParameter("telefono"));
+                String email = request.getParameter("email");
+                
+                usuario.setNombre(nombre);
+                usuario.setTelefono(telefono);
+                usuario.setEmail(email);
+                
+                if(!contrasenia.isEmpty()){
+                    usuario.setContrasenia(contrasenia);
+                }
+                // Intentar actualizar el usuario
+                boolean actualizado = usuarioDAO.actualizarUsuario(usuario);
+                session.setAttribute("mensaje", actualizado ? "Datos actualizados con éxito." : "");
+            }           
+          
+            
 
         }
 
         // Obtener usuario actualizado y enviarlo a la vista
         usuario = usuarioDAO.obtenerUsuarioPorId(userId);
         if (usuario != null) {
-            request.setAttribute("usuario", usuario);
+            session.setAttribute("usuario", usuario);
         }
-
-        request.setAttribute("error", "Error al obtener los datos del usuario.");
 
         request.getRequestDispatcher("dashboard.jsp").forward(request, response);
 
