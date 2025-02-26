@@ -29,7 +29,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>EcoField - Dashboard</title>
         <link rel="stylesheet" href="estilos/estiloGeneral.css">
-        <script src="scripts/scriptMuestraSecciones.js"></script>
+        <script src="scripts/scriptMuestraDeSecciones.js"></script>
     </head>
     <body>
         <nav class="main-nav">
