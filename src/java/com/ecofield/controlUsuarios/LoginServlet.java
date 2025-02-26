@@ -1,4 +1,4 @@
-package com.ecofield.controladores;
+package com.ecofield.controlUsuarios;
 
 import com.ecofield.dao.UsuarioDAO;
 import com.ecofield.modelos.Usuario;

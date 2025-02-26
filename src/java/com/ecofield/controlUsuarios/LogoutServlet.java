@@ -1,18 +1,22 @@
-package com.ecofield.controladores;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
+package com.ecofield.controlUsuarios;
 
-import com.ecofield.dao.UsuarioDAO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.Connection;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Eduardo Olalde
  */
-public class RegistroServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -26,35 +30,12 @@ public class RegistroServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        // Obtén los parámetros del formulario
-        String nombre = request.getParameter("nombre");
-        String contrasenia = request.getParameter("contrasenia");
-        int telefono = Integer.parseInt(request.getParameter("telefono"));
-        String email = request.getParameter("email");
-
-        // Recuperar la conexión desde el ServletContext
-        Connection conn = (Connection) getServletContext().getAttribute("conexion");
+        HttpSession session = request.getSession(false);
         
-        // Verifica si la conexión está disponible
-        if (conn == null) {
-            request.getSession().setAttribute("error", "No se pudo obtener la conexión a la base de datos.");
-            response.sendRedirect("registro.jsp");
-            return;
+        if (session != null) {
+            session.invalidate();
         }
-
-        // Crear una instancia de UsuarioDAO y pasarle la conexión
-        UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
-        
-        // Registrar al usuario
-        boolean exito = usuarioDAO.registrarUsuario(nombre, contrasenia, telefono, email);
-        if (exito) {
-            request.getSession().setAttribute("mensaje", "Usuario registrado correctamente");
-            response.sendRedirect("login.jsp");
-        } else {
-            request.getSession().setAttribute("error", "Error en el registro");
-            response.sendRedirect("registro.jsp");
-        }
+        response.sendRedirect("login.jsp");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

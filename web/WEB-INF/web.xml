@@ -2,31 +2,31 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.LoginServlet</servlet-class>
+        <servlet-class>com.ecofield.controlUsuarios.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>RegistroServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.RegistroServlet</servlet-class>
+        <servlet-class>com.ecofield.controlUsuarios.RegistroServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DashboardServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.DashboardServlet</servlet-class>
+        <servlet-class>com.ecofield.controlUsuarios.DashboardServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PanelUsuarioServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.PanelUsuarioServlet</servlet-class>
+        <servlet-class>com.ecofield.controlUsuarios.PanelUsuarioServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.LogoutServlet</servlet-class>
+        <servlet-class>com.ecofield.controlUsuarios.LogoutServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>IniciarTrabajoServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.IniciarTrabajoServlet</servlet-class>
+        <servlet-class>com.ecofield.controlMaquinista.IniciarTrabajoServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>FinalizarTrabajoServlet</servlet-name>
-        <servlet-class>com.ecofield.controladores.FinalizarTrabajoServlet</servlet-class>
+        <servlet-class>com.ecofield.controlMaquinista.FinalizarTrabajoServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
