@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuario", usuario);
 
             // Redirigimos al usuario a la página principal
-            response.sendRedirect("DashboardServlet");
+            response.sendRedirect("dashboard");
         } else {
             // Si las credenciales son incorrectas, redirigimos de vuelta al login
             request.getSession().setAttribute("error", "Credenciales incorrectas");

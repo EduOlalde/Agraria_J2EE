@@ -86,7 +86,7 @@ public class PanelUsuarioServlet extends HttpServlet {
             session.setAttribute("usuario", usuario);
         }
 
-        request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("dashboard").forward(request, response);
 
     }
 
