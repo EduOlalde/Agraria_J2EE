@@ -4,9 +4,7 @@
  */
 package com.ecofield.dao;
 
-import com.ecofield.enums.EstadoTrabajo;
 import com.ecofield.modelos.Trabajo;
-import com.ecofield.utils.ConexionDB;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -44,7 +42,7 @@ public class TrabajoDAO {
                 trabajo.setTipoTrabajo(tipoTrabajoId);  // Asignar directamente el ID (int) al atributo
 
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajo.setEstado(rs.getString("Estado"));
                 trabajos.add(trabajo);
             }
         }
@@ -67,7 +65,7 @@ public class TrabajoDAO {
                 trabajo.setId(rs.getInt("ID_Trabajo"));
                 trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajo.setEstado(rs.getString("Estado"));
                 trabajos.add(trabajo);
             }
         }
@@ -91,7 +89,7 @@ public class TrabajoDAO {
                 trabajo.setId(rs.getInt("ID_Trabajo"));
                 trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
                 trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                trabajo.setEstado(EstadoTrabajo.fromString(rs.getString("Estado")));
+                trabajo.setEstado(rs.getString("Estado"));
                 trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
                 trabajo.setFecFin(rs.getDate("Fec_Fin"));
                 trabajo.setHoras(rs.getInt("Horas"));

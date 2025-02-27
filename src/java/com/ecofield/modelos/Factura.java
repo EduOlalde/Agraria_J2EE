@@ -1,7 +1,6 @@
 
 package com.ecofield.modelos;
 
-import com.ecofield.enums.EstadoFactura;
 import java.util.Date;
 
 /**
@@ -13,12 +12,12 @@ public class Factura {
 
     private final int idFactura;
     private final int idTrabajo;
-    private EstadoFactura estado;
+    private String estado;
     private final Date fechaEmision;
     private Date fechaPago;
     private double monto;
 
-    public Factura(int idFactura, int idTrabajo, EstadoFactura estado, Date fechaEmision, Date fechaPago, double monto) {
+    public Factura(int idFactura, int idTrabajo, String estado, Date fechaEmision, Date fechaPago, double monto) {
         this.idFactura = idFactura;
         this.idTrabajo = idTrabajo;
         this.estado = estado;
@@ -39,11 +38,11 @@ public class Factura {
         return fechaEmision;
     }
 
-    public EstadoFactura getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoFactura estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 

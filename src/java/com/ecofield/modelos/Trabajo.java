@@ -1,6 +1,5 @@
 package com.ecofield.modelos;
 
-import com.ecofield.enums.EstadoTrabajo;
 import java.util.Date;
 
 /**
@@ -18,12 +17,12 @@ public class Trabajo {
     private Date fecFin;
     private int horas;
     private int tipoTrabajo;
-    private EstadoTrabajo estado;
+    private String estado;
 
     public Trabajo() {
     }
 
-    public Trabajo(int id, int numParcela, int idMaquina, int idMaquinista, Date fecInicio, Date fecFin, int horas, int tipoTrabajo, EstadoTrabajo estado) {
+    public Trabajo(int id, int numParcela, int idMaquina, int idMaquinista, Date fecInicio, Date fecFin, int horas, int tipoTrabajo, String estado) {
         this.id = id;
         this.numParcela = numParcela;
         this.idMaquina = idMaquina;
@@ -99,11 +98,11 @@ public class Trabajo {
         this.tipoTrabajo = tipoTrabajo;
     }
 
-    public EstadoTrabajo getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoTrabajo estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 
