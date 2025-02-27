@@ -37,6 +37,10 @@
         <servlet-class>com.ecofield.controlAdmin.AdminUsuarioServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>AdminMaquinistasServlet</servlet-name>
+        <servlet-class>com.ecofield.controlAdmin.AdminMaquinistasServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ParcelasDAO</servlet-name>
         <servlet-class>com.ecofield.dao.ParcelasDAO</servlet-class>
     </servlet>
@@ -71,6 +75,10 @@
     <servlet-mapping>
         <servlet-name>AdminUsuarioServlet</servlet-name>
         <url-pattern>/AdminUsuarioServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminMaquinistasServlet</servlet-name>
+        <url-pattern>/AdminMaquinistasServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ParcelasDAO</servlet-name>

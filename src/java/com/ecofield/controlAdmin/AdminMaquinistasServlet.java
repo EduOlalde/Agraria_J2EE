@@ -2,22 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.ecofield.controlUsuarios;
+package com.ecofield.controlAdmin;
 
 import com.ecofield.dao.MaquinistaDAO;
-import com.ecofield.dao.RolDAO;
-import com.ecofield.dao.UsuarioDAO;
-import com.ecofield.modelos.Maquinista;
-import com.ecofield.modelos.Rol;
-import com.ecofield.modelos.TipoTrabajo;
-import com.ecofield.modelos.Usuario;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +20,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Eduardo Olalde
  */
-public class DashboardServlet extends HttpServlet {
+public class AdminMaquinistasServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,57 +34,24 @@ public class DashboardServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession(false);
-        Connection conn = (Connection) session.getAttribute("conexion");
 
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login.jsp");
-            return;
+        Connection conn = (Connection) request.getSession().getAttribute("conexion");
+        MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
+
+        int idMaquinista = Integer.parseInt(request.getParameter("id_maquinista"));
+        String[] especialidades = request.getParameterValues("especialidades");
+
+        List<Integer> nuevasEspecialidades = new ArrayList<>();
+        if (especialidades != null) {
+            for (String especialidad : especialidades) {
+                nuevasEspecialidades.add(Integer.valueOf(especialidad));
+            }
         }
-
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        if (!usuario.isHabilitado()) {
-            session.setAttribute("mensaje", "Tu cuenta está deshabilitada. Contacta con el administrador.");
-            response.sendRedirect("dashboard.jsp");
-            return;
-        }
-
-        Rol rolAdmin = new Rol(1, "Administrador");
-        Rol rolAgricultor = new Rol(2, "Agricultor");
-        Rol rolMaquinista = new Rol(3, "Maquinista");
-
-        List<Rol> roles = usuario.getRoles();
-
-        if (roles.contains(rolAdmin)) {
-
-            RolDAO rolDAO = new RolDAO(conn);
-            List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
-            request.setAttribute("rolesDisponibles", rolesDisponibles);
-
-            UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
-            List<Usuario> usuarios = usuarioDAO.listarUsuarios();
-            request.setAttribute("usuarios", usuarios);
-
-            MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
-
-            List<Maquinista> maquinistas = maquinistaDAO.obtenerMaquinistas();
-            List<TipoTrabajo> tiposTrabajo = maquinistaDAO.obtenerTiposTrabajo();
-
-            request.setAttribute("maquinistas", maquinistas);
-            request.setAttribute("tiposTrabajo", tiposTrabajo);
-
-        }
-
-        if (roles.contains(rolAgricultor)) {
-
-        }
-
-        if (roles.contains(rolMaquinista)) {
-
-        }
-
-        request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+      
+        maquinistaDAO.actualizarEspecialidades(idMaquinista, nuevasEspecialidades);
+        request.getSession().setAttribute("mensaje", "Especialidades actualizadas");
+        response.sendRedirect("dashboard");
+         
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

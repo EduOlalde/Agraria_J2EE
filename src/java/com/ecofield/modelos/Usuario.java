@@ -18,6 +18,22 @@ public class Usuario {
     private boolean habilitado;
     private List<Rol> roles = new ArrayList<>();
 
+    public Usuario() {
+    }
+
+    public Usuario(int id, String nombre, String email, boolean habilitado) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.habilitado = habilitado;
+    }
+
+    public Usuario(int id, String nombre, String email) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+    }
+
     public Usuario(String nombre, String email, String contrasenia, String telefono) {
         this.nombre = nombre;
         this.email = email;
@@ -33,7 +49,7 @@ public class Usuario {
         this.telefono = telefono;
         this.habilitado = habilitado;
     }
-    
+
     public Usuario(int id, String nombre, String email, String telefono, boolean habilitado, List<Rol> roles) {
         this.id = id;
         this.nombre = nombre;
@@ -43,7 +59,7 @@ public class Usuario {
         this.habilitado = habilitado;
         this.roles = roles;
     }
-    
+
     public boolean verificarContrasena(String passwordIngresada) {
         return passwordIngresada.equals(this.contrasenia);
     }
