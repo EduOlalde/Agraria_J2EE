@@ -16,10 +16,7 @@ import com.ecofield.modelos.Usuario;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -70,28 +67,46 @@ public class DashboardServlet extends HttpServlet {
         if (roles.contains(rolAdmin)) {
 
             RolDAO rolDAO = new RolDAO(conn);
+            UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+            MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
+            ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
+
             List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
             request.setAttribute("rolesDisponibles", rolesDisponibles);
-
-            UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
             List<Usuario> usuarios = usuarioDAO.listarUsuarios();
             request.setAttribute("usuarios", usuarios);
 
-            MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
-
             List<Maquinista> maquinistas = maquinistaDAO.obtenerMaquinistas();
             List<TipoTrabajo> tiposTrabajo = maquinistaDAO.obtenerTiposTrabajo();
-
             request.setAttribute("maquinistas", maquinistas);
             request.setAttribute("tiposTrabajo", tiposTrabajo);
+
+            List<Usuario> agricultores = usuarioDAO.obtenerAgricultores();
+            // Obtener los filtros
+            // Obtener los parámetros como cadenas
+            String agricultorParam = request.getParameter("agricultor");
+            String extensionParam = request.getParameter("extension");
+            // Validar antes de convertir
+            Integer agricultorFiltro = (agricultorParam != null && !agricultorParam.trim().isEmpty()) ? Integer.valueOf(agricultorParam) : null;
+            Double extensionFiltro = (extensionParam != null && !extensionParam.trim().isEmpty()) ? Double.valueOf(extensionParam) : null;
+
+            // Obtener las parcelas filtradas           
+            List<Parcela> parcelas = parcelaDAO.obtenerParcelasFiltradas(agricultorFiltro, extensionFiltro);
+
+            // Atributos para la vista
+            request.setAttribute("agricultores", agricultores);
+            request.setAttribute("parcelas", parcelas);
+            request.setAttribute("filtroAgricultor", agricultorFiltro);
+            request.setAttribute("filtroExtension", extensionFiltro);
 
         }
 
         if (roles.contains(rolAgricultor)) {
+
             ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
             List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
             request.setAttribute("parcelasAgricultor", parcelas);
-            
+
         }
 
         if (roles.contains(rolMaquinista)) {
@@ -99,6 +114,19 @@ public class DashboardServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+        /*
+            try (PrintWriter out = response.getWriter()) {
+            
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet NewServlet</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Parcelas " + parcelas + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }*/
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

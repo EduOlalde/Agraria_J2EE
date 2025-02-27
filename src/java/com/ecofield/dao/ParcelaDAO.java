@@ -121,13 +121,53 @@ public class ParcelaDAO {
         return parcelas;
     }
 
+    public List<Parcela> obtenerParcelasFiltradas(Integer agricultorFiltro, Double extensionFiltro) {
+        List<Parcela> parcelas = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario ");
+        sql.append("FROM Parcelas p ");      
+        sql.append("JOIN usuarios u ON p.Propietario = u.ID_Usuario WHERE 1");
+        
+        if (agricultorFiltro != null) {
+            sql.append(" AND p.Propietario = ?");
+        }
+        if (extensionFiltro != null) {
+            sql.append(" AND p.Extension < ?");
+        }
+         
+        try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            int index = 1;
+            
+            if (agricultorFiltro != null) {
+                stmt.setInt(index++, agricultorFiltro);
+            }
+            if (extensionFiltro != null) {
+                stmt.setDouble(index++, extensionFiltro);
+            }
+             
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Parcela parcela = new Parcela(
+                            rs.getInt("Num_Parcela"),
+                            rs.getString("ID_Catastro"),
+                            rs.getDouble("Extension"),
+                            rs.getInt("Propietario")
+                    );
+                    parcelas.add(parcela);
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return parcelas;
+    }
+
     /**
      * Método para el administrador: obtiene una parcela a partir de su ID de
      * catastro.
      *
      * @param idCatastro ID de catastro de la parcela.
      * @return La parcela encontrada o null si no existe.
-     * @throws SQLException
      */
     public Parcela obtenerParcelaPorId(String idCatastro) {
         Parcela parcela = null;
@@ -156,7 +196,6 @@ public class ParcelaDAO {
      *
      * @param parcela Objeto Parcela con los datos a insertar.
      * @return true si se inserta correctamente; false en caso contrario.
-     * @throws SQLException
      */
     public boolean crearParcela(Parcela parcela) {
         String sql = "INSERT INTO parcelas (ID_Catastro, Extension, Propietario) VALUES (?, ?, ?)";
@@ -168,7 +207,7 @@ public class ParcelaDAO {
         } catch (SQLException ex) {
             Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
-        }       
+        }
     }
 
     /**
