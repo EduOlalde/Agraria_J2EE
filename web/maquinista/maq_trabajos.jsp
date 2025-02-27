@@ -1,16 +1,13 @@
-<%-- 
-    Document   : maq_trabajos
-    Created on : 26 feb 2025, 9:46:33
-    Author     : Eduardo Olalde
---%>
-
 <%@page import="com.mysql.jdbc.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List, com.ecofield.modelos.Trabajo, com.ecofield.dao.TrabajoDAO" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
 
 <%
-    int idMaquinista = (int) session.getAttribute("user_id");
+    // Verificar que user_id no sea null antes de convertirlo a int
+    Object userIdAttr = session.getAttribute("user_id");
+    int idMaquinista = (userIdAttr != null) ? Integer.parseInt(userIdAttr.toString()) : 0; 
+
     Connection conn = (Connection) session.getAttribute("conexion");
     TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
 
@@ -114,4 +111,4 @@
 </table>
 <% } else { %>
 <p>No hay historial de trabajos.</p>
-<% }%>
+<% } %>
