@@ -40,10 +40,6 @@
         <servlet-name>AdminMaquinistasServlet</servlet-name>
         <servlet-class>com.ecofield.controlAdmin.AdminMaquinistasServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>ParcelasDAO</servlet-name>
-        <servlet-class>com.ecofield.dao.ParcelasDAO</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -79,10 +75,6 @@
     <servlet-mapping>
         <servlet-name>AdminMaquinistasServlet</servlet-name>
         <url-pattern>/AdminMaquinistasServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ParcelasDAO</servlet-name>
-        <url-pattern>/ParcelasDAO</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

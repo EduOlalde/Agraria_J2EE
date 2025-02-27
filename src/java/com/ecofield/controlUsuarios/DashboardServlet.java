@@ -5,9 +5,11 @@
 package com.ecofield.controlUsuarios;
 
 import com.ecofield.dao.MaquinistaDAO;
+import com.ecofield.dao.ParcelaDAO;
 import com.ecofield.dao.RolDAO;
 import com.ecofield.dao.UsuarioDAO;
 import com.ecofield.modelos.Maquinista;
+import com.ecofield.modelos.Parcela;
 import com.ecofield.modelos.Rol;
 import com.ecofield.modelos.TipoTrabajo;
 import com.ecofield.modelos.Usuario;
@@ -51,6 +53,7 @@ public class DashboardServlet extends HttpServlet {
         }
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
+        int idUsuario = usuario.getId();
 
         if (!usuario.isHabilitado()) {
             session.setAttribute("mensaje", "Tu cuenta está deshabilitada. Contacta con el administrador.");
@@ -85,6 +88,13 @@ public class DashboardServlet extends HttpServlet {
         }
 
         if (roles.contains(rolAgricultor)) {
+            ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
+            try {
+                List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
+                request.setAttribute("parcelasAgricultor", parcelas);
+            } catch (SQLException ex) {
+                Logger.getLogger(DashboardServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
         }
 
