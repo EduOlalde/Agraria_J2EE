@@ -182,21 +182,25 @@ public class UsuarioDAO {
         }
         return usuarios;
     }
-    // Registrar un nuevo usuario con roles
 
-    public boolean registrarUsuario(Usuario usuario, List<Rol> roles) {
+    // Registrar un nuevo usuario con roles
+    public String registrarUsuario(Usuario usuario, List<Rol> roles) {
         String sqlUsuario = "INSERT INTO usuarios (nombre, email, telefono, contrasenia, habilitado) VALUES (?, ?, ?, ?, ?)";
         String sqlRol = "INSERT INTO usuarios_roles (id_usuario, id_rol) VALUES (?, ?)";
 
         try (PreparedStatement stmtUsuario = conn.prepareStatement(sqlUsuario, Statement.RETURN_GENERATED_KEYS)) {
-
             stmtUsuario.setString(1, usuario.getNombre());
             stmtUsuario.setString(2, usuario.getEmail());
-            stmtUsuario.setString(3, usuario.getTelefono());  // Cambié a String
+            stmtUsuario.setString(3, usuario.getTelefono());
             stmtUsuario.setString(4, usuario.getContrasenia());
             stmtUsuario.setBoolean(5, usuario.isHabilitado());
-            stmtUsuario.executeUpdate();
 
+            int filasAfectadas = stmtUsuario.executeUpdate();
+            if (filasAfectadas == 0) {
+                return "No se pudo registrar el usuario.";
+            }
+
+            // Obtener el ID generado para el usuario
             ResultSet rs = stmtUsuario.getGeneratedKeys();
             if (rs.next()) {
                 int idUsuario = rs.getInt(1);
@@ -207,12 +211,25 @@ public class UsuarioDAO {
                         stmtRol.executeUpdate();
                     }
                 }
+                return "Usuario registrado correctamente.";
+            } else {
+                return "Error al obtener el ID del nuevo usuario.";
             }
-            return true;
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            String mensajeError = e.getMessage();
+          
+            if (mensajeError.contains("Email")) {
+                return "Error: El email ingresado ya está registrado.";
+            } else if (mensajeError.contains("Nombre")) {
+                return "Error: El nombre de usuario ya está en uso.";
+            } else {
+                return "Error: Restricción de integridad violada.";
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            return "Error en la base de datos al registrar el usuario.";
         }
     }
 
@@ -307,7 +324,7 @@ public class UsuarioDAO {
             try (PreparedStatement stmtUsuario = conn.prepareStatement("DELETE FROM usuarios WHERE id_usuario = ?")) {
                 stmtUsuario.setInt(1, id);
                 if (stmtUsuario.executeUpdate() > 0) {
-                    return "Usuario eliminado satisfactoriamente.";
+                    return "Usuario eliminado correctamente.";
                 } else {
                     return "Error al eliminar el usuario, puede que no exista.";
                 }

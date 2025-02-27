@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
  */
 public class AdminUsuarioServlet extends HttpServlet {
 
-    private boolean crearUsuario(HttpServletRequest request, UsuarioDAO usuarioDAO) {
+    private void crearUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
@@ -35,8 +35,13 @@ public class AdminUsuarioServlet extends HttpServlet {
         Usuario usuario = new Usuario(0, nombre, email, contrasenia, telefono, habilitado);
         List<Rol> roles = obtenerRolesDesdeParametros(rolesSeleccionados);
 
-        return usuarioDAO.registrarUsuario(usuario, roles);
+        String mensaje = usuarioDAO.registrarUsuario(usuario, roles);
 
+        if (mensaje.equals("Usuario registrado correctamente.")) {
+            session.setAttribute("mensaje", mensaje);
+        } else {
+            session.setAttribute("error", mensaje);
+        }
     }
 
     private void modificarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
@@ -44,11 +49,11 @@ public class AdminUsuarioServlet extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
-        boolean habilitado = request.getParameter("habilitado") != null;       
-      
+        boolean habilitado = request.getParameter("habilitado") != null;
+
         String[] rolesSeleccionados = request.getParameterValues("roles");
-        List<Rol> roles = obtenerRolesDesdeParametros(rolesSeleccionados);       
-                   
+        List<Rol> roles = obtenerRolesDesdeParametros(rolesSeleccionados);
+
         Usuario usuario = new Usuario(idUsuario, nombre, email, telefono, habilitado, roles);
 
         String mensaje = usuarioDAO.actualizarUsuario(usuario, roles);
@@ -106,11 +111,7 @@ public class AdminUsuarioServlet extends HttpServlet {
 
         switch (accion) {
             case "crear":
-                if (crearUsuario(request, usuarioDAO)) {
-                    session.setAttribute("mensaje", "Usuario creado.");
-                } else {
-                    session.setAttribute("error", "Error al crear el usuario.");
-                }
+                crearUsuario(request, session, usuarioDAO);
                 break;
             case "modificar":
                 modificarUsuario(request, session, usuarioDAO);
