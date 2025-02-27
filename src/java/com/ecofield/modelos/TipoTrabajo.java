@@ -11,10 +11,13 @@ package com.ecofield.modelos;
  */
 public class TipoTrabajo {
 
-    private final int idTipoTrabajo;
-    private final TipoTrabajo nombre;
+    private int idTipoTrabajo;
+    private String nombre;
 
-    public TipoTrabajo(int idTipoTrabajo, TipoTrabajo nombre) {
+    public TipoTrabajo() {
+    }
+
+    public TipoTrabajo(int idTipoTrabajo, String nombre) {
         this.idTipoTrabajo = idTipoTrabajo;
         this.nombre = nombre;
     }
@@ -23,8 +26,16 @@ public class TipoTrabajo {
         return idTipoTrabajo;
     }
 
-    public TipoTrabajo getNombre() {
+    public void setIdTipoTrabajo(int idTipoTrabajo) {
+        this.idTipoTrabajo = idTipoTrabajo;
+    }
+
+    public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     @Override
