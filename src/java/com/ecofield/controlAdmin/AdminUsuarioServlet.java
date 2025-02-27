@@ -69,7 +69,7 @@ public class AdminUsuarioServlet extends HttpServlet {
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         String mensaje = usuarioDAO.eliminarUsuario(idUsuario);
 
-        if (mensaje.equals("Usuario eliminado satisfactoriamente.")) {
+        if (mensaje.equals("Usuario eliminado correctamente.")) {
             session.setAttribute("mensaje", mensaje);
         } else {
             session.setAttribute("error", mensaje);

@@ -47,15 +47,17 @@ public class RegistroServlet extends HttpServlet {
         UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
         
         // Registrar al usuario
-        boolean exito = usuarioDAO.registrarUsuario(nombre, contrasenia, telefono, email);
-        if (exito) {
-            request.getSession().setAttribute("mensaje", "Usuario registrado correctamente");
+        String mensaje = usuarioDAO.registrarUsuario(nombre, contrasenia, telefono, email);
+        if (mensaje.equals("Usuario registrado correctamente.")) {
+            request.getSession().setAttribute("mensaje", mensaje);
             response.sendRedirect("login.jsp");
         } else {
-            request.getSession().setAttribute("error", "Error en el registro");
+            request.getSession().setAttribute("error", mensaje);
             response.sendRedirect("registro.jsp");
         }
     }
+    
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

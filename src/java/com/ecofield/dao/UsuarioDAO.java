@@ -106,42 +106,75 @@ public class UsuarioDAO {
     }
 
     // Actualizar los datos de un usuario
-    public boolean actualizarUsuario(Usuario usuario) {
+    public String actualizarUsuario(Usuario usuario) {
         String sql = "UPDATE Usuarios SET Nombre = ?, Contrasenia = ?, Telefono = ?, Email = ? WHERE ID_Usuario = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getContrasenia());
-            stmt.setString(3, usuario.getTelefono());  // Cambié a String
+            stmt.setString(3, usuario.getTelefono());
             stmt.setString(4, usuario.getEmail());
             stmt.setInt(5, usuario.getId());
 
-            return stmt.executeUpdate() > 0;
+            int filasAfectadas = stmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                return "Usuario actualizado correctamente.";
+            } else {
+                return "No se encontró el usuario o no se realizaron cambios.";
+            }
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            String mensajeError = e.getMessage();
+
+            if (mensajeError.contains("Email")) {
+                return "Error: El email ingresado ya está registrado por otro usuario.";
+            } else if (mensajeError.contains("Nombre")) {
+                return "Error: El nombre de usuario ya está en uso.";
+            } else {
+                return "Error: Restricción de integridad violada.";
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            return "Error en la base de datos al actualizar el usuario.";
         }
     }
 
     // Registrar un nuevo usuario
-    public boolean registrarUsuario(String nombre, String contrasenia, String telefono, String email) {
+    public String registrarUsuario(String nombre, String contrasenia, String telefono, String email) {
         String sql = "INSERT INTO Usuarios (Nombre, Contrasenia, Telefono, Email) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nombre);
             stmt.setString(2, contrasenia);
             stmt.setString(3, telefono);
             stmt.setString(4, email);
-            return stmt.executeUpdate() > 0;
+
+            int filasAfectadas = stmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                return "Usuario registrado correctamente.";
+            } else {
+                return "No se pudo registrar el usuario.";
+            }
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            String mensajeError = e.getMessage();
+
+            if (mensajeError.contains("Email")) {
+                return "Error: El email ingresado ya está registrado.";
+            } else if (mensajeError.contains("Nombre")) {
+                return "Error: El nombre de usuario ya está en uso.";
+            } else {
+                return "Error: Restricción de integridad violada.";
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
+            return "Error en la base de datos al registrar el usuario.";
         }
     }
-    // Listar todos los usuarios con sus roles
 
+    // Listar todos los usuarios con sus roles
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT u.id_usuario, u.nombre, u.email, u.telefono, u.habilitado, r.id_rol, r.nombre AS rol_nombre "
@@ -218,7 +251,7 @@ public class UsuarioDAO {
 
         } catch (SQLIntegrityConstraintViolationException e) {
             String mensajeError = e.getMessage();
-          
+
             if (mensajeError.contains("Email")) {
                 return "Error: El email ingresado ya está registrado.";
             } else if (mensajeError.contains("Nombre")) {

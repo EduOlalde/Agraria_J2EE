@@ -47,7 +47,7 @@ public class PanelUsuarioServlet extends HttpServlet {
         int userId = usuario.getId();
 
         if ("POST".equalsIgnoreCase(request.getMethod())) {
-            
+
             String passActual = request.getParameter("passActual");
             String contrasenia = request.getParameter("contrasenia");
             String repetirContrasenia = request.getParameter("repetir_contrasenia");
@@ -57,24 +57,26 @@ public class PanelUsuarioServlet extends HttpServlet {
             } else if (!contrasenia.isEmpty() && !contrasenia.equals(repetirContrasenia)) {
                 session.setAttribute("error", "Las contraseñas no coinciden.");
             } else {
-                
+
                 String nombre = request.getParameter("nombre");
                 String telefono = request.getParameter("telefono");
                 String email = request.getParameter("email");
-                
+
                 usuario.setNombre(nombre);
                 usuario.setTelefono(telefono);
                 usuario.setEmail(email);
-                
-                if(!contrasenia.isEmpty()){
+
+                if (!contrasenia.isEmpty()) {
                     usuario.setContrasenia(contrasenia);
                 }
                 // Intentar actualizar el usuario
-                boolean actualizado = usuarioDAO.actualizarUsuario(usuario);
-                session.setAttribute("mensaje", actualizado ? "Datos actualizados con éxito." : "");
-            }           
-          
-            
+                String mensaje = usuarioDAO.actualizarUsuario(usuario);
+                if (mensaje.equals("Usuario actualizado correctamente.")) {
+                    request.getSession().setAttribute("mensaje", mensaje);                  
+                } else {
+                    request.getSession().setAttribute("error", mensaje);                  
+                }
+            }
 
         }
 
