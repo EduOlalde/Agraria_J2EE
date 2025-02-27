@@ -4,6 +4,8 @@ import com.ecofield.modelos.Parcela;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ParcelaDAO {
 
@@ -14,20 +16,20 @@ public class ParcelaDAO {
     }
 
     /**
-     * Método para el agricultor:
-     * Comprueba que el usuario (por su id) tiene el rol "Agricultor" y,
-     * en ese caso, devuelve todas las parcelas asociadas a dicho usuario.
+     * Método para el agricultor: Comprueba que el usuario (por su id) tiene el
+     * rol "Agricultor" y, en ese caso, devuelve todas las parcelas asociadas a
+     * dicho usuario.
      *
      * @param idUsuario ID del usuario en sesión.
-     * @return Lista de parcelas del agricultor; lista vacía si no posee dicho rol.
-     * @throws SQLException
+     * @return Lista de parcelas del agricultor; lista vacía si no posee dicho
+     * rol.
      */
-    public List<Parcela> obtenerParcelasDeAgricultor(int idUsuario) throws SQLException {
+    public List<Parcela> obtenerParcelasDeAgricultor(int idUsuario) {
         // Verificar que el usuario tenga rol "Agricultor"
-        String checkSql = "SELECT r.Nombre " +
-                          "FROM usuarios_roles ur " +
-                          "JOIN roles r ON ur.ID_Rol = r.ID_Rol " +
-                          "WHERE ur.ID_Usuario = ?";
+        String checkSql = "SELECT r.Nombre "
+                + "FROM usuarios_roles ur "
+                + "JOIN roles r ON ur.ID_Rol = r.ID_Rol "
+                + "WHERE ur.ID_Usuario = ?";
         try (PreparedStatement checkStmt = conn.prepareStatement(checkSql)) {
             checkStmt.setInt(1, idUsuario);
             try (ResultSet rsCheck = checkStmt.executeQuery()) {
@@ -44,13 +46,15 @@ public class ParcelaDAO {
                     return new ArrayList<>();
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         // Si es agricultor, se obtienen sus parcelas
         List<Parcela> parcelas = new ArrayList<>();
-        String sql = "SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario " +
-                     "FROM parcelas p " +
-                     "WHERE p.Propietario = ?";
+        String sql = "SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario "
+                + "FROM parcelas p "
+                + "WHERE p.Propietario = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idUsuario);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -63,22 +67,26 @@ public class ParcelaDAO {
                     parcelas.add(parcela);
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return parcelas;
     }
 
     /**
-     * Método para el administrador: obtiene las parcelas con filtros opcionales.
+     * Método para el administrador: obtiene las parcelas con filtros
+     * opcionales.
      *
-     * @param filtroAgricultor Si se especifica, filtra por el ID del agricultor.
-     * @param filtroExtension Si se especifica, filtra las parcelas con extensión menor a este valor.
+     * @param filtroAgricultor Si se especifica, filtra por el ID del
+     * agricultor.
+     * @param filtroExtension Si se especifica, filtra las parcelas con
+     * extensión menor a este valor.
      * @return Lista de parcelas que cumplen los filtros.
-     * @throws SQLException
      */
-    public List<Parcela> obtenerParcelas(Integer filtroAgricultor, Double filtroExtension) throws SQLException {
+    public List<Parcela> obtenerParcelas(Integer filtroAgricultor, Double filtroExtension) {
         List<Parcela> parcelas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario " +
-                                               "FROM parcelas p WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario "
+                + "FROM parcelas p WHERE 1=1");
         List<Object> parametros = new ArrayList<>();
         if (filtroAgricultor != null) {
             sql.append(" AND p.Propietario = ?");
@@ -107,22 +115,25 @@ public class ParcelaDAO {
                     parcelas.add(parcela);
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return parcelas;
     }
 
     /**
-     * Método para el administrador: obtiene una parcela a partir de su ID de catastro.
+     * Método para el administrador: obtiene una parcela a partir de su ID de
+     * catastro.
      *
      * @param idCatastro ID de catastro de la parcela.
      * @return La parcela encontrada o null si no existe.
      * @throws SQLException
      */
-    public Parcela obtenerParcelaPorId(String idCatastro) throws SQLException {
+    public Parcela obtenerParcelaPorId(String idCatastro) {
         Parcela parcela = null;
-        String sql = "SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario " +
-                     "FROM parcelas p " +
-                     "WHERE p.ID_Catastro = ?";
+        String sql = "SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario "
+                + "FROM parcelas p "
+                + "WHERE p.ID_Catastro = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, idCatastro);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -134,6 +145,8 @@ public class ParcelaDAO {
                     parcela = new Parcela(numParcela, idCat, extension, propietario);
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return parcela;
     }
@@ -145,14 +158,17 @@ public class ParcelaDAO {
      * @return true si se inserta correctamente; false en caso contrario.
      * @throws SQLException
      */
-    public boolean crearParcela(Parcela parcela) throws SQLException {
+    public boolean crearParcela(Parcela parcela) {
         String sql = "INSERT INTO parcelas (ID_Catastro, Extension, Propietario) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, parcela.getIdCatastro());
             stmt.setDouble(2, parcela.getExtension());
             stmt.setInt(3, parcela.getPropietario());
             return stmt.executeUpdate() > 0;
-        }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }       
     }
 
     /**
@@ -160,30 +176,35 @@ public class ParcelaDAO {
      *
      * @param parcela Objeto Parcela con los datos actualizados.
      * @return true si se actualiza correctamente; false en caso contrario.
-     * @throws SQLException
      */
-    public boolean actualizarParcela(Parcela parcela) throws SQLException {
+    public boolean actualizarParcela(Parcela parcela) {
         String sql = "UPDATE parcelas SET Extension = ?, Propietario = ? WHERE ID_Catastro = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDouble(1, parcela.getExtension());
             stmt.setInt(2, parcela.getPropietario());
             stmt.setString(3, parcela.getIdCatastro());
             return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
     /**
-     * Método para el administrador: elimina una parcela a partir de su ID de catastro.
+     * Método para el administrador: elimina una parcela a partir de su ID de
+     * catastro.
      *
      * @param idCatastro ID de catastro de la parcela a eliminar.
      * @return true si se elimina correctamente; false en caso contrario.
-     * @throws SQLException
      */
-    public boolean eliminarParcela(String idCatastro) throws SQLException {
+    public boolean eliminarParcela(String idCatastro) {
         String sql = "DELETE FROM parcelas WHERE ID_Catastro = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, idCatastro);
             return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 }

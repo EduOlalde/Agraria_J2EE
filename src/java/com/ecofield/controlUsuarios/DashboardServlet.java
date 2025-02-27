@@ -89,13 +89,9 @@ public class DashboardServlet extends HttpServlet {
 
         if (roles.contains(rolAgricultor)) {
             ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
-            try {
-                List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
-                request.setAttribute("parcelasAgricultor", parcelas);
-            } catch (SQLException ex) {
-                Logger.getLogger(DashboardServlet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+            List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
+            request.setAttribute("parcelasAgricultor", parcelas);
+            
         }
 
         if (roles.contains(rolMaquinista)) {
