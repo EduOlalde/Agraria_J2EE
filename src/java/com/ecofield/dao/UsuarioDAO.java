@@ -58,10 +58,9 @@ public class UsuarioDAO {
                 usuario.setRoles(roles);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return usuario;
     }
 
@@ -100,10 +99,9 @@ public class UsuarioDAO {
                 usuario.setRoles(roles);
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return usuario;
     }
 
@@ -119,8 +117,9 @@ public class UsuarioDAO {
             stmt.setInt(5, usuario.getId());
 
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
@@ -135,13 +134,14 @@ public class UsuarioDAO {
             stmt.setString(3, telefono);
             stmt.setString(4, email);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
-
     // Listar todos los usuarios con sus roles
+
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT u.id_usuario, u.nombre, u.email, u.telefono, u.habilitado, r.id_rol, r.nombre AS rol_nombre "
@@ -177,13 +177,13 @@ public class UsuarioDAO {
                 }
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return usuarios;
     }
-
     // Registrar un nuevo usuario con roles
+
     public boolean registrarUsuario(Usuario usuario, List<Rol> roles) {
         String sqlUsuario = "INSERT INTO usuarios (nombre, email, telefono, contrasenia, habilitado) VALUES (?, ?, ?, ?, ?)";
         String sqlRol = "INSERT INTO usuarios_roles (id_usuario, id_rol) VALUES (?, ?)";
@@ -209,8 +209,9 @@ public class UsuarioDAO {
                 }
             }
             return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }

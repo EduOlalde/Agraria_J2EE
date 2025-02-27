@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  * @author Eduardo Olalde
  */
 public class RolDAO {
-    private Connection conn;
+    private final Connection conn;
 
     public RolDAO(Connection conn) {
         this.conn = conn;
