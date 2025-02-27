@@ -222,10 +222,10 @@ public class UsuarioDAO {
         if (esAdmin(usuario.getId())) {
             boolean sigueSiendoAdmin = roles.stream().anyMatch(rol -> rol.getIdRol() == 1);
             if (!sigueSiendoAdmin) {
-                return "No se puede quitar el rol de Administrador al usuario 'admin'.";
+                return "No se puede quitar el rol de Administrador al administrador.";
             }
             if (!usuario.isHabilitado()) {
-                return "No se puede deshabilitar al usuario 'admin'.";
+                return "No se puede deshabilitar al administrador.";
             }
         }
 
@@ -273,7 +273,7 @@ public class UsuarioDAO {
     // Eliminar usuario (evitando eliminar admin)
     public String eliminarUsuario(int id) {
         if (esAdmin(id)) {
-            return "No se puede eliminar al usuario 'admin'.";
+            return "No se puede eliminar al administrador.";
         }
 
         if (tieneTrabajosAsignados(id)) {
