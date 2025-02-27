@@ -1,7 +1,4 @@
-
 package com.ecofield.modelos;
-
-import com.ecofield.enums.EstadoMaquina;
 
 /**
  * Representa una máquina en el sistema
@@ -10,27 +7,37 @@ import com.ecofield.enums.EstadoMaquina;
  */
 public class Maquina {
 
-    private final int idMaquina;
-    private EstadoMaquina estado;
+    private int idMaquina;
+    private String estado;
     private int tipoMaquina;
     private String modelo;
 
-    public Maquina(int idMaquina, EstadoMaquina estado, int tipoMaquina, String modelo) {
+    public Maquina(String estado, int tipoMaquina, String modelo) {
+        this.estado = estado;
+        this.tipoMaquina = tipoMaquina;
+        this.modelo = modelo;
+    }
+
+    public Maquina(int idMaquina, String estado, int tipoMaquina, String modelo) {
         this.idMaquina = idMaquina;
         this.estado = estado;
         this.tipoMaquina = tipoMaquina;
         this.modelo = modelo;
     }
 
+    public void setIdMaquina(int idMaquina) {
+        this.idMaquina = idMaquina;
+    }
+
     public int getIdMaquina() {
         return idMaquina;
     }
 
-    public EstadoMaquina getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoMaquina estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 

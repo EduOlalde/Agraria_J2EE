@@ -4,10 +4,13 @@
  */
 package com.ecofield.controlUsuarios;
 
+import com.ecofield.dao.MaquinaDAO;
 import com.ecofield.dao.MaquinistaDAO;
 import com.ecofield.dao.ParcelaDAO;
 import com.ecofield.dao.RolDAO;
+import com.ecofield.dao.TipoTrabajoDAO;
 import com.ecofield.dao.UsuarioDAO;
+import com.ecofield.modelos.Maquina;
 import com.ecofield.modelos.Maquinista;
 import com.ecofield.modelos.Parcela;
 import com.ecofield.modelos.Rol;
@@ -65,22 +68,27 @@ public class DashboardServlet extends HttpServlet {
         List<Rol> roles = usuario.getRoles();
 
         if (roles.contains(rolAdmin)) {
-
+            //Instancaición de todos los DAO necesarios
             RolDAO rolDAO = new RolDAO(conn);
             UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
             MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
             ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
+            MaquinaDAO maquinaDAO = new MaquinaDAO(conn);
+            TipoTrabajoDAO tipoTrabajoDAO = new TipoTrabajoDAO(conn);
 
+            // Módulo gestión usuarios
             List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
             request.setAttribute("rolesDisponibles", rolesDisponibles);
             List<Usuario> usuarios = usuarioDAO.listarUsuarios();
             request.setAttribute("usuarios", usuarios);
 
+            // Módulo gestión maquinistas
             List<Maquinista> maquinistas = maquinistaDAO.obtenerMaquinistas();
-            List<TipoTrabajo> tiposTrabajo = maquinistaDAO.obtenerTiposTrabajo();
+            List<TipoTrabajo> tiposTrabajo = tipoTrabajoDAO.obtenerTiposTrabajo();
             request.setAttribute("maquinistas", maquinistas);
             request.setAttribute("tiposTrabajo", tiposTrabajo);
 
+            // Módulo gestión parcelas
             List<Usuario> agricultores = usuarioDAO.obtenerAgricultores();
             // Obtener los filtros
             // Obtener los parámetros como cadenas
@@ -91,13 +99,27 @@ public class DashboardServlet extends HttpServlet {
             Double extensionFiltro = (extensionParam != null && !extensionParam.trim().isEmpty()) ? Double.valueOf(extensionParam) : null;
 
             // Obtener las parcelas filtradas           
-            List<Parcela> parcelas = parcelaDAO.obtenerParcelasFiltradas(agricultorFiltro, extensionFiltro);
+            List<Parcela> parcelas = parcelaDAO.obtenerParcelas(agricultorFiltro, extensionFiltro);
 
             // Atributos para la vista
             request.setAttribute("agricultores", agricultores);
             request.setAttribute("parcelas", parcelas);
             request.setAttribute("filtroAgricultor", agricultorFiltro);
             request.setAttribute("filtroExtension", extensionFiltro);
+
+            // Módulo gestión máquinas
+            String paramEstado = request.getParameter("estado_filtro");
+            String paramTipoMaquina = request.getParameter("tipo_maquina_filtro");
+            
+            Integer filtroTipoMaquina = (paramTipoMaquina != null && !paramTipoMaquina.trim().isEmpty()) ? Integer.valueOf(paramTipoMaquina) : null;
+            String filtroEstado = (paramEstado != null && !paramEstado.trim().isEmpty()) ? paramEstado : null;
+            
+            List<Maquina> maquinas = maquinaDAO.obtenerMaquinas(filtroEstado, filtroTipoMaquina);
+            request.setAttribute("maquinas", maquinas);
+
+            // Obtener tipos de trabajo para el filtro
+            request.setAttribute("tiposTrabajo", new TipoTrabajoDAO(conn).obtenerTiposTrabajo());
+
 
         }
 

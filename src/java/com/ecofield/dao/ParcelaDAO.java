@@ -77,73 +77,35 @@ public class ParcelaDAO {
      * Método para el administrador: obtiene las parcelas con filtros
      * opcionales.
      *
-     * @param filtroAgricultor Si se especifica, filtra por el ID del
+     * @param agricultorFiltro Si se especifica, filtra por el ID del
      * agricultor.
-     * @param filtroExtension Si se especifica, filtra las parcelas con
+     * @param extensionFiltro Si se especifica, filtra las parcelas con
      * extensión menor a este valor.
      * @return Lista de parcelas que cumplen los filtros.
      */
-    public List<Parcela> obtenerParcelas(Integer filtroAgricultor, Double filtroExtension) {
+    public List<Parcela> obtenerParcelas(Integer agricultorFiltro, Double extensionFiltro) {
         List<Parcela> parcelas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario "
-                + "FROM parcelas p WHERE 1=1");
-        List<Object> parametros = new ArrayList<>();
-        if (filtroAgricultor != null) {
-            sql.append(" AND p.Propietario = ?");
-            parametros.add(filtroAgricultor);
-        }
-        if (filtroExtension != null) {
-            sql.append(" AND p.Extension < ?");
-            parametros.add(filtroExtension);
-        }
-        try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
-            int index = 1;
-            for (Object param : parametros) {
-                if (param instanceof Integer) {
-                    stmt.setInt(index++, (Integer) param);
-                } else if (param instanceof Double) {
-                    stmt.setDouble(index++, (Double) param);
-                }
-            }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    int numParcela = rs.getInt("Num_Parcela");
-                    String idCatastro = rs.getString("ID_Catastro");
-                    double extension = rs.getDouble("Extension");
-                    int propietario = rs.getInt("Propietario");
-                    Parcela parcela = new Parcela(numParcela, idCatastro, extension, propietario);
-                    parcelas.add(parcela);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return parcelas;
-    }
+        String sql = "SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario FROM Parcelas p "
+                + "JOIN usuarios u ON p.Propietario = u.ID_Usuario "
+                + "WHERE 1";
 
-    public List<Parcela> obtenerParcelasFiltradas(Integer agricultorFiltro, Double extensionFiltro) {
-        List<Parcela> parcelas = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT p.Num_Parcela, p.ID_Catastro, p.Extension, p.Propietario ");
-        sql.append("FROM Parcelas p ");      
-        sql.append("JOIN usuarios u ON p.Propietario = u.ID_Usuario WHERE 1");
-        
         if (agricultorFiltro != null) {
-            sql.append(" AND p.Propietario = ?");
+            sql += " AND p.Propietario = ?";
         }
         if (extensionFiltro != null) {
-            sql.append(" AND p.Extension < ?");
+            sql += " AND p.Extension < ?";
         }
-         
-        try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             int index = 1;
-            
+
             if (agricultorFiltro != null) {
                 stmt.setInt(index++, agricultorFiltro);
             }
             if (extensionFiltro != null) {
                 stmt.setDouble(index++, extensionFiltro);
             }
-             
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Parcela parcela = new Parcela(
