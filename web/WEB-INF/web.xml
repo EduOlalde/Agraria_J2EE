@@ -48,6 +48,10 @@
         <servlet-name>AdminMaquinaServlet</servlet-name>
         <servlet-class>com.ecofield.controlAdmin.AdminMaquinaServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TrabajosSolicitadosServlet</servlet-name>
+        <servlet-class>com.ecofield.controlAdmin.TrabajosSolicitadosServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -91,6 +95,10 @@
     <servlet-mapping>
         <servlet-name>AdminMaquinaServlet</servlet-name>
         <url-pattern>/AdminMaquinaServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TrabajosSolicitadosServlet</servlet-name>
+        <url-pattern>/TrabajosSolicitadosServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -99,4 +99,58 @@ public class MaquinaDAO {
         }
         return maquinas;
     }
+
+    public List<Maquina> getMaquinasDisponibles() {
+        List<Maquina> maquinas = new ArrayList<>();
+        String sql = "SELECT m.ID_Maquina, m.Estado, m.Tipo_Maquina, m.Modelo "
+                + "FROM maquinas m "
+                + "WHERE m.Estado = 'Disponible'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Maquina maquina = new Maquina(
+                        rs.getInt("ID_Maquina"),
+                        rs.getString("Estado"),
+                        rs.getInt("Tipo_Maquina"),
+                        rs.getString("Modelo")
+                );
+                maquinas.add(maquina);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MaquinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return maquinas;
+    }
+
+    public List<Maquina> getMaquinasDisponiblesPorTipoTrabajo(int idTipoTrabajo) {
+        List<Maquina> maquinas = new ArrayList<>();
+        String sql = "SELECT m.ID_Maquina, m.Estado, m.Tipo_Maquina, m.Modelo "
+                + "FROM maquinas m "
+                + "JOIN maquinista_maquina mm ON m.ID_Maquina = mm.ID_Maquina "
+                + "JOIN maquinista_tipo_trabajo mt ON mm.ID_Maquinista = mt.ID_Maquinista "
+                + "WHERE m.Estado = 'Disponible' AND mt.ID_Tipo_Trabajo = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idTipoTrabajo);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Maquina maquina = new Maquina(
+                        rs.getInt("ID_Maquina"),
+                        rs.getString("Estado"),
+                        rs.getInt("Tipo_Maquina"),
+                        rs.getString("Modelo")
+                );
+                maquinas.add(maquina);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(MaquinaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return maquinas;
+    }
 }

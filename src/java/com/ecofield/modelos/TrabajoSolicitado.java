@@ -1,6 +1,5 @@
 package com.ecofield.modelos;
 
-import com.ecofield.enums.EstadoTrabajoSolicitado;
 import java.util.Date;
 
 /**
@@ -10,14 +9,14 @@ import java.util.Date;
  */
 public class TrabajoSolicitado {
 
-    private final int idSolicitud;
-    private final int numParcela;
-    private final int propietario;
-    private final int idTipoTrabajo;
-    private EstadoTrabajoSolicitado estado;
-    private final Date fechaSolicitud;
+    private int idSolicitud;
+    private int numParcela;
+    private int propietario;
+    private int idTipoTrabajo;
+    private String estado;
+    private Date fechaSolicitud;
 
-    public TrabajoSolicitado(int idSolicitud, int numParcela, int propietario, int idTipoTrabajo, EstadoTrabajoSolicitado estado, Date fechaSolicitud) {
+    public TrabajoSolicitado(int idSolicitud, int numParcela, int propietario, int idTipoTrabajo, String estado, Date fechaSolicitud) {
         this.idSolicitud = idSolicitud;
         this.numParcela = numParcela;
         this.propietario = propietario;
@@ -30,28 +29,48 @@ public class TrabajoSolicitado {
         return idSolicitud;
     }
 
+    public void setIdSolicitud(int idSolicitud) {
+        this.idSolicitud = idSolicitud;
+    }
+
     public int getNumParcela() {
         return numParcela;
+    }
+
+    public void setNumParcela(int numParcela) {
+        this.numParcela = numParcela;
     }
 
     public int getPropietario() {
         return propietario;
     }
 
+    public void setPropietario(int propietario) {
+        this.propietario = propietario;
+    }
+
     public int getIdTipoTrabajo() {
         return idTipoTrabajo;
+    }
+
+    public void setIdTipoTrabajo(int idTipoTrabajo) {
+        this.idTipoTrabajo = idTipoTrabajo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public Date getFechaSolicitud() {
         return fechaSolicitud;
     }
 
-    public EstadoTrabajoSolicitado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoTrabajoSolicitado estado) {
-        this.estado = estado;
+    public void setFechaSolicitud(Date fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
     }
 
     @Override
