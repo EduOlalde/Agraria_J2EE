@@ -4,9 +4,14 @@
  */
 package com.ecofield.controlUsuarios;
 
+import com.ecofield.dao.RolDAO;
+import com.ecofield.dao.UsuarioDAO;
+import com.ecofield.modelos.Rol;
 import com.ecofield.modelos.Usuario;
+import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +35,10 @@ public class DashboardServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8"); 
+        response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession(false);
-        
+        Connection conn = (Connection) session.getAttribute("conexion");
+
         if (session == null || session.getAttribute("usuario") == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -42,10 +48,36 @@ public class DashboardServlet extends HttpServlet {
 
         if (!usuario.isHabilitado()) {
             session.setAttribute("mensaje", "Tu cuenta está deshabilitada. Contacta con el administrador.");
+            response.sendRedirect("dashboard.jsp");
+            return;
+        }
+
+        Rol rolAdmin = new Rol(1, "Administrador");
+        Rol rolAgricultor = new Rol(2, "Agricultor");
+        Rol rolMaquinista = new Rol(3, "Maquinista");
+
+        List<Rol> roles = usuario.getRoles();
+
+        if (roles.contains(rolAdmin)) {
+
+            RolDAO rolDAO = new RolDAO(conn);
+            List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
+            request.setAttribute("rolesDisponibles", rolesDisponibles);
+
+            UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
+            List<Usuario> usuarios = usuarioDAO.listarUsuarios();
+            request.setAttribute("usuarios", usuarios);
+        }
+
+        if (roles.contains(rolAgricultor)) {
+
+        }
+
+        if (roles.contains(rolMaquinista)) {
+
         }
 
         request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

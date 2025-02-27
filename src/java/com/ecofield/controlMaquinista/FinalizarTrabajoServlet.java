@@ -40,13 +40,13 @@ public class FinalizarTrabajoServlet extends HttpServlet {
         
         if(conn == null){
             session.setAttribute("error", "Error: No hay conexión a la base de datos.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
         if (idMaquinista == null) {
             session.setAttribute("error", "Error: No hay usuario autenticado.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
@@ -57,7 +57,7 @@ public class FinalizarTrabajoServlet extends HttpServlet {
         if (fechaFinString == null || fechaFinString.trim().isEmpty()
                 || horasString == null || horasString.trim().isEmpty()) {
             session.setAttribute("error", "Todos los campos son obligatorios.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
@@ -68,7 +68,7 @@ public class FinalizarTrabajoServlet extends HttpServlet {
 
             if (horas <= 0) {
                 session.setAttribute("error", "Las horas deben ser mayores a 0.");
-                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+                request.getRequestDispatcher("dashboard").forward(request, response);
                 return;
             }
 
@@ -77,15 +77,15 @@ public class FinalizarTrabajoServlet extends HttpServlet {
 
             if (trabajoFinalizado) {
                 session.setAttribute("mensaje", "Trabajo finalizado correctamente.");
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("dashboard");
             } else {
                 session.setAttribute("error", "Hubo un error al finalizar el trabajo.");
-                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+                request.getRequestDispatcher("dashboard").forward(request, response);
             }
         } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
             session.setAttribute("error", "Error al procesar la solicitud.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
         }
     }
 

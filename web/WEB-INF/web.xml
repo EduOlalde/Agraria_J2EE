@@ -12,6 +12,10 @@
         <servlet-name>DashboardServlet</servlet-name>
         <servlet-class>com.ecofield.controlUsuarios.DashboardServlet</servlet-class>
     </servlet>
+    <servlet-mapping>
+        <servlet-name>DashboardServlet</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>PanelUsuarioServlet</servlet-name>
         <servlet-class>com.ecofield.controlUsuarios.PanelUsuarioServlet</servlet-class>

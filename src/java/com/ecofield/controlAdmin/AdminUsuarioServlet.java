@@ -105,7 +105,7 @@ public class AdminUsuarioServlet extends HttpServlet {
         UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 
         if (accion == null) {
-            response.sendRedirect("dashboard.jsp");
+            response.sendRedirect("dashboard");
             return;
         }
 
@@ -121,7 +121,7 @@ public class AdminUsuarioServlet extends HttpServlet {
                 break;
         }
 
-        response.sendRedirect("dashboard.jsp");
+        response.sendRedirect("dashboard");
     }
 
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

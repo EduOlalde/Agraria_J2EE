@@ -40,13 +40,13 @@ public class IniciarTrabajoServlet extends HttpServlet {
 
         if (conn == null) {
             session.setAttribute("error", "Error: No hay conexión a la base de datos.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
         if (idMaquinista == null) {
             session.setAttribute("error", "Error: No hay usuario autenticado.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
@@ -55,7 +55,7 @@ public class IniciarTrabajoServlet extends HttpServlet {
 
         if (fechaInicioString == null || fechaInicioString.trim().isEmpty()) {
             session.setAttribute("error", "Debe ingresar una fecha de inicio.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
             return;
         }
 
@@ -68,15 +68,15 @@ public class IniciarTrabajoServlet extends HttpServlet {
 
             if (trabajoIniciado) {
                 session.setAttribute("mensaje", "Trabajo iniciado correctamente.");
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("dashboard");
             } else {
                 session.setAttribute("error", "Hubo un error al iniciar el trabajo.");
-                request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+                request.getRequestDispatcher("dashboard").forward(request, response);
             }
         } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
             session.setAttribute("error", "Error al procesar la solicitud.");
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            request.getRequestDispatcher("dashboard").forward(request, response);
         }
     }
 

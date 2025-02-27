@@ -12,12 +12,8 @@
 <%@page import="com.ecofield.modelos.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    Connection conn = (Connection) session.getAttribute("conexion");
-    RolDAO rolDAO = new RolDAO(conn);
-    UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
-    List<Usuario> usuarios = usuarioDAO.listarUsuarios();
-    List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
-
+    List<Rol> rolesDisponibles = (List<Rol>)request.getAttribute("rolesDisponibles");
+    List<Usuario> usuarios = (List<Usuario>)request.getAttribute("usuarios");
 %>
 <h3>Nuevo Usuario</h3>
 <form method="POST" action="AdminUsuarioServlet" onsubmit="guardarSeccionActiva('sec_administrador', 'admin_usuarios')">
