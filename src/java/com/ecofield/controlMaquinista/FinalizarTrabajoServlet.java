@@ -34,7 +34,7 @@ public class FinalizarTrabajoServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         Integer idMaquinista = (Integer) session.getAttribute("user_id");
         Connection conn = (Connection) session.getAttribute("conexion");
         

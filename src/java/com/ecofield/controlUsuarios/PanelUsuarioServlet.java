@@ -59,7 +59,7 @@ public class PanelUsuarioServlet extends HttpServlet {
             } else {
                 
                 String nombre = request.getParameter("nombre");
-                int telefono = Integer.parseInt(request.getParameter("telefono"));
+                String telefono = request.getParameter("telefono");
                 String email = request.getParameter("email");
                 
                 usuario.setNombre(nombre);

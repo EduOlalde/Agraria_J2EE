@@ -28,6 +28,10 @@
         <servlet-name>FinalizarTrabajoServlet</servlet-name>
         <servlet-class>com.ecofield.controlMaquinista.FinalizarTrabajoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminUsuarioServlet</servlet-name>
+        <servlet-class>com.ecofield.controlAdmin.AdminUsuarioServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>FinalizarTrabajoServlet</servlet-name>
         <url-pattern>/FinalizarTrabajoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUsuarioServlet</servlet-name>
+        <url-pattern>/AdminUsuarioServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

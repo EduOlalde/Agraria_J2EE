@@ -14,24 +14,34 @@ public class Usuario {
     private String nombre;
     private String email;
     private String contrasenia;
-    private int telefono;
+    private String telefono;
     private boolean habilitado;
     private List<Rol> roles = new ArrayList<>();
 
-    public Usuario(String nombre, String email, String contrasenia, int telefono) {
+    public Usuario(String nombre, String email, String contrasenia, String telefono) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
         this.telefono = telefono;
     }
 
-    public Usuario(int id, String nombre, String email, String contrasenia, int telefono, boolean habilitado) {
+    public Usuario(int id, String nombre, String email, String contrasenia, String telefono, boolean habilitado) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
         this.contrasenia = contrasenia;
         this.telefono = telefono;
         this.habilitado = habilitado;
+    }
+    
+    public Usuario(int id, String nombre, String email, String telefono, boolean habilitado, List<Rol> roles) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.contrasenia = null;
+        this.telefono = telefono;
+        this.habilitado = habilitado;
+        this.roles = roles;
     }
     
     public boolean verificarContrasena(String passwordIngresada) {
@@ -70,11 +80,11 @@ public class Usuario {
         this.contrasenia = contrasenia;
     }
 
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
