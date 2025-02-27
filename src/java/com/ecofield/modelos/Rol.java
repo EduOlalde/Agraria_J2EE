@@ -28,6 +28,28 @@ public class Rol {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 11 * hash + this.idRol;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Rol other = (Rol) obj;
+        return this.idRol == other.idRol;
+    }
+
+    @Override
     public String toString() {
         return "Rol{" + "idRol=" + idRol + ", nombre=" + nombre + '}';
     }

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -215,7 +216,18 @@ public class UsuarioDAO {
     }
 
     // Actualizar usuario y roles
-    public boolean actualizarUsuario(Usuario usuario, List<Integer> roles) {
+    public String actualizarUsuario(Usuario usuario, List<Rol> roles) {
+        // Verificar si es el usuario admin antes de modificar
+        if (esAdmin(usuario.getId())) {
+            boolean sigueSiendoAdmin = roles.stream().anyMatch(rol -> rol.getIdRol() == 1);
+            if (!sigueSiendoAdmin) {
+                return "No se puede quitar el rol de Administrador al usuario 'admin'.";
+            }
+            if (!usuario.isHabilitado()) {
+                return "No se puede deshabilitar al usuario 'admin'.";
+            }
+        }
+
         String sqlUsuario = "UPDATE usuarios SET nombre=?, email=?, telefono=?, habilitado=? WHERE id_usuario=?";
         String sqlEliminarRoles = "DELETE FROM usuarios_roles WHERE id_usuario=?";
         String sqlInsertRol = "INSERT INTO usuarios_roles (id_usuario, id_rol) VALUES (?, ?)";
@@ -224,10 +236,14 @@ public class UsuarioDAO {
 
             stmtUsuario.setString(1, usuario.getNombre());
             stmtUsuario.setString(2, usuario.getEmail());
-            stmtUsuario.setString(3, usuario.getTelefono());  // Cambié a String
+            stmtUsuario.setString(3, usuario.getTelefono());
             stmtUsuario.setBoolean(4, usuario.isHabilitado());
             stmtUsuario.setInt(5, usuario.getId());
-            stmtUsuario.executeUpdate();
+
+            int filasAfectadas = stmtUsuario.executeUpdate();
+            if (filasAfectadas == 0) {
+                return "No se pudo actualizar el usuario. Puede que el ID no exista.";
+            }
 
             try (PreparedStatement stmtEliminarRoles = conn.prepareStatement(sqlEliminarRoles)) {
                 stmtEliminarRoles.setInt(1, usuario.getId());
@@ -235,16 +251,21 @@ public class UsuarioDAO {
             }
 
             try (PreparedStatement stmtInsertRol = conn.prepareStatement(sqlInsertRol)) {
-                for (int idRol : roles) {
+                for (Rol rol : roles) {
                     stmtInsertRol.setInt(1, usuario.getId());
-                    stmtInsertRol.setInt(2, idRol);
+                    stmtInsertRol.setInt(2, rol.getIdRol());
                     stmtInsertRol.executeUpdate();
                 }
             }
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+
+            return "Usuario actualizado correctamente.";
+
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return "Error: El email ingresado ya está registrado en otro usuario.";
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return "Error en la base de datos al actualizar el usuario.";
         }
     }
 
@@ -262,15 +283,7 @@ public class UsuarioDAO {
     }
 
     private boolean esAdmin(int id) {
-        String sql = "SELECT COUNT(*) FROM usuarios WHERE id_usuario = ? AND nombre = 'admin'";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
-        } catch (SQLException ex) {
-            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
+        return id == 1;
     }
 
     private boolean tieneTrabajosAsignados(int id) {
