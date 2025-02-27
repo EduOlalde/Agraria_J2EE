@@ -64,7 +64,7 @@
         <td>
             <% for (Rol rol : rolesDisponibles) {%>
             <label>
-                <input type="checkbox" name="roles" value="<%= rol.getIdRol()%>" <%= usuario.getRoles().contains(rol.getNombre()) ? "checked" : ""%>>
+                <input type="checkbox" name="roles" value="<%= rol.getIdRol()%>" <%= usuario.getRoles().contains(rol) ? "checked" : ""%>>
                 <%= rol.getNombre()%>
             </label><br>
             <% }%>

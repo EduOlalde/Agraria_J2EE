@@ -39,18 +39,25 @@ public class AdminUsuarioServlet extends HttpServlet {
 
     }
 
-    private boolean modificarUsuario(HttpServletRequest request, UsuarioDAO usuarioDAO) {
+    private void modificarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
-        boolean habilitado = request.getParameter("habilitado") != null;
+        boolean habilitado = request.getParameter("habilitado") != null;       
+      
         String[] rolesSeleccionados = request.getParameterValues("roles");
+        List<Rol> roles = obtenerRolesDesdeParametros(rolesSeleccionados);       
+                   
+        Usuario usuario = new Usuario(idUsuario, nombre, email, telefono, habilitado, roles);
 
-        Usuario usuario = new Usuario(idUsuario, nombre, email, "", telefono, habilitado);
-        usuario.setRoles(obtenerRolesDesdeParametros(rolesSeleccionados));
+        String mensaje = usuarioDAO.actualizarUsuario(usuario, roles);
 
-        return usuarioDAO.actualizarUsuario(usuario);
+        if (mensaje.equals("Usuario actualizado correctamente.")) {
+            session.setAttribute("mensaje", mensaje);
+        } else {
+            session.setAttribute("error", mensaje);
+        }
     }
 
     private void eliminarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
@@ -106,12 +113,7 @@ public class AdminUsuarioServlet extends HttpServlet {
                 }
                 break;
             case "modificar":
-                if (modificarUsuario(request, usuarioDAO)) {
-                    session.setAttribute("mensaje", "Usuario modificado satisfactoriamente.");
-                } else {
-                    session.setAttribute("error", "Error al modificar el usuario.");
-                }
-                ;
+                modificarUsuario(request, session, usuarioDAO);
                 break;
             case "eliminar":
                 eliminarUsuario(request, session, usuarioDAO);

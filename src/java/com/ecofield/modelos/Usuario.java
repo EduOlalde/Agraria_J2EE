@@ -34,6 +34,16 @@ public class Usuario {
         this.habilitado = habilitado;
     }
     
+    public Usuario(int id, String nombre, String email, String telefono, boolean habilitado, List<Rol> roles) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.contrasenia = null;
+        this.telefono = telefono;
+        this.habilitado = habilitado;
+        this.roles = roles;
+    }
+    
     public boolean verificarContrasena(String passwordIngresada) {
         return passwordIngresada.equals(this.contrasenia);
     }
