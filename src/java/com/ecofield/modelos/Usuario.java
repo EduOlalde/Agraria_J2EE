@@ -21,6 +21,11 @@ public class Usuario {
     public Usuario() {
     }
 
+    public Usuario(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+    }
+
     public Usuario(int id, String nombre, String email, boolean habilitado) {
         this.id = id;
         this.nombre = nombre;

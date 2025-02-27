@@ -105,6 +105,24 @@ public class UsuarioDAO {
         return usuario;
     }
 
+    public List<Usuario> obtenerAgricultores() {
+        List<Usuario> agricultores = new ArrayList<>();
+        String sql = "SELECT u.ID_Usuario, u.Nombre FROM usuarios u "
+                + "JOIN usuarios_roles ur ON u.ID_Usuario = ur.ID_Usuario "
+                + "JOIN roles r ON ur.ID_Rol = r.ID_Rol WHERE r.Nombre = 'Agricultor'";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Usuario agricultor = new Usuario(rs.getInt("ID_Usuario"), rs.getString("Nombre"));
+                agricultores.add(agricultor);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return agricultores;
+    }
+
     // Actualizar los datos de un usuario
     public String actualizarUsuario(Usuario usuario) {
         String sql = "UPDATE Usuarios SET Nombre = ?, Contrasenia = ?, Telefono = ?, Email = ? WHERE ID_Usuario = ?";

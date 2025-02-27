@@ -7,16 +7,26 @@ package com.ecofield.modelos;
  */
 public class Parcela {
 
-    private final int numParcela;
+    private int numParcela;
     private String idCatastro;
     private double extension;
     private int propietario;
+
+    public Parcela(String idCatastro, double extension, int propietario) {
+        this.idCatastro = idCatastro;
+        this.extension = extension;
+        this.propietario = propietario;
+    }
 
     public Parcela(int numParcela, String idCatastro, double extension, int propietario) {
         this.numParcela = numParcela;
         this.idCatastro = idCatastro;
         this.extension = extension;
         this.propietario = propietario;
+    }
+
+    public void setNumParcela(int numParcela) {
+        this.numParcela = numParcela;
     }
 
     public int getNumParcela() {
