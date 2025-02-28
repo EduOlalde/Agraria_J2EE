@@ -19,6 +19,15 @@
     <servlet>
         <servlet-name>TrabajosMaquinistaServlet</servlet-name>
         <servlet-class>com.ecofield.controlMaquinista.TrabajosMaquinistaServlet</servlet-class>
+     </servlet>
+
+      <servlet>
+        <servlet-name>SolicitarTrabajoServlet</servlet-name>
+        <servlet-class>com.ecofield.controladorAgricultor.SolicitarTrabajoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListarTrabajosAgricultorServlet</servlet-name>
+        <servlet-class>com.ecofield.controladorAgricultor.ListarTrabajosAgricultorServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
@@ -99,6 +108,14 @@
     <servlet-mapping>
         <servlet-name>TrabajosMaquinistaServlet</servlet-name>
         <url-pattern>/TrabajosMaquinistaServlet</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+        <servlet-name>SolicitarTrabajoServlet</servlet-name>
+        <url-pattern>/SolicitarTrabajoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListarTrabajosAgricultorServlet</servlet-name>
+        <url-pattern>/ListarTrabajosAgricultorServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
