@@ -4,22 +4,8 @@
  */
 package com.ecofield.controlUsuarios;
 
-import com.ecofield.dao.MaquinaDAO;
-import com.ecofield.dao.MaquinistaDAO;
-import com.ecofield.dao.ParcelaDAO;
-import com.ecofield.dao.RolDAO;
-import com.ecofield.dao.TipoTrabajoDAO;
-import com.ecofield.dao.TrabajoDAO;
-import com.ecofield.dao.TrabajoSolicitadoDAO;
-import com.ecofield.dao.UsuarioDAO;
-import com.ecofield.modelos.Maquina;
-import com.ecofield.modelos.Maquinista;
-import com.ecofield.modelos.Parcela;
-import com.ecofield.modelos.Rol;
-import com.ecofield.modelos.TipoTrabajo;
-import com.ecofield.modelos.Trabajo;
-import com.ecofield.modelos.TrabajoSolicitado;
-import com.ecofield.modelos.Usuario;
+import com.ecofield.dao.*;
+import com.ecofield.modelos.*;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -81,6 +67,7 @@ public class DashboardServlet extends HttpServlet {
             TipoTrabajoDAO tipoTrabajoDAO = new TipoTrabajoDAO(conn);
             TrabajoSolicitadoDAO trabajoSolicitadoDAO = new TrabajoSolicitadoDAO(conn);
             TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
+            FacturaDAO facturaDAO = new FacturaDAO(conn);
 
             /* Módulo gestión usuarios */
             List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
@@ -147,6 +134,15 @@ public class DashboardServlet extends HttpServlet {
             // Obtener lista de trabajos filtrados
             List<Trabajo> listaTrabajos = trabajoDAO.obtenerTrabajosFiltrados(filtroAgricultor, filtroTipoTrabajo, ordenFecha);
             request.setAttribute("listaTrabajos", listaTrabajos);
+            
+            /* Módulo admin facturas */
+            // Obtener facturas pendientes de generar
+            List<Factura> facturasPendientes = facturaDAO.obtenerFacturasPendientes();
+            request.setAttribute("facturasPendientes", facturasPendientes);
+
+            // Obtener historial de facturas
+            List<Factura> historialFacturas = facturaDAO.obtenerHistorialFacturas();
+            request.setAttribute("historialFacturas", historialFacturas);
 
         }
 

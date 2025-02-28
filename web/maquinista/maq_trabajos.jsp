@@ -38,7 +38,8 @@
         <td><%= trabajo.getNumParcela()%></td>
         <td><%= trabajo.getEstado()%></td>
         <td>
-            <form method="post" action="IniciarTrabajoServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
+            <form method="post" action="TrabajosMaquinistaServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
+                <input type="hidden" name="accion" value="iniciar_trabajo">
                 <input type="hidden" name="id_trabajo" value="<%= trabajo.getId()%>">
                 <label>Fecha Inicio:</label>
                 <input type="date" name="fecha_inicio">
@@ -69,7 +70,8 @@
         <td><%= trabajo.getNumParcela()%></td>
         <td><%= trabajo.getEstado()%></td>
         <td>
-            <form method="post" action="FinalizarTrabajoServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
+            <form method="post" action="TrabajosMaquinistaServlet" onsubmit="guardarSeccionActiva('sec_maquinista', 'maquinista_trabajos')">
+                <input type="hidden" name="accion" value="finalizar_trabajo">
                 <input type="hidden" name="id_trabajo" value="<%= trabajo.getId()%>">
                 <label>Fecha Fin:</label>
                 <input type="date" name="fecha_fin">

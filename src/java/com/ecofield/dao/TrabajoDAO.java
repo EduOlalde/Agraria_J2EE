@@ -41,8 +41,66 @@ public class TrabajoDAO {
         return trabajos;
     }
 
+    public Trabajo obtenerTrabajoPorId(int idTrabajo) {
+        Trabajo trabajo = null;
+        String sql = "SELECT ID_Trabajo, Num_Parcela, ID_Maquina, ID_Maquinista, "
+                + "Fec_Inicio, Fec_Fin, Horas, Tipo, Estado "
+                + "FROM trabajos WHERE ID_Trabajo = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idTrabajo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    trabajo = new Trabajo();
+                    trabajo.setId(rs.getInt("ID_Trabajo"));
+                    trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                    trabajo.setIdMaquina(rs.getInt("ID_Maquina"));
+                    trabajo.setIdMaquinista(rs.getInt("ID_Maquinista"));
+                    trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
+                    trabajo.setFecFin(rs.getDate("Fec_Fin"));
+                    trabajo.setHoras(rs.getInt("Horas"));
+                    trabajo.setTipoTrabajo(rs.getInt("Tipo"));
+                    trabajo.setEstado(rs.getString("Estado"));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return trabajo;
+    }
+
+    // Obtener trabajos finalizados sin factura generada
+    public List<Trabajo> obtenerTrabajosSinFactura() {
+        List<Trabajo> trabajos = new ArrayList<>();
+        String sql = "SELECT t.ID_Trabajo, t.Num_Parcela, t.ID_Maquina, t.ID_Maquinista, "
+                + "t.Fec_Inicio, t.Fec_Fin, t.Horas, t.Tipo, t.Estado "
+                + "FROM trabajos t "
+                + "LEFT JOIN facturas f ON t.ID_Trabajo = f.ID_Trabajo "
+                + "WHERE t.Estado = 'Finalizado' AND f.ID_Factura IS NULL";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Trabajo trabajo = new Trabajo();
+                trabajo.setId(rs.getInt("ID_Trabajo"));
+                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                trabajo.setIdMaquina(rs.getInt("ID_Maquina"));
+                trabajo.setIdMaquinista(rs.getInt("ID_Maquinista"));
+                trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
+                trabajo.setFecFin(rs.getDate("Fec_Fin"));
+                trabajo.setHoras(rs.getInt("Horas"));
+                trabajo.setTipoTrabajo(rs.getInt("Tipo"));
+                trabajo.setEstado(rs.getString("Estado"));
+                trabajos.add(trabajo);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return trabajos;
+    }
+
     // Obtener trabajos en curso para un maquinista
-    public List<Trabajo> obtenerTrabajosEnCurso(int idMaquinista) throws SQLException {
+    public List<Trabajo> obtenerTrabajosEnCurso(int idMaquinista) {
         List<Trabajo> trabajos = new ArrayList<>();
         String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado " +
                      "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo " +
@@ -59,32 +117,37 @@ public class TrabajoDAO {
                     trabajos.add(trabajo);
                 }
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return trabajos;
     }
 
-    // Obtener historial de trabajos finalizados para un maquinista
-    public List<Trabajo> obtenerHistorialTrabajos(int idMaquinista) throws SQLException {
+// Obtener historial de trabajos finalizados
+    public List<Trabajo> obtenerHistorialTrabajos(int idMaquinista) {
         List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado, " +
-                     "t.Fec_Inicio, t.Fec_Fin, t.Horas " +
-                     "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo " +
-                     "WHERE t.ID_Maquinista = ? AND t.Estado = 'Finalizado'";
+        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado, "
+                + "t.Fec_Inicio, t.Fec_Fin, t.Horas "
+                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
+                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Finalizado'";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idMaquinista);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Trabajo trabajo = new Trabajo();
-                    trabajo.setId(rs.getInt("ID_Trabajo"));
-                    trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));
-                    trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                    trabajo.setEstado(rs.getString("Estado"));
-                    trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
-                    trabajo.setFecFin(rs.getDate("Fec_Fin"));
-                    trabajo.setHoras(rs.getInt("Horas"));
-                    trabajos.add(trabajo);
-                }
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Trabajo trabajo = new Trabajo();
+                trabajo.setId(rs.getInt("ID_Trabajo"));
+                trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
+                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
+                trabajo.setEstado(rs.getString("Estado"));
+                trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
+                trabajo.setFecFin(rs.getDate("Fec_Fin"));
+                trabajo.setHoras(rs.getInt("Horas"));
+                trabajos.add(trabajo);
             }
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return trabajos;
     }
@@ -136,61 +199,83 @@ public class TrabajoDAO {
         return trabajos;
     }
 
-    // Iniciar trabajo: actualizar el estado a "En curso" y asignar la fecha de inicio
-    public boolean iniciarTrabajo(int idTrabajo, Date fechaInicio, int idMaquinista) throws SQLException {
-        String sql = "UPDATE trabajos SET Estado = 'En curso', Fec_Inicio = ? WHERE ID_Trabajo = ? AND ID_Maquinista = ?";
+// Iniciar trabajo
+    public boolean iniciarTrabajo(int idTrabajo, Date fechaInicio) {
+        String sql = "UPDATE trabajos SET Estado = 'En curso', Fec_Inicio = ? WHERE ID_Trabajo = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, fechaInicio);
             stmt.setInt(2, idTrabajo);
-            stmt.setInt(3, idMaquinista);
             return stmt.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
-    // Finalizar trabajo: actualizar el estado a "Finalizado", la fecha de fin y las horas trabajadas.
-    // Además, libera la máquina y genera una factura.
-    public boolean finalizarTrabajo(int idTrabajo, Date fechaFin, double horas, int idMaquinista) throws SQLException {
-        conn.setAutoCommit(false);
+// Finalizar trabajo
+    public boolean finalizarTrabajo(int idTrabajo, Date fechaFin, double horas) {
         try {
-            // Actualizar el trabajo
-            String sql = "UPDATE trabajos SET Estado = 'Finalizado', Fec_Fin = ?, Horas = ? WHERE ID_Trabajo = ? AND ID_Maquinista = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setDate(1, fechaFin);
-                stmt.setDouble(2, horas);
-                stmt.setInt(3, idTrabajo);
-                stmt.setInt(4, idMaquinista);
-                stmt.executeUpdate();
-            }
-            // Obtener ID de la máquina asignada al trabajo
-            String sqlMaquina = "SELECT ID_Maquina FROM trabajos WHERE ID_Trabajo = ?";
-            int idMaquina = 0;
-            try (PreparedStatement stmt = conn.prepareStatement(sqlMaquina)) {
-                stmt.setInt(1, idTrabajo);
-                try (ResultSet rs = stmt.executeQuery()) {
+            conn.setAutoCommit(false);
+            try {
+                // Actualizar estado de trabajo
+                String sql = "UPDATE trabajos SET Estado = 'Finalizado', Fec_Fin = ?, Horas = ? WHERE ID_Trabajo = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setDate(1, fechaFin);
+                    stmt.setDouble(2, horas);
+                    stmt.setInt(3, idTrabajo);
+                    stmt.executeUpdate();
+                }
+
+                // Obtener ID de la máquina
+                String sqlMaquina = "SELECT ID_Maquina FROM trabajos WHERE ID_Trabajo = ?";
+                int idMaquina = 0;
+                try (PreparedStatement stmt = conn.prepareStatement(sqlMaquina)) {
+                    stmt.setInt(1, idTrabajo);
+                    ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
                         idMaquina = rs.getInt("ID_Maquina");
                     }
                 }
+
+                // Actualizar estado de la máquina
+                String sqlUpdateMaquina = "UPDATE maquinas SET Estado = 'Disponible' WHERE ID_Maquina = ?";
+                try (PreparedStatement stmt = conn.prepareStatement(sqlUpdateMaquina)) {
+                    stmt.setInt(1, idMaquina);
+                    stmt.executeUpdate();
+                }
+
+                //Calcular monto
+                String sqlExtension = "SELECT p.Extension FROM trabajos t JOIN parcelas p ON t.Num_parcela = p.Num_Parcela WHERE t.ID_Trabajo = ?";
+                double monto = 0;
+                try (PreparedStatement stmt = conn.prepareStatement(sqlExtension)) {
+                    stmt.setInt(1, idTrabajo);
+                    stmt.executeQuery();
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        double extension = rs.getDouble("Extension");
+                        monto = 30 * horas * extension;
+                    }
+                }
+
+                // Insertar factura                
+                String sqlFactura = "INSERT INTO facturas (ID_Trabajo, Monto) VALUES (?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sqlFactura)) {
+                    stmt.setInt(1, idTrabajo);
+                    stmt.setDouble(2, monto);
+                    stmt.executeUpdate();
+                }
+
+                conn.commit();
+                return true;
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
             }
-            // Actualizar el estado de la máquina a 'Disponible'
-            String sqlUpdateMaquina = "UPDATE maquinas SET Estado = 'Disponible' WHERE ID_Maquina = ?";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlUpdateMaquina)) {
-                stmt.setInt(1, idMaquina);
-                stmt.executeUpdate();
-            }
-            // Insertar una factura relacionada al trabajo
-            String sqlFactura = "INSERT INTO facturas (ID_Trabajo) VALUES (?)";
-            try (PreparedStatement stmt = conn.prepareStatement(sqlFactura)) {
-                stmt.setInt(1, idTrabajo);
-                stmt.executeUpdate();
-            }
-            conn.commit();
-            return true;
-        } catch (SQLException e) {
-            conn.rollback();
-            throw e;
-        } finally {
-            conn.setAutoCommit(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
         }
     }
 
