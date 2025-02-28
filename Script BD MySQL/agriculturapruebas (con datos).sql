@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2025 at 07:44 PM
+-- Generation Time: Jan 29, 2025 at 02:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `agriculturapruebas`
+-- Database: `agricultura`
 --
 CREATE DATABASE IF NOT EXISTS agriculturapruebas;
 USE agriculturapruebas;
@@ -253,7 +253,7 @@ CREATE TABLE `usuarios` (
   `ID_Usuario` int(11) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
   `Contrasenia` varchar(255) NOT NULL,
-  `Telefono` int(9) DEFAULT NULL,
+  `Telefono` varchar(15) DEFAULT NULL,
   `Email` varchar(100) NOT NULL,
   `Habilitado` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -263,14 +263,14 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_Usuario`, `Nombre`, `Contrasenia`, `Telefono`, `Email`, `Habilitado`) VALUES
-(1, 'admin', 'pass', 123456789, 'admin@email.com', 1),
-(2, 'agricultor1', 'pass', 123123123, 'agri1@email.com', 1),
-(3, 'agricultor2', 'pass', 123213131, 'agri2@email.com', 1),
-(4, 'agricultor3', 'pass', 134125612, 'agri3@email.com', 1),
-(5, 'maquinista1', 'pass', 141251325, 'maq1@email.com', 1),
-(6, 'maquinista2', 'pass', 156132512, 'maq2@email.com', 1),
-(7, 'maquinista3', 'pass', 581726512, 'maq3@email.com', 1),
-(8, 'usuarioTotal', 'pass', 617298412, 'ut@email.com', 1);
+(1, 'admin', 'pass', '123456789', 'admin@email.com', 1),
+(2, 'agricultor1', 'pass', '123123123', 'agri1@email.com', 1),
+(3, 'agricultor2', 'pass', '123213131', 'agri2@email.com', 1),
+(4, 'agricultor3', 'pass', '1341256122', 'agri3@email.com', 1),
+(5, 'maquinista1', 'pass', '141251325', 'maq1@email.com', 1),
+(6, 'maquinista2', 'pass', '156132512', 'maq2@email.com', 1),
+(7, 'maquinista3', 'pass', '581726512', 'maq3@email.com', 1),
+(8, 'usuarioTotal', 'pass', '617298412', 'ut@email.com', 1);
 
 -- --------------------------------------------------------
 

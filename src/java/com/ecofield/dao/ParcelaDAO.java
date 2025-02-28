@@ -208,4 +208,25 @@ public class ParcelaDAO {
             return false;
         }
     }
+
+    /**
+     * Obtiene el propietario de una parcela dado su número de parcela.
+     *
+     * @param numParcela Número de la parcela.
+     * @return ID del propietario o -1 si no se encuentra.
+     */
+    public int obtenerPropietarioPorNumParcela(int numParcela) {
+        String sql = "SELECT Propietario FROM parcelas WHERE Num_Parcela = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, numParcela);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("Propietario");
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ParcelaDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1; // Retorna -1 si no encuentra un propietario.
+    }
 }

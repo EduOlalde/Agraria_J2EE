@@ -9,6 +9,8 @@ import com.ecofield.modelos.Trabajo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -158,4 +160,55 @@ public class TrabajoDAO {
             conn.setAutoCommit(true);
         }
     }
+
+    public List<Trabajo> obtenerTrabajosFiltrados(Integer agricultorFiltro, Integer tipoTrabajoFiltro, String ordenFecha) {
+        List<Trabajo> trabajos = new ArrayList<>();
+        String sql = "SELECT t.ID_Trabajo, t.Num_parcela, t.ID_Maquina, t.ID_Maquinista, t.Fec_inicio, t.Fec_fin, t.Horas, t.Tipo AS Tipo_Trabajo, t.Estado, p.Propietario "
+                + "FROM trabajos t "
+                + "JOIN parcelas p ON t.Num_parcela = p.Num_Parcela "
+                + "WHERE 1=1";
+
+        List<Object> parametros = new ArrayList<>();
+
+        if (agricultorFiltro != null) {
+            sql += " AND p.Propietario = ?";
+            parametros.add(agricultorFiltro);
+        }
+        if (tipoTrabajoFiltro != null) {
+            sql += " AND t.Tipo = ?";
+            parametros.add(tipoTrabajoFiltro);
+        }
+
+        sql += " ORDER BY t.Fec_inicio " + ordenFecha;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int index = 1;
+            for (Object param : parametros) {
+                stmt.setObject(index++, param);
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Trabajo trabajo = new Trabajo(
+                            rs.getInt("ID_Trabajo"),
+                            rs.getInt("Num_parcela"),
+                            rs.getInt("ID_Maquina"),
+                            rs.getInt("ID_Maquinista"),
+                            rs.getInt("Propietario"), // Añadido: Recuperando el idPropietario
+                            rs.getDate("Fec_inicio"),
+                            rs.getDate("Fec_fin"),
+                            rs.getInt("Horas"),
+                            rs.getInt("Tipo_Trabajo"),
+                            rs.getString("Estado")
+                    );
+                    trabajos.add(trabajo);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return trabajos;
+    }
+
 }

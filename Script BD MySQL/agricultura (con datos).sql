@@ -20,8 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `agricultura`
 --
-CREATE DATABASE IF NOT EXISTS agriculturaPruebas;
-USE agriculturaPruebas;
+CREATE DATABASE IF NOT EXISTS agricultura;
+USE agricultura;
 
 -- --------------------------------------------------------
 
@@ -253,7 +253,7 @@ CREATE TABLE `usuarios` (
   `ID_Usuario` int(11) NOT NULL,
   `Nombre` varchar(100) NOT NULL,
   `Contrasenia` varchar(255) NOT NULL,
-  `Telefono` int(9) DEFAULT NULL,
+  `Telefono` varchar(15) DEFAULT NULL,
   `Email` varchar(100) NOT NULL,
   `Habilitado` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

@@ -13,6 +13,7 @@ public class Trabajo {
     private int numParcela;
     private int idMaquina;
     private int idMaquinista;
+    private int idPropietario;
     private Date fecInicio;
     private Date fecFin;
     private int horas;
@@ -22,11 +23,12 @@ public class Trabajo {
     public Trabajo() {
     }
 
-    public Trabajo(int id, int numParcela, int idMaquina, int idMaquinista, Date fecInicio, Date fecFin, int horas, int tipoTrabajo, String estado) {
+    public Trabajo(int id, int numParcela, int idMaquina, int idMaquinista, int idPropietario, Date fecInicio, Date fecFin, int horas, int tipoTrabajo, String estado) {
         this.id = id;
         this.numParcela = numParcela;
         this.idMaquina = idMaquina;
         this.idMaquinista = idMaquinista;
+        this.idPropietario = idPropietario;
         this.fecInicio = fecInicio;
         this.fecFin = fecFin;
         this.horas = horas;
@@ -64,6 +66,14 @@ public class Trabajo {
 
     public void setIdMaquinista(int idMaquinista) {
         this.idMaquinista = idMaquinista;
+    }
+
+    public int getIdPropietario() {
+        return idPropietario;
+    }
+
+    public void setIdPropietario(int idPropietario) {
+        this.idPropietario = idPropietario;
     }
 
     public Date getFecInicio() {
@@ -108,7 +118,7 @@ public class Trabajo {
 
     @Override
     public String toString() {
-        return "Trabajo{" + "id=" + id + ", numParcela=" + numParcela + ", idMaquina=" + idMaquina + ", idMaquinista=" + idMaquinista + ", fecInicio=" + fecInicio + ", fecFin=" + fecFin + ", horas=" + horas + ", tipoTrabajo=" + tipoTrabajo + ", estado=" + estado + '}';
+        return "Trabajo{" + "id=" + id + ", numParcela=" + numParcela + ", idMaquina=" + idMaquina + ", idMaquinista=" + idMaquinista + ", idPropietario=" + idPropietario + ", fecInicio=" + fecInicio + ", fecFin=" + fecFin + ", horas=" + horas + ", tipoTrabajo=" + tipoTrabajo + ", estado=" + estado + '}';
     }
 
 }

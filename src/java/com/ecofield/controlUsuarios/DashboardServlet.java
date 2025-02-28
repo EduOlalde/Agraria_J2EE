@@ -9,6 +9,7 @@ import com.ecofield.dao.MaquinistaDAO;
 import com.ecofield.dao.ParcelaDAO;
 import com.ecofield.dao.RolDAO;
 import com.ecofield.dao.TipoTrabajoDAO;
+import com.ecofield.dao.TrabajoDAO;
 import com.ecofield.dao.TrabajoSolicitadoDAO;
 import com.ecofield.dao.UsuarioDAO;
 import com.ecofield.modelos.Maquina;
@@ -16,6 +17,7 @@ import com.ecofield.modelos.Maquinista;
 import com.ecofield.modelos.Parcela;
 import com.ecofield.modelos.Rol;
 import com.ecofield.modelos.TipoTrabajo;
+import com.ecofield.modelos.Trabajo;
 import com.ecofield.modelos.TrabajoSolicitado;
 import com.ecofield.modelos.Usuario;
 import com.mysql.jdbc.Connection;
@@ -78,6 +80,7 @@ public class DashboardServlet extends HttpServlet {
             MaquinaDAO maquinaDAO = new MaquinaDAO(conn);
             TipoTrabajoDAO tipoTrabajoDAO = new TipoTrabajoDAO(conn);
             TrabajoSolicitadoDAO trabajoSolicitadoDAO = new TrabajoSolicitadoDAO(conn);
+            TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
 
             /* Módulo gestión usuarios */
             List<Rol> rolesDisponibles = rolDAO.obtenerRolesDisponibles();
@@ -126,10 +129,24 @@ public class DashboardServlet extends HttpServlet {
             /* Módulo gestión trabajos solicitados */
             List<TrabajoSolicitado> trabajosSolicitados = trabajoSolicitadoDAO.obtenerTrabajosSolicitadosPorEstado("En revision");
             request.setAttribute("trabajosSolicitados", trabajosSolicitados);
-            
+
             List<Maquina> maquinasDisponibles = maquinaDAO.getMaquinasDisponibles();
             request.setAttribute("maquinasDisponibles", maquinasDisponibles);
-            
+
+            /* Módulo listar trabajos */
+            // Obtener filtros
+            String paramAgricultor = request.getParameter("agricultor");
+            Integer filtroAgricultor = (paramAgricultor != null && !paramAgricultor.trim().isEmpty()) ? Integer.valueOf(paramAgricultor) : null;
+
+            String paramTipoTrabajo = request.getParameter("tipoTrabajo");
+            Integer filtroTipoTrabajo = (paramTipoTrabajo != null && !paramTipoTrabajo.trim().isEmpty()) ? Integer.valueOf(paramTipoTrabajo) : null;
+
+            String paramOrdenFecha = request.getParameter("orden");
+            String ordenFecha = (paramOrdenFecha != null && paramOrdenFecha.equals("asc")) ? "ASC" : "DESC";
+
+            // Obtener lista de trabajos filtrados
+            List<Trabajo> listaTrabajos = trabajoDAO.obtenerTrabajosFiltrados(filtroAgricultor, filtroTipoTrabajo, ordenFecha);
+            request.setAttribute("listaTrabajos", listaTrabajos);
 
         }
 
