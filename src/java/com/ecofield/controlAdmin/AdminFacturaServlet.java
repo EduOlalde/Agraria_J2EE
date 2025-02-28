@@ -2,13 +2,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.ecofield.controlMaquinista;
+package com.ecofield.controlAdmin;
 
+import com.ecofield.dao.FacturaDAO;
 import com.ecofield.dao.TrabajoDAO;
+import com.ecofield.modelos.Factura;
+import com.ecofield.modelos.Trabajo;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +23,22 @@ import javax.servlet.http.HttpSession;
  *
  * @author Eduardo Olalde
  */
-public class IniciarTrabajoServlet extends HttpServlet {
+public class AdminFacturaServlet extends HttpServlet {
+
+    private void generarFactura(HttpServletRequest request, HttpSession session, FacturaDAO facturaDAO) {
+        try {
+            int idFactura = Integer.parseInt(request.getParameter("id_factura"));
+            boolean generada = facturaDAO.generarFactura(idFactura);
+
+            if (generada) {
+                session.setAttribute("mensaje", "Factura generada correctamente.");
+            } else {
+                session.setAttribute("error", "Error al generar la factura.");
+            }
+        } catch (NumberFormatException e) {
+            session.setAttribute("error", "ID de trabajo inválido.");
+        }
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,49 +54,12 @@ public class IniciarTrabajoServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         HttpSession session = request.getSession(false);
-        Integer idMaquinista = (Integer) session.getAttribute("user_id");
-        Connection conn = (Connection) session.getAttribute("conexion");
+        Connection conn = (Connection) request.getSession().getAttribute("conexion");
+        FacturaDAO facturaDAO = new FacturaDAO(conn);
 
-        if (conn == null) {
-            session.setAttribute("error", "Error: No hay conexión a la base de datos.");
-            request.getRequestDispatcher("dashboard").forward(request, response);
-            return;
-        }
+        generarFactura(request, session, facturaDAO);
 
-        if (idMaquinista == null) {
-            session.setAttribute("error", "Error: No hay usuario autenticado.");
-            request.getRequestDispatcher("dashboard").forward(request, response);
-            return;
-        }
-
-        int idTrabajo;
-        String fechaInicioString = request.getParameter("fecha_inicio");
-
-        if (fechaInicioString == null || fechaInicioString.trim().isEmpty()) {
-            session.setAttribute("error", "Debe ingresar una fecha de inicio.");
-            request.getRequestDispatcher("dashboard").forward(request, response);
-            return;
-        }
-
-        try {
-            idTrabajo = Integer.parseInt(request.getParameter("id_trabajo"));
-            Date fechaInicio = Date.valueOf(fechaInicioString);
-
-            TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
-            boolean trabajoIniciado = trabajoDAO.iniciarTrabajo(idTrabajo, fechaInicio, idMaquinista);
-
-            if (trabajoIniciado) {
-                session.setAttribute("mensaje", "Trabajo iniciado correctamente.");
-                response.sendRedirect("dashboard");
-            } else {
-                session.setAttribute("error", "Hubo un error al iniciar el trabajo.");
-                request.getRequestDispatcher("dashboard").forward(request, response);
-            }
-        } catch (NumberFormatException | SQLException e) {
-            e.printStackTrace();
-            session.setAttribute("error", "Error al procesar la solicitud.");
-            request.getRequestDispatcher("dashboard").forward(request, response);
-        }
+        response.sendRedirect("dashboard");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

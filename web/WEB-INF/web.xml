@@ -12,6 +12,14 @@
         <servlet-name>DashboardServlet</servlet-name>
         <servlet-class>com.ecofield.controlUsuarios.DashboardServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminFacturaServlet</servlet-name>
+        <servlet-class>com.ecofield.controlAdmin.AdminFacturaServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TrabajosMaquinistaServlet</servlet-name>
+        <servlet-class>com.ecofield.controlMaquinista.TrabajosMaquinistaServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/dashboard</url-pattern>
@@ -23,14 +31,6 @@
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>com.ecofield.controlUsuarios.LogoutServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>IniciarTrabajoServlet</servlet-name>
-        <servlet-class>com.ecofield.controlMaquinista.IniciarTrabajoServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>FinalizarTrabajoServlet</servlet-name>
-        <servlet-class>com.ecofield.controlMaquinista.FinalizarTrabajoServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AdminUsuarioServlet</servlet-name>
@@ -73,14 +73,6 @@
         <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>IniciarTrabajoServlet</servlet-name>
-        <url-pattern>/IniciarTrabajoServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FinalizarTrabajoServlet</servlet-name>
-        <url-pattern>/FinalizarTrabajoServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>AdminUsuarioServlet</servlet-name>
         <url-pattern>/AdminUsuarioServlet</url-pattern>
     </servlet-mapping>
@@ -99,6 +91,14 @@
     <servlet-mapping>
         <servlet-name>TrabajosSolicitadosServlet</servlet-name>
         <url-pattern>/TrabajosSolicitadosServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminFacturaServlet</servlet-name>
+        <url-pattern>/AdminFacturaServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TrabajosMaquinistaServlet</servlet-name>
+        <url-pattern>/TrabajosMaquinistaServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

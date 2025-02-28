@@ -1,7 +1,6 @@
-
 package com.ecofield.modelos;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Representa una factura en el sistema.
