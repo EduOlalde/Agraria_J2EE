@@ -25,6 +25,22 @@ public class TrabajoSolicitadoDAO {
     public TrabajoSolicitadoDAO(Connection conn) {
         this.conn = conn;
     }
+    
+    public boolean crearSolicitud(TrabajoSolicitado solicitud) {
+    String sql = "INSERT INTO trabajos_solicitados (Num_Parcela, Propietario, ID_Tipo_Trabajo, Fecha_Solicitud) VALUES (?, ?, ?, ?)";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, solicitud.getNumParcela());
+        stmt.setInt(2, solicitud.getPropietario());
+        stmt.setInt(3, solicitud.getIdTipoTrabajo());
+        stmt.setDate(4, new java.sql.Date(solicitud.getFechaSolicitud().getTime()));
+        int filasAfectadas = stmt.executeUpdate();
+        return filasAfectadas > 0;
+    } catch (SQLException ex) {
+        Logger.getLogger(TrabajoSolicitadoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        return false;
+    }
+}
+
 
     public List<TrabajoSolicitado> obtenerTrabajosSolicitadosPorEstado(String estado) {
         List<TrabajoSolicitado> trabajosSolicitados = new ArrayList<>();
