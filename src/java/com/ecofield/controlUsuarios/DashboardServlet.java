@@ -131,7 +131,7 @@ public class DashboardServlet extends HttpServlet {
             String ordenFecha = (paramOrdenFecha != null && paramOrdenFecha.equals("asc")) ? "ASC" : "DESC";
 
             // Obtener lista de trabajos filtrados
-            List<Trabajo> listaTrabajos = trabajoDAO.obtenerTrabajosFiltrados(filtroAgricultor, filtroTipoTrabajo, ordenFecha);
+            List<Trabajo> listaTrabajos = trabajoDAO.obtenerTrabajos(filtroAgricultor, filtroTipoTrabajo, null, ordenFecha, null, null);
             request.setAttribute("listaTrabajos", listaTrabajos);
 
             /* Módulo admin facturas */
@@ -212,15 +212,15 @@ public class DashboardServlet extends HttpServlet {
             TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
             int idMaquinista = (int) session.getAttribute("user_id");
             // Obtener trabajos pendientes
-            List<Trabajo> trabajosMaquinistaPendientes = trabajoDAO.obtenerTrabajosPendientes(idMaquinista);
+            List<Trabajo> trabajosMaquinistaPendientes = trabajoDAO.obtenerTrabajosPorEstado(idMaquinista, "Pendiente");
             request.setAttribute("trabajosMaquinistaPendientes", trabajosMaquinistaPendientes);
 
             // Obtener trabajos en curso
-            List<Trabajo> trabajosMaquinistaEnCurso = trabajoDAO.obtenerTrabajosEnCurso(idMaquinista);
+            List<Trabajo> trabajosMaquinistaEnCurso = trabajoDAO.obtenerTrabajosPorEstado(idMaquinista, "En curso");
             request.setAttribute("trabajosMaquinistaEnCurso", trabajosMaquinistaEnCurso);
 
             // Obtener historial de trabajos finalizados
-            List<Trabajo> historialMaquinistaTrabajos = trabajoDAO.obtenerHistorialTrabajos(idMaquinista);
+            List<Trabajo> historialMaquinistaTrabajos = trabajoDAO.obtenerTrabajosPorEstado(idMaquinista, "Finalizado");
             request.setAttribute("historialMaquinistaTrabajos", historialMaquinistaTrabajos);
 
         }
