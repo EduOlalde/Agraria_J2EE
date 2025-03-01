@@ -7,8 +7,7 @@
 <%@page import="com.ecofield.modelos.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    HttpSession sesion = request.getSession();
-    Usuario usuario = (Usuario) sesion.getAttribute("usuario");
+    Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
 
     if (usuario == null) {
         response.sendRedirect("login.jsp");

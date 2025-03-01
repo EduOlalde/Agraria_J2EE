@@ -10,7 +10,7 @@
 <%@page import="com.ecofield.modelos.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Maquinista> maquinistas = (List<Maquinista>) request.getAttribute("maquinistas");
+    List<Maquinista> maquinistas = (List<Maquinista>) request.getAttribute("adminMaquinistas");
     List<TipoTrabajo> tiposTrabajo = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
 %>
 

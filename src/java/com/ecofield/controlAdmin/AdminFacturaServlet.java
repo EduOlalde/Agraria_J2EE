@@ -5,14 +5,8 @@
 package com.ecofield.controlAdmin;
 
 import com.ecofield.dao.FacturaDAO;
-import com.ecofield.dao.TrabajoDAO;
-import com.ecofield.modelos.Factura;
-import com.ecofield.modelos.Trabajo;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Date;
-import java.time.LocalDate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
