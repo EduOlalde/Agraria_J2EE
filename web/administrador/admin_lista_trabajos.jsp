@@ -4,10 +4,11 @@
     Author     : diego
 --%>
 
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.List"%>
 <%@page import="com.ecofield.modelos.Usuario"%>
 <%@page import="com.ecofield.modelos.TipoTrabajo"%>
 <%@page import="com.ecofield.modelos.Trabajo"%>
-<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     List<Trabajo> trabajos = (List<Trabajo>) request.getAttribute("listaTrabajos");
@@ -62,61 +63,121 @@
         <div class="columna">
             <label for="listaTrabajosOrden">Ordenar por Fecha:</label>
             <select name="listaTrabajosOrden" id="listaTrabajosOrden">
-                <option value="desc" <%= "desc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : "" %>>Más reciente</option>
-                <option value="asc" <%= "asc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : "" %>>Más antiguo</option>
+                <option value="desc" <%= "desc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : ""%>>Más reciente</option>
+                <option value="asc" <%= "asc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : ""%>>Más antiguo</option>
             </select>
         </div>
     </div>
     <button type="submit">Aplicar Filtros</button>
 </form>
 
-<!-- Tabla de Trabajos -->
-<% if (trabajos != null && !trabajos.isEmpty()) { %>
-<table>
+<%-- Trabajos Pendientes --%>
+<%
+    List<Trabajo> trabajosPendientes = new ArrayList<>();
+    List<Trabajo> trabajosEnCurso = new ArrayList<>();
+    List<Trabajo> trabajosFinalizados = new ArrayList<>();
+    if (trabajos != null) {
+        for (Trabajo trabajo : trabajos) {
+            switch (trabajo.getEstado()) {
+                case "Pendiente":
+                    trabajosPendientes.add(trabajo);
+                    break;
+                case "En Curso":
+                    trabajosEnCurso.add(trabajo);
+                    break;
+                case "Finalizado":
+                    trabajosFinalizados.add(trabajo);
+                    break;
+            }
+        }
+    }
+%>
+
+<%-- Trabajos Pendientes --%>
+<% if (trabajosPendientes != null && !trabajosPendientes.isEmpty()) { %>
+<h3>Trabajos Pendientes</h3>
+<table border="1">
     <thead>
         <tr>
             <th>ID Trabajo</th>
             <th>Número de Parcela</th>
             <th>Agricultor</th>
             <th>Tipo de Trabajo</th>
-            <th>Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            for (Trabajo trabajo : trabajosPendientes) {
+                int idAgricultor = trabajo.getIdPropietario(); // Asumiendo que el ID del agricultor está en el campo "idPropietario" del trabajo.
+                String nombreAgricultor = "";
+                for (Usuario agricultor : agricultores) {
+                    if (agricultor.getId() == idAgricultor) {
+                        nombreAgricultor = agricultor.getNombre();
+                        break;
+                    }
+                }
+
+                String nombreTipoTrabajo = "";
+                for (TipoTrabajo tipo : tiposTrabajo) {
+                    if (tipo.getIdTipoTrabajo() == trabajo.getTipoTrabajo()) {
+                        nombreTipoTrabajo = tipo.getNombre();
+                        break;
+                    }
+                }
+        %>
+        <tr>
+            <td><%= trabajo.getId()%></td>
+            <td><%= trabajo.getNumParcela()%></td>
+            <td><%= nombreAgricultor%></td>
+            <td><%= nombreTipoTrabajo%></td>
+        </tr>
+        <%
+            }
+        %>
+    </tbody>
+</table>
+<% } else { %>
+<p>No hay trabajos pendientes.</p>
+<% } %>
+
+<%-- Trabajos en Curso --%>
+<% if (trabajosEnCurso != null && !trabajosEnCurso.isEmpty()) { %>
+<h3>Trabajos En Curso</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID Trabajo</th>
+            <th>Número de Parcela</th>
+            <th>Agricultor</th>
+            <th>Tipo de Trabajo</th>
             <th>Fecha Inicio</th>
         </tr>
     </thead>
     <tbody>
         <%
-            for (Trabajo trabajo : trabajos) {
+            for (Trabajo trabajo : trabajosEnCurso) {
+                int idAgricultor = trabajo.getIdPropietario();
+                String nombreAgricultor = "";
+                for (Usuario agricultor : agricultores) {
+                    if (agricultor.getId() == idAgricultor) {
+                        nombreAgricultor = agricultor.getNombre();
+                        break;
+                    }
+                }
+
+                String nombreTipoTrabajo = "";
+                for (TipoTrabajo tipo : tiposTrabajo) {
+                    if (tipo.getIdTipoTrabajo() == trabajo.getTipoTrabajo()) {
+                        nombreTipoTrabajo = tipo.getNombre();
+                        break;
+                    }
+                }
         %>
         <tr>
             <td><%= trabajo.getId()%></td>
             <td><%= trabajo.getNumParcela()%></td>
-            <td>
-                <%
-                    // Buscar el nombre del agricultor (propietario) por su ID
-                    String nombreAgricultor = "Desconocido";
-                    for (Usuario agricultor : agricultores) {
-                        if (agricultor.getId() == trabajo.getIdPropietario()) { // Suponiendo que 'idPropietario' es el propietario
-                            nombreAgricultor = agricultor.getNombre();
-                            break;
-                        }
-                    }
-                %>
-                <%= nombreAgricultor%>
-            </td>
-            <td>
-                <%
-                    // Buscar el nombre del tipo de trabajo por su ID
-                    String nombreTipoTrabajo = "Desconocido";
-                    for (TipoTrabajo tipo : tiposTrabajo) {
-                        if (tipo.getIdTipoTrabajo() == trabajo.getTipoTrabajo()) {
-                            nombreTipoTrabajo = tipo.getNombre();
-                            break;
-                        }
-                    }
-                %>
-                <%= nombreTipoTrabajo%>
-            </td>
-            <td><%= trabajo.getEstado()%></td>
+            <td><%= nombreAgricultor%></td>
+            <td><%= nombreTipoTrabajo%></td>
             <td><%= trabajo.getFecInicio()%></td>
         </tr>
         <%
@@ -125,5 +186,57 @@
     </tbody>
 </table>
 <% } else { %>
-<p>No se encontraron trabajos.</p>
+<p>No hay trabajos en curso.</p>
+<% } %>
+
+<%-- Trabajos Finalizados --%>
+<% if (trabajosFinalizados != null && !trabajosFinalizados.isEmpty()) { %>
+<h3>Trabajos Finalizados</h3>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID Trabajo</th>
+            <th>Número de Parcela</th>
+            <th>Agricultor</th>
+            <th>Tipo de Trabajo</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            for (Trabajo trabajo : trabajosFinalizados) {
+                int idAgricultor = trabajo.getIdPropietario();
+                String nombreAgricultor = "";
+                for (Usuario agricultor : agricultores) {
+                    if (agricultor.getId() == idAgricultor) {
+                        nombreAgricultor = agricultor.getNombre();
+                        break;
+                    }
+                }
+
+                String nombreTipoTrabajo = "";
+                for (TipoTrabajo tipo : tiposTrabajo) {
+                    if (tipo.getIdTipoTrabajo() == trabajo.getTipoTrabajo()) {
+                        nombreTipoTrabajo = tipo.getNombre();
+                        break;
+                    }
+                }
+        %>
+        <tr>
+            <td><%= trabajo.getId()%></td>
+            <td><%= trabajo.getNumParcela()%></td>
+            <td><%= nombreAgricultor%></td>
+            <td><%= nombreTipoTrabajo%></td>
+            <td><%= trabajo.getFecInicio()%></td>
+            <td><%= trabajo.getFecFin()%></td>
+        </tr>
+        <%
+            }
+        %>
+    </tbody>
+</table>
+<% } else { %>
+<p>No hay trabajos finalizados.</p>
 <% }%>
+
