@@ -105,22 +105,26 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    public List<Usuario> obtenerAgricultores() {
-        List<Usuario> agricultores = new ArrayList<>();
+    public List<Usuario> obtenerUsuariosPorRol(String rol) {
+        List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT u.ID_Usuario, u.Nombre FROM usuarios u "
                 + "JOIN usuarios_roles ur ON u.ID_Usuario = ur.ID_Usuario "
-                + "JOIN roles r ON ur.ID_Rol = r.ID_Rol WHERE r.Nombre = 'Agricultor'";
+                + "JOIN roles r ON ur.ID_Rol = r.ID_Rol WHERE r.Nombre = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Usuario agricultor = new Usuario(rs.getInt("ID_Usuario"), rs.getString("Nombre"));
-                agricultores.add(agricultor);
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // Se establece el parámetro para el nombre del rol
+            stmt.setString(1, rol);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario(rs.getInt("ID_Usuario"), rs.getString("Nombre"));
+                    usuarios.add(usuario);
+                }
             }
-
         } catch (SQLException ex) {
             Logger.getLogger(UsuarioDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return agricultores;
+        return usuarios;
     }
 
     // Actualizar los datos de un usuario

@@ -4,21 +4,9 @@
 <%@ page import="javax.servlet.http.HttpSession" %>
 
 <%
-    // Verificar que user_id no sea null antes de convertirlo a int
-    Object userIdAttr = session.getAttribute("user_id");
-    int idMaquinista = (userIdAttr != null) ? Integer.parseInt(userIdAttr.toString()) : 0; 
-
-    Connection conn = (Connection) session.getAttribute("conexion");
-    TrabajoDAO trabajoDAO = new TrabajoDAO(conn);
-
-    // Obtener trabajos pendientes
-    List<Trabajo> trabajosPendientes = trabajoDAO.obtenerTrabajosPendientes(idMaquinista);
-
-    // Obtener trabajos en curso
-    List<Trabajo> trabajosEnCurso = trabajoDAO.obtenerTrabajosEnCurso(idMaquinista);
-
-    // Obtener historial de trabajos finalizados
-    List<Trabajo> historialTrabajos = trabajoDAO.obtenerHistorialTrabajos(idMaquinista);
+    List<Trabajo> trabajosPendientes = (List<Trabajo>) request.getAttribute("trabajosMaquinistaPendientes");
+    List<Trabajo> trabajosEnCurso = (List<Trabajo>)request.getAttribute("trabajosMaquinistaEnCurso");
+    List<Trabajo> historialTrabajos = (List<Trabajo>)request.getAttribute("historialMaquinistaTrabajos");
 %>
 
 <h2>Trabajos Pendientes</h2>

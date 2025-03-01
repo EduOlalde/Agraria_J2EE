@@ -15,7 +15,7 @@
 <%
     // Obtener las solicitudes de trabajo, los maquinistas disponibles y las máquinas desde la request
     List<TrabajoSolicitado> trabajosSolicitados = (List<TrabajoSolicitado>) request.getAttribute("trabajosSolicitados");
-    List<Maquinista> maquinistas = (List<Maquinista>) request.getAttribute("maquinistas");
+    List<Maquinista> maquinistas = (List<Maquinista>) request.getAttribute("adminMaquinistas");
     String filtroTrabajo = request.getParameter("tipoTrabajo");
     List<Maquina> maquinasDisponibles = (List<Maquina>) request.getAttribute("maquinasDisponibles");
     List<TipoTrabajo> tiposTrabajo = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
