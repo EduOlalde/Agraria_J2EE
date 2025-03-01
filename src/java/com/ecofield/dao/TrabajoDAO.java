@@ -91,14 +91,18 @@ public class TrabajoDAO {
         return trabajos;
     }
 
-    // Obtener trabajos pendientes para un maquinista
-    public List<Trabajo> obtenerTrabajosPendientes(int idMaquinista) {
+    // Obtener trabajos por estado para un maquinista
+    public List<Trabajo> obtenerTrabajosPorEstado(int idMaquinista, String estado) {
         List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado "
+        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado, "
+                + "t.Fec_Inicio, t.Fec_Fin, t.Horas "
                 + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
-                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Pendiente'";
+                + "WHERE t.ID_Maquinista = ? AND t.Estado = ?";
+
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, idMaquinista);
+            stmt.setString(2, estado);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Trabajo trabajo = new Trabajo();
@@ -106,6 +110,14 @@ public class TrabajoDAO {
                     trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));
                     trabajo.setNumParcela(rs.getInt("Num_Parcela"));
                     trabajo.setEstado(rs.getString("Estado"));
+
+                    // Si el estado es 'Finalizado', también obtenemos las fechas y horas
+                    if ("Finalizado".equals(estado)) {
+                        trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
+                        trabajo.setFecFin(rs.getDate("Fec_Fin"));
+                        trabajo.setHoras(rs.getInt("Horas"));
+                    }
+
                     trabajos.add(trabajo);
                 }
             }
@@ -141,181 +153,6 @@ public class TrabajoDAO {
             Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return trabajo;
-    }
-
-    // Obtener trabajos finalizados sin factura generada
-    public List<Trabajo> obtenerTrabajosSinFactura() {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, t.Num_Parcela, t.ID_Maquina, t.ID_Maquinista, "
-                + "t.Fec_Inicio, t.Fec_Fin, t.Horas, t.Tipo, t.Estado "
-                + "FROM trabajos t "
-                + "LEFT JOIN facturas f ON t.ID_Trabajo = f.ID_Trabajo "
-                + "WHERE t.Estado = 'Finalizado' AND f.ID_Factura IS NULL";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Trabajo trabajo = new Trabajo();
-                trabajo.setId(rs.getInt("ID_Trabajo"));
-                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                trabajo.setIdMaquina(rs.getInt("ID_Maquina"));
-                trabajo.setIdMaquinista(rs.getInt("ID_Maquinista"));
-                trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
-                trabajo.setFecFin(rs.getDate("Fec_Fin"));
-                trabajo.setHoras(rs.getInt("Horas"));
-                trabajo.setTipoTrabajo(rs.getInt("Tipo"));
-                trabajo.setEstado(rs.getString("Estado"));
-                trabajos.add(trabajo);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return trabajos;
-    }
-
-    // Obtener trabajos en curso para un maquinista
-    public List<Trabajo> obtenerTrabajosEnCurso(int idMaquinista) {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado "
-                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
-                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'En curso'";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idMaquinista);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Trabajo trabajo = new Trabajo();
-                    trabajo.setId(rs.getInt("ID_Trabajo"));
-                    trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));
-                    trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                    trabajo.setEstado(rs.getString("Estado"));
-                    trabajos.add(trabajo);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return trabajos;
-    }
-
-    public List<Trabajo> obtenerTrabajosPorEstado(Integer idAgricultor, String estado) {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, t.Num_parcela, t.ID_Maquina, t.ID_Maquinista, t.Fec_Inicio, t.Fec_Fin, t.Horas, "
-                + "t.Tipo AS Tipo_Trabajo, t.Estado "
-                + "FROM trabajos t JOIN parcelas p ON t.Num_parcela = p.Num_Parcela "
-                + "WHERE t.Estado = ?";
-
-        // Si se proporciona un ID de agricultor, se añade la condición de filtro por agricultor
-        if (idAgricultor != null) {
-            sql += " AND p.Propietario = ?";
-        }
-
-        sql += " ORDER BY t.Fec_Inicio DESC";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // Primer parámetro: Estado del trabajo
-            stmt.setString(1, estado);
-
-            // Si se proporciona el ID del agricultor, se añade como segundo parámetro
-            if (idAgricultor != null) {
-                stmt.setInt(2, idAgricultor);
-            }
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Trabajo trabajo = new Trabajo();
-                    trabajo.setId(rs.getInt("ID_Trabajo"));
-                    trabajo.setNumParcela(rs.getInt("Num_parcela"));
-                    trabajo.setIdMaquina(rs.getInt("ID_Maquina"));
-                    trabajo.setIdMaquinista(rs.getInt("ID_Maquinista"));
-                    trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
-                    trabajo.setFecFin(rs.getDate("Fec_Fin"));
-                    trabajo.setHoras(rs.getInt("Horas"));
-                    trabajo.setTipoTrabajo(rs.getInt("Tipo_Trabajo"));
-                    trabajo.setEstado(rs.getString("Estado"));
-                    trabajos.add(trabajo);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return trabajos;
-    }
-
-// Obtener historial de trabajos finalizados
-    public List<Trabajo> obtenerHistorialTrabajos(int idMaquinista) {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, tt.ID_Tipo_Trabajo, t.Num_Parcela, t.Estado, "
-                + "t.Fec_Inicio, t.Fec_Fin, t.Horas "
-                + "FROM trabajos t JOIN tipo_trabajo tt ON t.Tipo = tt.ID_Tipo_Trabajo "
-                + "WHERE t.ID_Maquinista = ? AND t.Estado = 'Finalizado'";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idMaquinista);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Trabajo trabajo = new Trabajo();
-                trabajo.setId(rs.getInt("ID_Trabajo"));
-                trabajo.setTipoTrabajo(rs.getInt("ID_Tipo_Trabajo"));  // Asignación directa del int
-                trabajo.setNumParcela(rs.getInt("Num_Parcela"));
-                trabajo.setEstado(rs.getString("Estado"));
-                trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
-                trabajo.setFecFin(rs.getDate("Fec_Fin"));
-                trabajo.setHoras(rs.getInt("Horas"));
-                trabajos.add(trabajo);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return trabajos;
-    }
-
-    // Obtener trabajos aprobados para un agricultor (finalizados) con filtros opcionales
-    public List<Trabajo> obtenerTrabajosAprobadosPorPropietario(int idPropietario, Integer filtroTipoTrabajo, String filtroFechaInicio, String filtroFechaFin) {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, t.Num_parcela, t.ID_Maquina, t.ID_Maquinista, t.Fec_Inicio, t.Fec_Fin, t.Horas, "
-                + "t.Tipo AS Tipo_Trabajo, t.Estado "
-                + "FROM trabajos t JOIN parcelas p ON t.Num_parcela = p.Num_Parcela "
-                + "WHERE p.Propietario = ? AND t.Estado = 'Finalizado'";
-        List<Object> parametros = new ArrayList<>();
-        parametros.add(idPropietario);
-        if (filtroTipoTrabajo != null) {
-            sql += " AND t.Tipo = ?";
-            parametros.add(filtroTipoTrabajo);
-        }
-        if (filtroFechaInicio != null && !filtroFechaInicio.isEmpty()) {
-            sql += " AND t.Fec_Inicio >= ?";
-            parametros.add(Date.valueOf(filtroFechaInicio)); // Se espera el formato YYYY-MM-DD
-        }
-        if (filtroFechaFin != null && !filtroFechaFin.isEmpty()) {
-            sql += " AND t.Fec_Fin <= ?";
-            parametros.add(Date.valueOf(filtroFechaFin));
-        }
-        sql += " ORDER BY t.Fec_Inicio DESC";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            for (int i = 0; i < parametros.size(); i++) {
-                stmt.setObject(i + 1, parametros.get(i));
-            }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Trabajo trabajo = new Trabajo();
-                    trabajo.setId(rs.getInt("ID_Trabajo"));
-                    trabajo.setNumParcela(rs.getInt("Num_parcela"));
-                    trabajo.setIdMaquina(rs.getInt("ID_Maquina"));
-                    trabajo.setIdMaquinista(rs.getInt("ID_Maquinista"));
-                    trabajo.setFecInicio(rs.getDate("Fec_Inicio"));
-                    trabajo.setFecFin(rs.getDate("Fec_Fin"));
-                    trabajo.setHoras(rs.getInt("Horas"));
-                    trabajo.setTipoTrabajo(rs.getInt("Tipo_Trabajo"));
-                    trabajo.setEstado(rs.getString("Estado"));
-                    trabajos.add(trabajo);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return trabajos;
     }
 
 // Iniciar trabajo
@@ -396,51 +233,6 @@ public class TrabajoDAO {
             Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-    }
-
-    // Obtener trabajos filtrados según criterios: agricultor, tipo de trabajo y orden de fecha.
-    public List<Trabajo> obtenerTrabajosFiltrados(Integer agricultorFiltro, Integer tipoTrabajoFiltro, String ordenFecha) {
-        List<Trabajo> trabajos = new ArrayList<>();
-        String sql = "SELECT t.ID_Trabajo, t.Num_parcela, t.ID_Maquina, t.ID_Maquinista, t.Fec_inicio, t.Fec_fin, t.Horas, "
-                + "t.Tipo AS Tipo_Trabajo, t.Estado, p.Propietario "
-                + "FROM trabajos t JOIN parcelas p ON t.Num_parcela = p.Num_Parcela "
-                + "WHERE 1=1";
-        List<Object> parametros = new ArrayList<>();
-        if (agricultorFiltro != null) {
-            sql += " AND p.Propietario = ?";
-            parametros.add(agricultorFiltro);
-        }
-        if (tipoTrabajoFiltro != null) {
-            sql += " AND t.Tipo = ?";
-            parametros.add(tipoTrabajoFiltro);
-        }
-        sql += " ORDER BY t.Fec_inicio " + ordenFecha;
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            int index = 1;
-            for (Object param : parametros) {
-                stmt.setObject(index++, param);
-            }
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Trabajo trabajo = new Trabajo(
-                            rs.getInt("ID_Trabajo"),
-                            rs.getInt("Num_parcela"),
-                            rs.getInt("ID_Maquina"),
-                            rs.getInt("ID_Maquinista"),
-                            rs.getInt("Propietario"),
-                            rs.getDate("Fec_inicio"),
-                            rs.getDate("Fec_fin"),
-                            rs.getInt("Horas"),
-                            rs.getInt("Tipo_Trabajo"),
-                            rs.getString("Estado")
-                    );
-                    trabajos.add(trabajo);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return trabajos;
     }
 
 }
