@@ -16,6 +16,12 @@ public class TrabajoSolicitado {
     private String estado;
     private Date fechaSolicitud;
 
+    public TrabajoSolicitado(int numParcela, int propietario, int idTipoTrabajo) {
+        this.numParcela = numParcela;
+        this.propietario = propietario;
+        this.idTipoTrabajo = idTipoTrabajo;
+    }
+
     public TrabajoSolicitado(int idSolicitud, int numParcela, int propietario, int idTipoTrabajo, String estado, Date fechaSolicitud) {
         this.idSolicitud = idSolicitud;
         this.numParcela = numParcela;

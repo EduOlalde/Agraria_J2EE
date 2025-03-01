@@ -111,7 +111,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("maquinas", maquinas);
 
             // Obtener tipos de trabajo para el filtro
-            request.setAttribute("tiposTrabajo", new TipoTrabajoDAO(conn).obtenerTiposTrabajo());
+            request.setAttribute("tiposTrabajo", tipoTrabajoDAO.obtenerTiposTrabajo());
 
             /* Módulo gestión trabajos solicitados */
             List<TrabajoSolicitado> trabajosSolicitados = trabajoSolicitadoDAO.obtenerTrabajosSolicitadosPorEstado("En revision");
@@ -150,12 +150,21 @@ public class DashboardServlet extends HttpServlet {
 
             ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
             FacturaDAO facturaDAO = new FacturaDAO(conn);
+            TipoTrabajoDAO tipoTrabajoDAO = new TipoTrabajoDAO(conn);
+            TrabajoSolicitadoDAO trabajoSolicitadoDAO = new TrabajoSolicitadoDAO(conn);
+            
             int idAgricultor = (int)session.getAttribute("user_id");
             
             
             /* Módulo listado de parcelas */
             List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
             request.setAttribute("parcelasAgricultor", parcelas);
+            
+            /* Módulo solicitud de trabajos */
+            // Obtener tipos de trabajo para el filtro
+            request.setAttribute("tiposTrabajo", tipoTrabajoDAO.obtenerTiposTrabajo());
+            List<TrabajoSolicitado> trabajosSolicitados = trabajoSolicitadoDAO.obtenerTrabajosSolicitadosPorPropietarioYEstado(idAgricultor, "En revision");
+            request.setAttribute("trabajosSolicitados", trabajosSolicitados);
             
             /* Módulo facturación */
             List<Factura> facturasPendientes = facturaDAO.obtenerFacturasPendientesPago(idAgricultor);

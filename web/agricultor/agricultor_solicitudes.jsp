@@ -1,64 +1,77 @@
+<%@page import="com.ecofield.modelos.TrabajoSolicitado"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.ecofield.modelos.Parcela" %>
 <%@ page import="com.ecofield.modelos.TipoTrabajo" %>
-<html>
-<head>
-    <title>Solicitar Trabajo</title>
-</head>
-<body>
-    <h2>Solicitar Trabajo</h2>
-    <h3>Selecciona tu Parcela y Tipo de Trabajo</h3>
-    
-    <!-- Mostrar mensaje de la sesión si existe -->
-    <%
-        String mensaje = (String) session.getAttribute("mensaje");
-        if(mensaje != null) {
-    %>
-        <p><%= mensaje %></p>
-    <%
-            session.removeAttribute("mensaje");
-        }
-    %>
-    
-    <form action="SolicitarTrabajo" method="post">
-        <label for="parcela_id">Seleccionar Parcela:</label>
-        <select name="parcela_id" id="parcela_id" required>
-            <%-- Se asume que en el controlador se envía la lista de parcelas del agricultor en el atributo "parcelas" --%>
+<%
+    // Obtener las parcelas disponibles y los tipos de trabajo desde la request
+    List<Parcela> parcelas = (List<Parcela>) request.getAttribute("parcelasAgricultor");
+    List<TipoTrabajo> tiposTrabajo = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
+    List<TrabajoSolicitado> trabajosSolicitados = (List<TrabajoSolicitado>) request.getAttribute("trabajosSolicitados");
+%>
+
+<h2>Solicitar Trabajo</h2>
+<h3>Selecciona tu Parcela y Tipo de Trabajo</h3>
+
+<%-- Mostrar las parcelas disponibles --%>
+<% if (parcelas != null && !parcelas.isEmpty()) { %>
+<form method="POST" action="SolicitarTrabajoServlet" onsubmit="guardarSeccionActiva('sec_agricultor', 'agricultor_solicitudes')">
+    <label for="parcela_id">Seleccionar Parcela:</label>
+    <select name="parcela_id" id="parcela_id" required>
+        <% for (Parcela parcela : parcelas) {%>
+        <option value="<%= parcela.getNumParcela()%>">
+            <%= parcela.getIdCatastro()%>
+        </option>
+        <% } %>
+    </select><br>
+
+    <label for="tipo_trabajo_agri_solicita">Seleccionar Tipo de Trabajo:</label>
+    <select name="tipo_trabajo_agri_solicita" id="tipo_trabajo_agri_solicita" required>
+        <% for (TipoTrabajo tipo : tiposTrabajo) {%>
+        <option value="<%= tipo.getIdTipoTrabajo()%>">
+            <%= tipo.getNombre()%>
+        </option>
+        <% } %>
+    </select><br>
+
+    <input type="submit" name="solicitar_trabajo" value="Solicitar Trabajo">
+</form>
+<% } else { %>
+<p>No tienes parcelas disponibles para solicitar trabajo.</p>
+<% } %>
+
+<h2>Trabajos Solicitados Pendientes de Revisar</h2>
+
+<%-- Mostrar los trabajos solicitados pendientes --%>
+<% if (trabajosSolicitados != null && !trabajosSolicitados.isEmpty()) { %>
+<table border="1">
+    <tr>
+        <th>ID Solicitud</th>
+        <th>Parcela (ID Catastro)</th>
+        <th>Tipo de Trabajo</th>
+        <th>Fecha de Solicitud</th>
+    </tr>
+    <% for (TrabajoSolicitado trabajo : trabajosSolicitados) {%>
+    <tr>
+        <td><%= trabajo.getIdSolicitud()%></td>
+        <td><%= trabajo.getNumParcela()%></td>
+        <td>
             <%
-                List<Parcela> parcelas = (List<Parcela>) request.getAttribute("parcelas");
-                if(parcelas != null) {
-                    for(Parcela p : parcelas) {
-            %>
-                        <option value="<%= p.getNumParcela() %>"><%= p.getIdCatastro() %></option>
-            <%
+                // Buscar el nombre del tipo de trabajo basado en el ID de tipoTrabajo
+                String tipoTrabajoNombre = "";
+                for (TipoTrabajo tipo : tiposTrabajo) {
+                    if (tipo.getIdTipoTrabajo() == trabajo.getIdTipoTrabajo()) {
+                        tipoTrabajoNombre = tipo.getNombre();
+                        break;
                     }
-                } else {
-            %>
-                <option value="">No tienes parcelas disponibles</option>
-            <%
                 }
             %>
-        </select>
-        <br>
-        <label for="tipo_trabajo_agri_solicita">Seleccionar Tipo de Trabajo:</label>
-        <select name="tipo_trabajo_agri_solicita" id="tipo_trabajo_agri_solicita" required>
-            <%-- Se asume que se envía la lista de tipos de trabajo en el atributo "tiposTrabajo" --%>
-            <%
-                List<TipoTrabajo> tipos = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
-                if(tipos != null) {
-                    for(TipoTrabajo t : tipos) {
-            %>
-                        <option value="<%= t.getIdTipoTrabajo() %>"><%= t.getNombre() %></option>
-            <%
-                    }
-                } else {
-            %>
-                <option value="">No hay tipos de trabajo disponibles</option>
-            <%
-                }
-            %>
-        </select>
-        <br>
-        <input type="submit" value="Solicitar Trabajo">
-    </form>
+            <%= tipoTrabajoNombre%>
+        </td>
+        <td><%= trabajo.getFechaSolicitud()%></td>
+    </tr>
+    <% } %>
+</table>
+<% } else { %>
+<p>No tienes trabajos solicitados pendientes de revisar.</p>
+<% }%>

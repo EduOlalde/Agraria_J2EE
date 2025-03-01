@@ -13,14 +13,12 @@
             <th>Número de Parcela</th>
             <th>ID Catastro</th>
             <th>Extensión</th>
-            <th>Propietario</th>
         </tr>
         <% for (Parcela parcela : parcelas) { %>
             <tr>
                 <td><%= parcela.getNumParcela() %></td>
                 <td><%= parcela.getIdCatastro() %></td>
                 <td><%= parcela.getExtension() %></td>
-                <td><%= parcela.getPropietario() %></td>
             </tr>
         <% } %>
     </table>

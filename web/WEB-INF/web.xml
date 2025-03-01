@@ -32,6 +32,10 @@
         <servlet-name>AgricultorFacturasServlet</servlet-name>
         <servlet-class>com.ecofield.controlAgricultor.AgricultorFacturasServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AgricultorSolicitarServlet</servlet-name>
+        <servlet-class>com.ecofield.controlAgricultor.AgricultorSolicitarServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>DashboardServlet</servlet-name>
         <url-pattern>/dashboard</url-pattern>
@@ -123,6 +127,10 @@
     <servlet-mapping>
         <servlet-name>AgricultorFacturasServlet</servlet-name>
         <url-pattern>/AgricultorFacturasServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AgricultorSolicitarServlet</servlet-name>
+        <url-pattern>/AgricultorSolicitarServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
