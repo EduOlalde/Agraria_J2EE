@@ -16,8 +16,9 @@
 
     Usuario usuario = (Usuario) sesion.getAttribute("usuario");
     List<Rol> roles = usuario.getRoles();
+    boolean habilitado = usuario.isHabilitado();
 
-    if (!usuario.isHabilitado()) {
+    if (!habilitado) {
         session.setAttribute("mensaje", "La cuenta está deshabilitada. Contacta con el administrador.");
     }
 %>
@@ -37,10 +38,12 @@
                 <img src="imagenes/EcoField.svg" alt="EcoField Logo" class="logo">
                 <span class="app-name">EcoField</span>
             </div>
-            <div class="nav-right">
-                <% if (usuario.isHabilitado()) { %>
-                <% for (Rol rol : roles) { %>
-                <button class="nav-button" onclick="showSection('sec_<%= rol.getNombre().toLowerCase() %>')"><%= rol.getNombre() %></button>
+            <div class="nav-right">               
+                <% if (habilitado) { %>
+                <% for (Rol rol : roles) {%>
+                <button class="nav-button" onclick="showSection('sec_<%= rol.getNombre().toLowerCase()%>')">
+                    <%= rol.getNombre()%>
+                </button>
                 <% } %>
                 <% } %>
                 <button class="nav-button" onclick="showSection('sec_usuario')">Panel de usuario</button>
@@ -51,15 +54,15 @@
         <div class="main-content">
             <section class="content-area">
                 <div id="mensajeExito">
-                    <% if (session.getAttribute("mensaje") != null) { %>
-                    <%= session.getAttribute("mensaje") %>
+                    <% if (session.getAttribute("mensaje") != null) {%>
+                    <%= session.getAttribute("mensaje")%>
                     <% session.removeAttribute("mensaje"); %>
                     <% } %>
                 </div>
 
                 <div id="mensajeError">
-                    <% if (session.getAttribute("error") != null) { %>
-                    <%= session.getAttribute("error") %>
+                    <% if (session.getAttribute("error") != null) {%>
+                    <%= session.getAttribute("error")%>
                     <% session.removeAttribute("error"); %>
                     <% } %>
                 </div>
@@ -73,15 +76,17 @@
                     </div>
                 </div>
 
+                <% if (habilitado) { %>
                 <!-- Secciones por rol -->
-                <% for (Rol rol : roles) { 
-                    String menuPath = rol.getNombre().toLowerCase() + "/menu.jsp"; 
+                <% for (Rol rol : roles) {
+                        String menuPath = rol.getNombre().toLowerCase() + "/menu.jsp";
                 %>
-                <div id="sec_<%= rol.getNombre().toLowerCase() %>" class="section-content" style="display: none;">
-                    <h2><%= rol.getNombre() %></h2>
-                    <jsp:include page="<%= menuPath %>" />
+                <div id="sec_<%= rol.getNombre().toLowerCase()%>" class="section-content" style="display: none;">
+                    <h2><%= rol.getNombre()%></h2>
+                    <jsp:include page="<%= menuPath%>" />
                 </div>
                 <% } %>
+                <% }%>
             </section>
         </div>
 
