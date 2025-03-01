@@ -62,7 +62,20 @@
         <input type="hidden" name="id_maquina" value="<%= maquina.getIdMaquina()%>">
         <td><%= maquina.getIdMaquina()%></td>
         <td><%= maquina.getEstado()%></td>
-        <td><%= maquina.getTipoMaquina()%></td>
+        <td>
+            <%
+                String nombreTipoTrabajo = "Desconocido";
+                if (tiposTrabajo != null) {
+                    for (TipoTrabajo tipo : tiposTrabajo) {
+                        if (tipo.getIdTipoTrabajo() == maquina.getTipoMaquina()) {
+                            nombreTipoTrabajo = tipo.getNombre();
+                            break;
+                        }
+                    }
+                }
+            %>
+            <%= nombreTipoTrabajo%>
+        </td>
         <td><%= maquina.getModelo()%></td>
         <td>
             <button type="submit">Eliminar</button>

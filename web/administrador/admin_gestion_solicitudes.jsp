@@ -23,21 +23,6 @@
 %>
 
 <h3>Gestión de Trabajos Solicitados</h3>
-<!-- Pendiente 
-<%-- Formulario para filtros (opcional, si se requiere) --%>
-<form method="GET" action="dashboard" onsubmit="guardarSeccionActiva('sec_administrador', 'admin_gestion_solicitudes')">
-    <label for="tipoTrabajo">Filtrar por Tipo de Trabajo:</label>
-    <select name="tipoTrabajo" id="tipoTrabajo">
-        <option value="">Todos</option>
-        <% for (TrabajoSolicitado trabajo : trabajosSolicitados) {%>
-        <option value="<%= trabajo.getIdTipoTrabajo()%>" <%= (filtroTrabajo != null && filtroTrabajo.equals(trabajo.getIdTipoTrabajo())) ? "selected" : ""%>>
-            <%= trabajo.getIdTipoTrabajo()%>
-        </option>
-        <% } %>
-    </select>
-    <input type="submit" value="Filtrar">
-</form>
--->
 <%-- Mostrar los trabajos solicitados --%>
 <h3>Trabajos Pendientes de Asignación</h3>
 <% if (trabajosSolicitados != null && !trabajosSolicitados.isEmpty()) { %>
@@ -75,7 +60,7 @@
                 // Obtener el nombre del tipo de trabajo cruzando el ID con la lista de tiposTrabajo
                 String nombreTipoTrabajo = "";
                 for (TipoTrabajo tipo : tiposTrabajo) {
-                    if (tipo.getIdTipoTrabajo()== trabajo.getIdTipoTrabajo()) {
+                    if (tipo.getIdTipoTrabajo() == trabajo.getIdTipoTrabajo()) {
                         nombreTipoTrabajo = tipo.getNombre();  // Nombre del tipo de trabajo
                         break;
                     }
@@ -86,26 +71,35 @@
         <td><%= trabajo.getEstado()%></td>
         <td>
             <label for="maquinista">Maquinista:</label>
-            <select name="maquinista" required>
+            <select name="maquinista">
                 <%
+                    boolean maquinistasDisponibles = false;
                     // Filtrar maquinistas disponibles por especialidades
                     for (Maquinista maquinista : maquinistas) {
                         // Filtrar por especialidad del maquinista y tipo de trabajo de la solicitud
                         if (maquinista.getEspecialidades().contains(trabajo.getIdTipoTrabajo())) {
+                            maquinistasDisponibles = true;
                 %>
                 <option value="<%= maquinista.getId()%>"><%= maquinista.getNombre()%></option>
                 <%
                         }
                     }
+                    if (!maquinistasDisponibles) {
+                %>
+                <option disabled>No hay maquinistas disponibles para este trabajo</option>
+                <%
+                    }
                 %>
             </select>
 
             <label for="maquina">Máquina:</label>
-            <select name="maquina" required>
+            <select name="maquina">
                 <%
+                    boolean maquinasDisponiblesFlag = false;
                     // Filtrar las máquinas disponibles basadas en el tipo de trabajo de la solicitud
                     for (Maquina maquina : maquinasDisponibles) {
                         if (maquina.getTipoMaquina() == (trabajo.getIdTipoTrabajo()) && maquina.getEstado().equals("Disponible")) {
+                            maquinasDisponiblesFlag = true;
                 %>
                 <option value="<%= maquina.getIdMaquina()%>">
                     <%
@@ -122,6 +116,11 @@
                 </option>
                 <%
                         }
+                    }
+                    if (!maquinasDisponiblesFlag) {
+                %>
+                <option disabled>No hay máquinas disponibles para este trabajo</option>
+                <%
                     }
                 %>
             </select>

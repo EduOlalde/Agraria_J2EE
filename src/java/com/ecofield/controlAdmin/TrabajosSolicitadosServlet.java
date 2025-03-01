@@ -24,8 +24,16 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
     private void asignarTrabajo(HttpServletRequest request, HttpSession session, TrabajoSolicitadoDAO trabajoDAO) {
         try {
             int idSolicitud = Integer.parseInt(request.getParameter("id_solicitud"));
-            int idMaquinista = Integer.parseInt(request.getParameter("maquinista"));
-            int idMaquina = Integer.parseInt(request.getParameter("maquina"));
+            String idMaquinistaStr = request.getParameter("maquinista");
+            String idMaquinaStr = request.getParameter("maquina");
+
+            if (idMaquinistaStr == null || idMaquinistaStr.isEmpty() || idMaquinaStr == null || idMaquinaStr.isEmpty()) {
+                session.setAttribute("error", "Debes seleccionar un maquinista y una máquina para asignar el trabajo.");
+                return;
+            }
+
+            int idMaquinista = Integer.parseInt(idMaquinistaStr);
+            int idMaquina = Integer.parseInt(idMaquinaStr);
 
             boolean asignado = trabajoDAO.asignarTrabajo(idSolicitud, idMaquinista, idMaquina);
 

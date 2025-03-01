@@ -14,7 +14,7 @@
     List<TipoTrabajo> tiposTrabajo = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
     List<Usuario> agricultores = (List<Usuario>) request.getAttribute("agricultores");
     String agricultorSeleccionado = request.getParameter("agricultor");
-    String tipoTrabajoSeleccionado = request.getParameter("tipoTrabajo");
+    String tipoTrabajoSeleccionado = request.getParameter("listaTrabajostipoTrabajo");
 %>
 <h2>Listado de Trabajos</h2>
 
@@ -41,8 +41,8 @@
         </div>
 
         <div class="columna">
-            <label for="tipoTrabajo">Filtrar por Tipo de Trabajo:</label>
-            <select name="tipoTrabajo" id="tipoTrabajo">
+            <label for="listaTrabajostipoTrabajo">Filtrar por Tipo de Trabajo:</label>
+            <select name="listaTrabajostipoTrabajo" id="listaTrabajostipoTrabajo">
                 <option value="">Todos</option>
                 <%
                     if (tiposTrabajo != null) {
@@ -60,10 +60,10 @@
         </div>
 
         <div class="columna">
-            <label for="orden">Ordenar por Fecha:</label>
-            <select name="orden" id="orden">
-                <option value="desc">Más reciente</option>
-                <option value="asc">Más antiguo</option>
+            <label for="listaTrabajosOrden">Ordenar por Fecha:</label>
+            <select name="listaTrabajosOrden" id="listaTrabajosOrden">
+                <option value="desc" <%= "desc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : "" %>>Más reciente</option>
+                <option value="asc" <%= "asc".equals(request.getParameter("listaTrabajosOrden")) ? "selected" : "" %>>Más antiguo</option>
             </select>
         </div>
     </div>

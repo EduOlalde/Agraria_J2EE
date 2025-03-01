@@ -59,15 +59,7 @@ function mostrarSeccionActiva() {
 function inicio() {
     mostrarSeccionActiva();
 
-    document.querySelectorAll(".selectEstadoMaquinas").forEach(select => {
-        select.addEventListener("change", (ev) => {
-            const form = select.closest("form");
-            if (form) {
-                guardarSeccionActiva('sec_administrador', 'admin_maquinas');
-                form.submit();
-            }
-        });
-    });
+   
 
 }
 

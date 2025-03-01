@@ -125,10 +125,10 @@ public class DashboardServlet extends HttpServlet {
             String paramAgricultor = request.getParameter("agricultor");
             Integer filtroAgricultor = (paramAgricultor != null && !paramAgricultor.trim().isEmpty()) ? Integer.valueOf(paramAgricultor) : null;
 
-            String paramTipoTrabajo = request.getParameter("tipoTrabajo");
+            String paramTipoTrabajo = request.getParameter("listaTrabajostipoTrabajo");
             Integer filtroTipoTrabajo = (paramTipoTrabajo != null && !paramTipoTrabajo.trim().isEmpty()) ? Integer.valueOf(paramTipoTrabajo) : null;
 
-            String paramOrdenFecha = request.getParameter("orden");
+            String paramOrdenFecha = request.getParameter("listaTrabajosOrden");
             String ordenFecha = (paramOrdenFecha != null && paramOrdenFecha.equals("asc")) ? "ASC" : "DESC";
 
             // Obtener lista de trabajos filtrados
@@ -141,7 +141,7 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("facturasPendientes", facturasPendientes);
 
             // Obtener historial de facturas
-            List<Factura> historialFacturas = facturaDAO.obtenerHistorialFacturas();
+            List<Factura> historialFacturas = facturaDAO.obtenerHistorialFacturas(null);
             request.setAttribute("historialFacturas", historialFacturas);
 
         }
@@ -149,8 +149,22 @@ public class DashboardServlet extends HttpServlet {
         if (roles.contains(rolAgricultor)) {
 
             ParcelaDAO parcelaDAO = new ParcelaDAO(conn);
+            FacturaDAO facturaDAO = new FacturaDAO(conn);
+            int idAgricultor = (int)session.getAttribute("user_id");
+            
+            
+            /* Módulo listado de parcelas */
             List<Parcela> parcelas = parcelaDAO.obtenerParcelasDeAgricultor(idUsuario);
             request.setAttribute("parcelasAgricultor", parcelas);
+            
+            /* Módulo facturación */
+            List<Factura> facturasPendientes = facturaDAO.obtenerFacturasPendientesPago(idAgricultor);
+            List<Factura> facturasPagadas = facturaDAO.obtenerFacturasPagadas(idAgricultor);
+            request.setAttribute("facturasPendientes", facturasPendientes);
+            request.setAttribute("facturasPagadas", facturasPagadas);
+           
+            
+            
 
         }
 
