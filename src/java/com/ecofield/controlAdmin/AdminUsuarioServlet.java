@@ -58,6 +58,8 @@ public class AdminUsuarioServlet extends HttpServlet {
         String mensaje = usuarioDAO.actualizarUsuario(usuario, roles);
 
         if (mensaje.equals("Usuario actualizado correctamente.")) {
+            usuario = usuarioDAO.obtenerUsuarioPorId(idUsuario);
+            session.setAttribute("usuario", usuario);
             session.setAttribute("mensaje", mensaje);
         } else {
             session.setAttribute("error", mensaje);
