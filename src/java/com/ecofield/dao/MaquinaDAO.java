@@ -15,17 +15,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Clase DAO que gestiona las operaciones CRUD para las máquinas en la base de datos.
+ * Proporciona métodos para agregar, actualizar, eliminar y consultar máquinas,
+ * además de obtener máquinas disponibles, tanto generales como filtradas por tipo de trabajo.
+ * 
  * @author Eduardo Olalde
  */
 public class MaquinaDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructor de la clase MaquinaDAO.
+     * 
+     * @param conn La conexión a la base de datos que será utilizada para las consultas.
+     */
     public MaquinaDAO(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Agrega una nueva máquina a la base de datos.
+     * 
+     * @param maquina La máquina a agregar.
+     * @return true si la máquina fue agregada correctamente, false en caso contrario.
+     */
     public boolean agregarMaquina(Maquina maquina) {
         String sql = "INSERT INTO maquinas (Estado, Tipo_Maquina, Modelo) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -39,6 +53,13 @@ public class MaquinaDAO {
         }
     }
 
+    /**
+     * Actualiza el estado de una máquina en la base de datos.
+     * 
+     * @param idMaquina El ID de la máquina cuya información se actualizará.
+     * @param nuevoEstado El nuevo estado que se asignará a la máquina.
+     * @return true si el estado fue actualizado correctamente, false en caso contrario.
+     */
     public boolean actualizarEstadoMaquina(int idMaquina, String nuevoEstado) {
         String sql = "UPDATE maquinas SET Estado = ? WHERE ID_Maquina = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -51,6 +72,12 @@ public class MaquinaDAO {
         }
     }
 
+    /**
+     * Elimina una máquina de la base de datos.
+     * 
+     * @param idMaquina El ID de la máquina a eliminar.
+     * @return true si la máquina fue eliminada correctamente, false en caso contrario.
+     */
     public boolean eliminarMaquina(int idMaquina) {
         String sql = "DELETE FROM maquinas WHERE ID_Maquina = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -62,6 +89,13 @@ public class MaquinaDAO {
         }
     }
 
+    /**
+     * Obtiene una lista de máquinas filtradas por estado y tipo de máquina.
+     * 
+     * @param filtroEstado El estado por el cual filtrar las máquinas (puede ser null).
+     * @param filtroTipoMaquina El tipo de máquina por el cual filtrar (puede ser null).
+     * @return Una lista de máquinas que cumplen con los filtros especificados.
+     */
     public List<Maquina> obtenerMaquinas(String filtroEstado, Integer filtroTipoMaquina) {
         List<Maquina> maquinas = new ArrayList<>();
         String sql = "SELECT m.ID_Maquina, m.Estado, m.Tipo_Maquina, m.Modelo "
@@ -100,6 +134,11 @@ public class MaquinaDAO {
         return maquinas;
     }
 
+    /**
+     * Obtiene una lista de máquinas que están disponibles.
+     * 
+     * @return Una lista de máquinas que tienen el estado 'Disponible'.
+     */
     public List<Maquina> getMaquinasDisponibles() {
         List<Maquina> maquinas = new ArrayList<>();
         String sql = "SELECT m.ID_Maquina, m.Estado, m.Tipo_Maquina, m.Modelo "
@@ -125,6 +164,12 @@ public class MaquinaDAO {
         return maquinas;
     }
 
+    /**
+     * Obtiene una lista de máquinas disponibles para un tipo de trabajo específico.
+     * 
+     * @param idTipoTrabajo El ID del tipo de trabajo para filtrar las máquinas.
+     * @return Una lista de máquinas disponibles para el tipo de trabajo especificado.
+     */
     public List<Maquina> getMaquinasDisponiblesPorTipoTrabajo(int idTipoTrabajo) {
         List<Maquina> maquinas = new ArrayList<>();
         String sql = "SELECT m.ID_Maquina, m.Estado, m.Tipo_Maquina, m.Modelo "

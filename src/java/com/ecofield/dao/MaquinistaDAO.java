@@ -15,18 +15,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Clase DAO para gestionar las operaciones relacionadas con los maquinistas en la base de datos.
+ * Realiza operaciones como obtener, actualizar especialidades de los maquinistas y obtener la lista de maquinistas habilitados.
  * @author Eduardo Olalde
  */
 public class MaquinistaDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructor de la clase MaquinistaDAO
+     * @param conn Conexión a la base de datos.
+     */
     public MaquinistaDAO(Connection conn) {
         this.conn = conn;
     }
 
-    // Obtener todos los maquinistas habilitados
+    /**
+     * Obtiene todos los maquinistas habilitados desde la base de datos.
+     * @return Lista de maquinistas habilitados.
+     */
     public List<Maquinista> obtenerMaquinistas() {
         List<Maquinista> maquinistas = new ArrayList<>();
         String sql = "SELECT u.ID_Usuario, u.Nombre, u.Email FROM usuarios u "
@@ -51,7 +59,11 @@ public class MaquinistaDAO {
         return maquinistas;
     }
 
-    // Obtener las especialidades de un maquinista
+    /**
+     * Obtiene las especialidades asociadas a un maquinista.
+     * @param idMaquinista El ID del maquinista.
+     * @return Lista de IDs de tipos de trabajo que representan las especialidades del maquinista.
+     */
     public List<Integer> obtenerEspecialidades(int idMaquinista) {
         List<Integer> especialidades = new ArrayList<>();
         String sql = "SELECT ID_Tipo_Trabajo FROM maquinista_tipo_trabajo WHERE ID_Maquinista = ?";
@@ -62,7 +74,6 @@ public class MaquinistaDAO {
                 while (rs.next()) {
                     especialidades.add(rs.getInt("ID_Tipo_Trabajo"));
                 }
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(MaquinistaDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -70,7 +81,11 @@ public class MaquinistaDAO {
         return especialidades;
     }
 
-    // Actualizar las especialidades de un maquinista
+    /**
+     * Actualiza las especialidades de un maquinista. Primero elimina las especialidades no seleccionadas y luego inserta las nuevas especialidades.
+     * @param idMaquinista El ID del maquinista a actualizar.
+     * @param nuevasEspecialidades Lista de los nuevos tipos de trabajo que representarán las especialidades del maquinista.
+     */
     public void actualizarEspecialidades(int idMaquinista, List<Integer> nuevasEspecialidades) {
         // Eliminar especialidades no seleccionadas
         String deleteSql = "DELETE FROM maquinista_tipo_trabajo WHERE ID_Maquinista = ? AND ID_Tipo_Trabajo NOT IN (?)";
@@ -94,5 +109,4 @@ public class MaquinistaDAO {
             Logger.getLogger(MaquinistaDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
 }

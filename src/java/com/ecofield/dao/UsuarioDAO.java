@@ -20,11 +20,21 @@ public class UsuarioDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructor que inicializa el DAO con una conexión a la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     */
     public UsuarioDAO(Connection conn) {
         this.conn = conn;
     }
 
-    // Obtener un usuario por ID
+    /**
+     * Obtiene un usuario por su ID, incluyendo sus roles.
+     *
+     * @param id El ID del usuario a obtener.
+     * @return El objeto Usuario con sus roles, o null si no se encuentra.
+     */
     public Usuario obtenerUsuarioPorId(int id) {
         Usuario usuario = null;
         String sql = "SELECT u.*, r.ID_Rol, r.Nombre AS RolNombre FROM Usuarios u "
@@ -64,7 +74,12 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    // Obtener un usuario por nombre
+    /**
+     * Obtiene un usuario por su nombre, incluyendo sus roles.
+     *
+     * @param nombre El nombre del usuario a buscar.
+     * @return El objeto Usuario con sus roles, o null si no se encuentra.
+     */
     public Usuario obtenerUsuarioPorNombre(String nombre) {
         Usuario usuario = null;
         String sql = "SELECT u.*, r.ID_Rol, r.Nombre AS RolNombre FROM Usuarios u "
@@ -105,6 +120,12 @@ public class UsuarioDAO {
         return usuario;
     }
 
+    /**
+     * Obtiene una lista de usuarios que tienen asignado un rol específico.
+     *
+     * @param rol El nombre del rol.
+     * @return Lista de usuarios que tienen el rol especificado.
+     */
     public List<Usuario> obtenerUsuariosPorRol(String rol) {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT u.ID_Usuario, u.Nombre FROM usuarios u "
@@ -127,7 +148,12 @@ public class UsuarioDAO {
         return usuarios;
     }
 
-    // Actualizar los datos de un usuario
+    /**
+     * Actualiza los datos de un usuario existente.
+     *
+     * @param usuario El objeto Usuario con los datos a actualizar.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     public String actualizarUsuario(Usuario usuario) {
         String sql = "UPDATE Usuarios SET Nombre = ?, Contrasenia = ?, Telefono = ?, Email = ? WHERE ID_Usuario = ?";
 
@@ -162,7 +188,15 @@ public class UsuarioDAO {
         }
     }
 
-    // Registrar un nuevo usuario
+    /**
+     * Registra un nuevo usuario sin asignar roles.
+     *
+     * @param nombre      El nombre del nuevo usuario.
+     * @param contrasenia La contraseña del nuevo usuario.
+     * @param telefono    El teléfono del nuevo usuario.
+     * @param email       El email del nuevo usuario.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     public String registrarUsuario(String nombre, String contrasenia, String telefono, String email) {
         String sql = "INSERT INTO Usuarios (Nombre, Contrasenia, Telefono, Email) VALUES (?, ?, ?, ?)";
 
@@ -196,7 +230,11 @@ public class UsuarioDAO {
         }
     }
 
-    // Listar todos los usuarios con sus roles
+    /**
+     * Lista todos los usuarios junto con sus roles.
+     *
+     * @return Una lista de objetos Usuario con sus respectivos roles.
+     */
     public List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT u.id_usuario, u.nombre, u.email, u.telefono, u.habilitado, r.id_rol, r.nombre AS rol_nombre "
@@ -238,7 +276,13 @@ public class UsuarioDAO {
         return usuarios;
     }
 
-    // Registrar un nuevo usuario con roles
+    /**
+     * Registra un nuevo usuario y le asigna roles.
+     *
+     * @param usuario El objeto Usuario con los datos a registrar.
+     * @param roles   Lista de roles a asignar al usuario.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     public String registrarUsuario(Usuario usuario, List<Rol> roles) {
         String sqlUsuario = "INSERT INTO usuarios (nombre, email, telefono, contrasenia, habilitado) VALUES (?, ?, ?, ?, ?)";
         String sqlRol = "INSERT INTO usuarios_roles (id_usuario, id_rol) VALUES (?, ?)";
@@ -288,7 +332,16 @@ public class UsuarioDAO {
         }
     }
 
-    // Actualizar usuario y roles
+    /**
+     * Actualiza un usuario y sus roles.
+     * <p>
+     * Verifica que un administrador no pierda el rol de administrador ni sea deshabilitado.
+     * </p>
+     *
+     * @param usuario El objeto Usuario con los datos a actualizar.
+     * @param roles   Lista de roles a asignar al usuario.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     public String actualizarUsuario(Usuario usuario, List<Rol> roles) {
         // Verificar si es el usuario admin antes de modificar
         if (esAdmin(usuario.getId())) {
@@ -342,7 +395,12 @@ public class UsuarioDAO {
         }
     }
 
-    // Eliminar usuario (evitando eliminar admin)
+    /**
+     * Elimina un usuario, verificando que no sea el administrador ni tenga trabajos asignados.
+     *
+     * @param id El ID del usuario a eliminar.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     public String eliminarUsuario(int id) {
         if (esAdmin(id)) {
             return "No se puede eliminar al administrador.";
@@ -355,10 +413,22 @@ public class UsuarioDAO {
         return ejecutarEliminacion(id);
     }
 
+    /**
+     * Verifica si el usuario es administrador.
+     *
+     * @param id El ID del usuario.
+     * @return true si el usuario es administrador, false en caso contrario.
+     */
     private boolean esAdmin(int id) {
         return id == 1;
     }
 
+    /**
+     * Verifica si el usuario tiene trabajos asignados.
+     *
+     * @param id El ID del usuario.
+     * @return true si el usuario tiene trabajos asignados, false en caso contrario.
+     */
     private boolean tieneTrabajosAsignados(int id) {
         String sql = "SELECT COUNT(*) FROM trabajos WHERE id_maquinista = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -371,6 +441,12 @@ public class UsuarioDAO {
         }
     }
 
+    /**
+     * Ejecuta la eliminación de un usuario y sus roles asociados.
+     *
+     * @param id El ID del usuario a eliminar.
+     * @return Un mensaje indicando el resultado de la operación.
+     */
     private String ejecutarEliminacion(int id) {
         try (PreparedStatement stmtRoles = conn.prepareStatement("DELETE FROM usuarios_roles WHERE id_usuario = ?")) {
             stmtRoles.setInt(1, id);

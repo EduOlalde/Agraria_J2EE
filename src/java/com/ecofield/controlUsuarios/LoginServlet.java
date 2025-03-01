@@ -13,12 +13,20 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Servlet que gestiona el login de los usuarios.
+ * <p>
+ * Este servlet maneja el inicio de sesión de los usuarios, verificando las credenciales proporcionadas y estableciendo
+ * una sesión de usuario si las credenciales son correctas.
+ * </p>
  */
 public class LoginServlet extends HttpServlet {
 
+    /**
+     * Inicializa el servlet, estableciendo la conexión a la base de datos en el contexto de la aplicación.
+     * 
+     * @throws ServletException Si ocurre un error al inicializar la conexión a la base de datos.
+     */
     @Override
     public void init() throws ServletException {
-        // Inicialización de la conexión en el contexto
         try {
             // Conectamos a la base de datos y la guardamos en el contexto
             Connection conn = ConexionDB.conectar();
@@ -28,6 +36,15 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Procesa las solicitudes de login, validando las credenciales del usuario.
+     * Si el login es exitoso, redirige al usuario al dashboard, de lo contrario, redirige de vuelta al login.
+     * 
+     * @param request La solicitud HTTP que contiene las credenciales de login.
+     * @param response La respuesta HTTP que redirige al usuario según el resultado del login.
+     * @throws ServletException Si ocurre un error durante el procesamiento de la solicitud.
+     * @throws IOException Si ocurre un error de entrada/salida durante el procesamiento de la solicitud.
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -49,7 +66,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("user_id", usuario.getId());
             session.setAttribute("usuario", usuario);
 
-            // Redirigimos al usuario a la página principal
+            // Redirigimos al usuario a la página principal (dashboard)
             response.sendRedirect("dashboard");
         } else {
             // Si las credenciales son incorrectas, redirigimos de vuelta al login
@@ -58,23 +75,49 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Maneja las solicitudes GET.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP.
+     * @param response La respuesta HTTP.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
+    /**
+     * Maneja las solicitudes POST.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP.
+     * @param response La respuesta HTTP.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
+    /**
+     * Obtiene la descripción del servlet.
+     * 
+     * @return Una breve descripción del servlet.
+     */
     @Override
     public String getServletInfo() {
         return "Servlet para la gestión del login de usuarios.";
     }
 
+    /**
+     * Destruye el servlet, cerrando la conexión a la base de datos cuando el servlet es destruido.
+     */
     @Override
     public void destroy() {
         // Cerramos la conexión cuando el servlet es destruido

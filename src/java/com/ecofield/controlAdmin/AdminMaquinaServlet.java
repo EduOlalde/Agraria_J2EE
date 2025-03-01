@@ -15,11 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
- * @author Eduardo Olalde
+ * Servlet para la gestión de máquinas en el módulo de administración.
+ * Permite agregar, eliminar y actualizar el estado de las máquinas.
  */
 public class AdminMaquinaServlet extends HttpServlet {
 
+    /**
+     * Crea una nueva máquina con los datos proporcionados en la solicitud.
+     * 
+     * @param request  Objeto HttpServletRequest con los parámetros de la solicitud.
+     * @param session  Sesión actual del usuario.
+     * @param maquinaDAO  DAO para la gestión de máquinas en la base de datos.
+     */
     private void crearMaquina(HttpServletRequest request, HttpSession session, MaquinaDAO maquinaDAO) {
         try {
             int tipoMaquina = Integer.parseInt(request.getParameter("tipo_trabajo_ad_maq"));
@@ -39,6 +46,13 @@ public class AdminMaquinaServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Elimina una máquina según el ID proporcionado en la solicitud.
+     * 
+     * @param request  Objeto HttpServletRequest con los parámetros de la solicitud.
+     * @param session  Sesión actual del usuario.
+     * @param maquinaDAO  DAO para la gestión de máquinas en la base de datos.
+     */
     private void eliminarMaquina(HttpServletRequest request, HttpSession session, MaquinaDAO maquinaDAO) {
         try {
             int idMaquina = Integer.parseInt(request.getParameter("id_maquina"));
@@ -54,6 +68,13 @@ public class AdminMaquinaServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Actualiza el estado de una máquina según los datos proporcionados en la solicitud.
+     * 
+     * @param request  Objeto HttpServletRequest con los parámetros de la solicitud.
+     * @param session  Sesión actual del usuario.
+     * @param maquinaDAO  DAO para la gestión de máquinas en la base de datos.
+     */
     private void actualizarMaquina(HttpServletRequest request, HttpSession session, MaquinaDAO maquinaDAO) {
         try {
             int idMaquina = Integer.parseInt(request.getParameter("id_maquina"));
@@ -72,13 +93,7 @@ public class AdminMaquinaServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa solicitudes GET y POST para la gestión de máquinas.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -108,43 +123,20 @@ public class AdminMaquinaServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para la gestión de máquinas en el módulo de administración";
+    }
 }

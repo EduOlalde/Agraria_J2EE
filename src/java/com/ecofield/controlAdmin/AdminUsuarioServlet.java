@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ * Servlet para la gestión de usuarios en la plataforma EcoField.
+ * Permite crear, modificar y eliminar usuarios, además de asignarles roles.
  */
 package com.ecofield.controlAdmin;
 
@@ -18,11 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Servlet encargado de la administración de usuarios en el sistema.
+ * Maneja las operaciones de creación, modificación y eliminación de usuarios.
+ * 
  * @author Eduardo Olalde
  */
 public class AdminUsuarioServlet extends HttpServlet {
 
+    /**
+     * Crea un nuevo usuario con los datos proporcionados en la petición.
+     * 
+     * @param request Objeto HttpServletRequest con los parámetros del usuario.
+     * @param session Sesión actual del usuario.
+     * @param usuarioDAO Instancia de UsuarioDAO para realizar operaciones en la base de datos.
+     */
     private void crearUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
@@ -43,6 +52,13 @@ public class AdminUsuarioServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Modifica un usuario existente con los datos proporcionados en la petición.
+     * 
+     * @param request Objeto HttpServletRequest con los parámetros del usuario.
+     * @param session Sesión actual del usuario.
+     * @param usuarioDAO Instancia de UsuarioDAO para realizar operaciones en la base de datos.
+     */
     private void modificarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         String nombre = request.getParameter("nombre");
@@ -66,6 +82,13 @@ public class AdminUsuarioServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Elimina un usuario del sistema según el ID proporcionado.
+     * 
+     * @param request Objeto HttpServletRequest con el ID del usuario a eliminar.
+     * @param session Sesión actual del usuario.
+     * @param usuarioDAO Instancia de UsuarioDAO para realizar operaciones en la base de datos.
+     */
     private void eliminarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         int idUsuario = Integer.parseInt(request.getParameter("id_usuario"));
         String mensaje = usuarioDAO.eliminarUsuario(idUsuario);
@@ -77,6 +100,12 @@ public class AdminUsuarioServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Convierte los parámetros recibidos en una lista de objetos Rol.
+     * 
+     * @param rolesSeleccionados Array de strings con los IDs de los roles seleccionados.
+     * @return Lista de objetos Rol.
+     */
     private List<Rol> obtenerRolesDesdeParametros(String[] rolesSeleccionados) {
         List<Rol> roles = new ArrayList<>();
         if (rolesSeleccionados != null) {
@@ -88,13 +117,12 @@ public class AdminUsuarioServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa solicitudes HTTP GET y POST.
+     * 
+     * @param request Objeto HttpServletRequest con la solicitud del cliente.
+     * @param response Objeto HttpServletResponse con la respuesta al cliente.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -125,43 +153,20 @@ public class AdminUsuarioServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para la gestión de usuarios en EcoField.";
+    }
 }
