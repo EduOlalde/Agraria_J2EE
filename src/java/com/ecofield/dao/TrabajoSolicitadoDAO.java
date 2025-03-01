@@ -14,11 +14,21 @@ public class TrabajoSolicitadoDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructor de la clase TrabajoSolicitadoDAO.
+     * 
+     * @param conn La conexión a la base de datos.
+     */
     public TrabajoSolicitadoDAO(Connection conn) {
         this.conn = conn;
     }
 
-    // Inserta una nueva solicitud de trabajo en la BD
+    /**
+     * Crea una nueva solicitud de trabajo en la base de datos.
+     * 
+     * @param solicitud El objeto TrabajoSolicitado que contiene los datos de la solicitud.
+     * @return true si la solicitud fue creada con éxito, false en caso contrario.
+     */
     public boolean crearSolicitud(TrabajoSolicitado solicitud) {
         String sql = "INSERT INTO trabajos_solicitados (Num_Parcela, Propietario, ID_Tipo_Trabajo, Fecha_Solicitud) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -38,7 +48,12 @@ public class TrabajoSolicitadoDAO {
         }
     }
 
-// Obtiene todos los trabajos solicitados de un agricultor por su ID de propietario
+    /**
+     * Obtiene todos los trabajos solicitados de un agricultor por su ID de propietario.
+     * 
+     * @param idPropietario El ID del propietario de los trabajos solicitados.
+     * @return Una lista de objetos TrabajoSolicitado.
+     */
     public List<TrabajoSolicitado> obtenerTrabajosSolicitadosPorPropietario(int idPropietario) {
         String sql = "SELECT ID_Solicitud, Num_Parcela, Propietario, ID_Tipo_Trabajo, Estado, Fecha_Solicitud "
                 + "FROM trabajos_solicitados WHERE Propietario = ?";
@@ -64,7 +79,12 @@ public class TrabajoSolicitadoDAO {
         return trabajosSolicitados;
     }
 
-    // Obtiene las solicitudes de trabajo filtradas únicamente por estado
+    /**
+     * Obtiene las solicitudes de trabajo filtradas únicamente por estado.
+     * 
+     * @param estado El estado de las solicitudes de trabajo.
+     * @return Una lista de objetos TrabajoSolicitado.
+     */
     public List<TrabajoSolicitado> obtenerTrabajosSolicitadosPorEstado(String estado) {
         List<TrabajoSolicitado> trabajosSolicitados = new ArrayList<>();
         String sql = "SELECT ID_Solicitud, Num_Parcela, Propietario, ID_Tipo_Trabajo, Estado, Fecha_Solicitud "
@@ -88,7 +108,13 @@ public class TrabajoSolicitadoDAO {
         return trabajosSolicitados;
     }
 
-    // Obtiene las solicitudes de trabajo filtradas por propietario y estado
+    /**
+     * Obtiene las solicitudes de trabajo filtradas por propietario y estado.
+     * 
+     * @param propietario El ID del propietario de los trabajos solicitados.
+     * @param estado El estado de las solicitudes de trabajo.
+     * @return Una lista de objetos TrabajoSolicitado.
+     */
     public List<TrabajoSolicitado> obtenerTrabajosSolicitadosPorPropietarioYEstado(int propietario, String estado) {
         List<TrabajoSolicitado> trabajosSolicitados = new ArrayList<>();
         String sql = "SELECT ID_Solicitud, Num_Parcela, Propietario, ID_Tipo_Trabajo, Estado, Fecha_Solicitud "
@@ -113,7 +139,12 @@ public class TrabajoSolicitadoDAO {
         return trabajosSolicitados;
     }
 
-    // Actualiza el estado de una solicitud a "Rechazado"
+    /**
+     * Actualiza el estado de una solicitud de trabajo a "Rechazado".
+     * 
+     * @param idSolicitud El ID de la solicitud de trabajo a actualizar.
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
     public boolean rechazarTrabajo(int idSolicitud) {
         String sql = "UPDATE trabajos_solicitados SET Estado = 'Rechazado' WHERE ID_Solicitud = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -126,7 +157,15 @@ public class TrabajoSolicitadoDAO {
         }
     }
 
-    // Asigna un trabajo: inserta en la tabla de trabajos, actualiza la solicitud y marca la máquina como asignada
+    /**
+     * Asigna un trabajo, insertando un nuevo registro en la tabla de trabajos, 
+     * actualizando la solicitud y marcando la máquina como asignada.
+     * 
+     * @param idSolicitud El ID de la solicitud de trabajo.
+     * @param idMaquinista El ID del maquinista que se le asignará el trabajo.
+     * @param idMaquina El ID de la máquina que se le asignará el trabajo.
+     * @return true si la asignación fue exitosa, false en caso contrario.
+     */
     public boolean asignarTrabajo(int idSolicitud, int idMaquinista, int idMaquina) {
         String sqlTrabajo = "INSERT INTO trabajos (Num_Parcela, Tipo, ID_Maquinista, ID_Maquina, Estado) VALUES (?, ?, ?, ?, 'Pendiente')";
         String sqlSolicitud = "UPDATE trabajos_solicitados SET Estado = 'Aprobado' WHERE ID_Solicitud = ?";
@@ -157,7 +196,12 @@ public class TrabajoSolicitadoDAO {
         }
     }
 
-    // Obtiene un trabajo solicitado por su ID
+    /**
+     * Obtiene una solicitud de trabajo por su ID.
+     * 
+     * @param idSolicitud El ID de la solicitud de trabajo a obtener.
+     * @return El objeto TrabajoSolicitado correspondiente, o null si no se encuentra.
+     */
     public TrabajoSolicitado obtenerTrabajoSolicitado(int idSolicitud) {
         String sql = "SELECT ID_Solicitud, Num_Parcela, Propietario, ID_Tipo_Trabajo, Estado, Fecha_Solicitud "
                 + "FROM trabajos_solicitados WHERE ID_Solicitud = ?";

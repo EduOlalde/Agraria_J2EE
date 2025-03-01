@@ -15,30 +15,34 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- *
+ * Servlet encargado de la administración de los maquinistas.
+ * Permite actualizar las especialidades de un maquinista en la base de datos.
+ * 
  * @author Eduardo Olalde
  */
 public class AdminMaquinistasServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa las solicitudes HTTP GET y POST.
+     * 
+     * @param request Objeto que contiene la solicitud del cliente.
+     * @param response Objeto que contiene la respuesta para el cliente.
+     * @throws ServletException Si ocurre un error en el servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+        // Obtiene la conexión de la sesión
         Connection conn = (Connection) request.getSession().getAttribute("conexion");
         MaquinistaDAO maquinistaDAO = new MaquinistaDAO(conn);
 
+        // Obtiene el ID del maquinista y las especialidades seleccionadas
         int idMaquinista = Integer.parseInt(request.getParameter("id_maquinista"));
         String[] especialidades = request.getParameterValues("especialidades");
 
+        // Convierte las especialidades en una lista de enteros
         List<Integer> nuevasEspecialidades = new ArrayList<>();
         if (especialidades != null) {
             for (String especialidad : especialidades) {
@@ -46,20 +50,19 @@ public class AdminMaquinistasServlet extends HttpServlet {
             }
         }
       
+        // Actualiza las especialidades del maquinista en la base de datos
         maquinistaDAO.actualizarEspecialidades(idMaquinista, nuevasEspecialidades);
         request.getSession().setAttribute("mensaje", "Especialidades actualizadas");
         response.sendRedirect("dashboard");
-         
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP GET.
+     * 
+     * @param request Objeto que contiene la solicitud del cliente.
+     * @param response Objeto que contiene la respuesta para el cliente.
+     * @throws ServletException Si ocurre un error en el servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -68,12 +71,12 @@ public class AdminMaquinistasServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP POST.
+     * 
+     * @param request Objeto que contiene la solicitud del cliente.
+     * @param response Objeto que contiene la respuesta para el cliente.
+     * @throws ServletException Si ocurre un error en el servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -82,13 +85,12 @@ public class AdminMaquinistasServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
+     * Devuelve una breve descripción del servlet.
+     * 
+     * @return Una cadena de texto con la descripción del servlet.
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para la administración de maquinistas y sus especialidades.";
+    }
 }

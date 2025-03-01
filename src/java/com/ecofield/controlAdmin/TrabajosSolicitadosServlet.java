@@ -14,11 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Servlet para gestionar las solicitudes de trabajos.
+ * Permite asignar y rechazar trabajos en función de las solicitudes recibidas.
+ * 
  * @author Eduardo Olalde
  */
 public class TrabajosSolicitadosServlet extends HttpServlet {
 
+    /**
+     * Asigna un trabajo a un maquinista y una máquina específica.
+     * 
+     * @param request Objeto HttpServletRequest con los datos de la solicitud.
+     * @param session Sesión del usuario para almacenar mensajes de estado.
+     * @param trabajoDAO DAO para gestionar la asignación de trabajos en la base de datos.
+     */
     private void asignarTrabajo(HttpServletRequest request, HttpSession session, TrabajoSolicitadoDAO trabajoDAO) {
         try {
             int idSolicitud = Integer.parseInt(request.getParameter("id_solicitud"));
@@ -45,6 +54,13 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Rechaza una solicitud de trabajo específica.
+     * 
+     * @param request Objeto HttpServletRequest con los datos de la solicitud.
+     * @param session Sesión del usuario para almacenar mensajes de estado.
+     * @param trabajoDAO DAO para gestionar el rechazo de trabajos en la base de datos.
+     */
     private void rechazarTrabajo(HttpServletRequest request, HttpSession session, TrabajoSolicitadoDAO trabajoDAO) {
         try {
             int idSolicitud = Integer.parseInt(request.getParameter("id_solicitud"));
@@ -61,13 +77,12 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa solicitudes HTTP tanto de tipo GET como POST.
+     * 
+     * @param request Objeto HttpServletRequest con la solicitud del cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -86,14 +101,13 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP GET.
+     * 
+     * @param request Objeto HttpServletRequest con la solicitud del cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -102,12 +116,12 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP POST.
+     * 
+     * @param request Objeto HttpServletRequest con la solicitud del cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
+     * @throws ServletException Si ocurre un error específico del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -116,13 +130,12 @@ public class TrabajosSolicitadosServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
+     * Devuelve una descripción breve del servlet.
+     * 
+     * @return Una cadena con la descripción del servlet.
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para gestionar la asignación y rechazo de trabajos solicitados.";
+    }
 }

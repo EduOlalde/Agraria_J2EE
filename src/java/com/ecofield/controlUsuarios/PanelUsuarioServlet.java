@@ -8,7 +8,6 @@ import com.ecofield.dao.UsuarioDAO;
 import com.ecofield.modelos.Usuario;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,48 +15,62 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Servlet encargado de gestionar el panel de usuario, permitiendo la edición
+ * de los datos del usuario y la actualización de su contraseña.
+ * 
+ * Este servlet maneja tanto las solicitudes GET como POST para mostrar y
+ * actualizar la información del usuario autenticado.
+ * 
  * @author Eduardo Olalde
  */
 public class PanelUsuarioServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa las solicitudes HTTP para obtener y actualizar los datos del usuario.
+     * Si la solicitud es un POST, se intentan actualizar los datos del usuario, 
+     * incluida la contraseña si corresponde.
+     * 
+     * @param request La solicitud HTTP que contiene los parámetros para actualizar
+     *                los datos del usuario.
+     * @param response La respuesta HTTP, que redirige al usuario al dashboard.
+     * @throws ServletException Si ocurre un error durante el procesamiento del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
 
+        // Verifica si la sesión es válida
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect("login.jsp"); // Redirige al login si no hay sesión activa
             return;
         }
 
+        // Obtiene la conexión desde la sesión y el DAO de usuario
         Connection conn = (Connection) session.getAttribute("conexion");
         UsuarioDAO usuarioDAO = new UsuarioDAO(conn);
 
+        // Obtiene el usuario actual de la sesión
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         int userId = usuario.getId();
 
+        // Verifica si la solicitud es un POST para actualizar los datos
         if ("POST".equalsIgnoreCase(request.getMethod())) {
 
+            // Obtiene los parámetros enviados para cambiar la contraseña
             String passActual = request.getParameter("passActual");
             String contrasenia = request.getParameter("contrasenia");
             String repetirContrasenia = request.getParameter("repetir_contrasenia");
 
+            // Verifica la contraseña actual y las contraseñas nuevas
             if (!passActual.equals(usuario.getContrasenia())) {
                 session.setAttribute("error", "Contraseña incorrecta.");
             } else if (!contrasenia.isEmpty() && !contrasenia.equals(repetirContrasenia)) {
                 session.setAttribute("error", "Las contraseñas no coinciden.");
             } else {
 
+                // Actualiza los datos del usuario
                 String nombre = request.getParameter("nombre");
                 String telefono = request.getParameter("telefono");
                 String email = request.getParameter("email");
@@ -67,37 +80,40 @@ public class PanelUsuarioServlet extends HttpServlet {
                 usuario.setEmail(email);
 
                 if (!contrasenia.isEmpty()) {
-                    usuario.setContrasenia(contrasenia);
+                    usuario.setContrasenia(contrasenia);  // Cambia la contraseña si es proporcionada
                 }
-                // Intentar actualizar el usuario
+
+                // Intenta actualizar los datos del usuario en la base de datos
                 String mensaje = usuarioDAO.actualizarUsuario(usuario);
                 if (mensaje.equals("Usuario actualizado correctamente.")) {
-                    request.getSession().setAttribute("mensaje", mensaje);                  
+                    request.getSession().setAttribute("mensaje", mensaje);  // Mensaje de éxito
                 } else {
-                    request.getSession().setAttribute("error", mensaje);                  
+                    request.getSession().setAttribute("error", mensaje);  // Mensaje de error
                 }
             }
 
         }
 
-        // Obtener usuario actualizado y enviarlo a la vista
+        // Obtiene los datos del usuario actualizado y los guarda en la sesión
         usuario = usuarioDAO.obtenerUsuarioPorId(userId);
         if (usuario != null) {
             session.setAttribute("usuario", usuario);
         }
 
+        // Redirige al usuario al dashboard después de la actualización
         request.getRequestDispatcher("dashboard").forward(request, response);
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP <code>GET</code> para mostrar el panel de usuario.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP que contiene los detalles del usuario.
+     * @param response La respuesta HTTP que redirige al usuario al panel.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -106,12 +122,13 @@ public class PanelUsuarioServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP <code>POST</code> para actualizar los datos del usuario.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP que contiene los detalles del usuario a actualizar.
+     * @param response La respuesta HTTP que redirige al usuario después de la actualización.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -120,13 +137,13 @@ public class PanelUsuarioServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
+     * Retorna una breve descripción del servlet.
+     * 
+     * @return Una cadena que contiene una descripción corta del servlet.
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Servlet para gestionar la edición de datos del usuario.";
     }// </editor-fold>
 
 }

@@ -1,6 +1,6 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ * Servlet para la administración de parcelas en la aplicación EcoField.
+ * Permite agregar y eliminar parcelas mediante peticiones HTTP.
  */
 package com.ecofield.controlAdmin;
 
@@ -15,11 +15,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
- * @author Eduardo Olalde
+ * Servlet encargado de gestionar la creación y eliminación de parcelas.
+ * Se accede a él mediante las acciones "agregar_parcela" y "eliminar_parcela".
  */
 public class AdminParcelaServlet extends HttpServlet {
 
+    /**
+     * Crea una nueva parcela a partir de los parámetros recibidos en la solicitud.
+     * 
+     * @param request Objeto HttpServletRequest con los datos de la solicitud.
+     * @param session Sesión actual para almacenar mensajes de respuesta.
+     * @param parcelaDAO Objeto DAO para la gestión de parcelas en la base de datos.
+     */
     private void crearParcela(HttpServletRequest request, HttpSession session, ParcelaDAO parcelaDAO) {
         try {
             String catastro = request.getParameter("ID_Catastro");
@@ -39,6 +46,13 @@ public class AdminParcelaServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Elimina una parcela específica de la base de datos.
+     * 
+     * @param request Objeto HttpServletRequest con los datos de la solicitud.
+     * @param session Sesión actual para almacenar mensajes de respuesta.
+     * @param parcelaDAO Objeto DAO para la gestión de parcelas en la base de datos.
+     */
     private void eliminarParcela(HttpServletRequest request, HttpSession session, ParcelaDAO parcelaDAO) {
         try {
             String idCatastro = request.getParameter("id_catastro");
@@ -55,13 +69,12 @@ public class AdminParcelaServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa las solicitudes HTTP GET y POST.
+     * 
+     * @param request Objeto HttpServletRequest con los datos de la solicitud.
+     * @param response Objeto HttpServletResponse para enviar respuestas al cliente.
+     * @throws ServletException si ocurre un error en la gestión del servlet.
+     * @throws IOException si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -88,14 +101,12 @@ public class AdminParcelaServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP GET.
+     * @param request
+     * @param response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -104,12 +115,11 @@ public class AdminParcelaServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP POST.
+     * @param request
+     * @param response
+     * @throws javax.servlet.ServletException
+     * @throws java.io.IOException
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -118,13 +128,11 @@ public class AdminParcelaServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
+     * Retorna una breve descripción del servlet.
+     * @return 
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para la gestión de parcelas en EcoField";
+    }
 }

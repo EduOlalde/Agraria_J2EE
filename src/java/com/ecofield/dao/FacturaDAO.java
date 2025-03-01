@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ecofield.dao;
 
 import com.ecofield.modelos.Factura;
@@ -16,18 +12,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Clase DAO (Data Access Object) que gestiona las operaciones relacionadas con la tabla de facturas en la base de datos.
+ * Proporciona métodos para obtener, actualizar y eliminar facturas, así como para obtener facturas según su estado.
+ * 
  * @author Eduardo Olalde
  */
 public class FacturaDAO {
 
     private final Connection conn;
 
+    /**
+     * Constructor de la clase FacturaDAO.
+     * 
+     * @param conn La conexión a la base de datos.
+     */
     public FacturaDAO(Connection conn) {
         this.conn = conn;
     }
 
-    // Obtener facturas pendientes de generar
+    /**
+     * Obtiene las facturas que están pendientes de generar.
+     * 
+     * @return Una lista de objetos Factura con las facturas pendientes de generar.
+     */
     public List<Factura> obtenerFacturasPendientes() {
         List<Factura> facturas = new ArrayList<>();
         String sql = "SELECT f.ID_Factura, f.ID_Trabajo, f.Estado, f.Fecha_Emision, f.Fecha_Pago, f.Monto "
@@ -53,7 +60,12 @@ public class FacturaDAO {
         return facturas;
     }
 
-    // Obtener facturas pendientes de pago con opción de filtrar por agricultor
+    /**
+     * Obtiene las facturas pendientes de pago, con la opción de filtrar por agricultor.
+     * 
+     * @param idAgricultor El ID del agricultor para filtrar las facturas. Si es null, se obtienen todas las facturas pendientes de pago.
+     * @return Una lista de objetos Factura con las facturas pendientes de pago.
+     */
     public List<Factura> obtenerFacturasPendientesPago(Integer idAgricultor) {
         List<Factura> facturas = new ArrayList<>();
         String sql = "SELECT f.ID_Factura, f.ID_Trabajo, f.Estado, f.Fecha_Emision, f.Fecha_Pago, f.Monto "
@@ -86,7 +98,12 @@ public class FacturaDAO {
         return facturas;
     }
 
-    // Obtener facturas pagadas con opción de filtrar por agricultor
+    /**
+     * Obtiene las facturas que ya han sido pagadas, con la opción de filtrar por agricultor.
+     * 
+     * @param idAgricultor El ID del agricultor para filtrar las facturas. Si es null, se obtienen todas las facturas pagadas.
+     * @return Una lista de objetos Factura con las facturas pagadas.
+     */
     public List<Factura> obtenerFacturasPagadas(Integer idAgricultor) {
         List<Factura> facturas = new ArrayList<>();
         String sql = "SELECT f.ID_Factura, f.ID_Trabajo, f.Estado, f.Fecha_Emision, f.Fecha_Pago, f.Monto "
@@ -119,7 +136,13 @@ public class FacturaDAO {
         return facturas;
     }
 
-    // Actualizar el estado de la factura y asignar fechas según corresponda
+    /**
+     * Actualiza el estado de una factura y asigna las fechas correspondientes, según el nuevo estado.
+     * 
+     * @param idFactura El ID de la factura a actualizar.
+     * @param nuevoEstado El nuevo estado de la factura (Pendiente de pagar, Pagada, etc.).
+     * @return true si la actualización fue exitosa, false en caso contrario.
+     */
     public boolean actualizarEstadoFactura(int idFactura, String nuevoEstado) {
         String sql;
         Date fechaActual = new Date(System.currentTimeMillis());
@@ -155,6 +178,12 @@ public class FacturaDAO {
         }
     }
 
+    /**
+     * Obtiene el historial de facturas, que incluye las facturas pendientes de pago y las pagadas, con la opción de filtrar por agricultor.
+     * 
+     * @param idAgricultor El ID del agricultor para filtrar las facturas. Si es null, se obtienen todas las facturas.
+     * @return Una lista de objetos Factura con el historial de facturas.
+     */
     public List<Factura> obtenerHistorialFacturas(Integer idAgricultor) {
         List<Factura> facturas = new ArrayList<>();
         String sql = "SELECT f.ID_Factura, f.ID_Trabajo, f.Estado, f.Fecha_Emision, f.Fecha_Pago, f.Monto "
@@ -187,7 +216,12 @@ public class FacturaDAO {
         return facturas;
     }
 
-    // Método para eliminar factura (en caso de error u otro evento)
+    /**
+     * Elimina una factura de la base de datos.
+     * 
+     * @param idFactura El ID de la factura a eliminar.
+     * @return true si la eliminación fue exitosa, false en caso contrario.
+     */
     public boolean eliminarFactura(int idFactura) {
         String sql = "DELETE FROM facturas WHERE ID_Factura = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -198,5 +232,4 @@ public class FacturaDAO {
             return false;
         }
     }
-
 }

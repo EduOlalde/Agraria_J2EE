@@ -14,11 +14,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Servlet para la administración de facturas en el sistema EcoField.
+ * Permite la generación y actualización del estado de las facturas.
+ * 
  * @author Eduardo Olalde
  */
 public class AdminFacturaServlet extends HttpServlet {
 
+    /**
+     * Genera una factura actualizando su estado en la base de datos.
+     * 
+     * @param request  Objeto HttpServletRequest con los datos de la solicitud.
+     * @param session  Sesión del usuario actual.
+     * @param facturaDAO DAO para acceder a los datos de las facturas.
+     */
     private void generarFactura(HttpServletRequest request, HttpSession session, FacturaDAO facturaDAO) {
         try {
             int idFactura = Integer.parseInt(request.getParameter("id_factura"));
@@ -35,13 +44,12 @@ public class AdminFacturaServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Procesa las solicitudes HTTP <code>GET</code> y <code>POST</code>.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request  Objeto HttpServletRequest con la solicitud.
+     * @param response Objeto HttpServletResponse para enviar la respuesta.
+     * @throws ServletException si ocurre un error en el servlet.
+     * @throws IOException si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,14 +64,13 @@ public class AdminFacturaServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Maneja las solicitudes HTTP <code>GET</code>.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request  Objeto HttpServletRequest con la solicitud.
+     * @param response Objeto HttpServletResponse para enviar la respuesta.
+     * @throws ServletException si ocurre un error en el servlet.
+     * @throws IOException si ocurre un error de entrada/salida.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -72,12 +79,12 @@ public class AdminFacturaServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Maneja las solicitudes HTTP <code>POST</code>.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request  Objeto HttpServletRequest con la solicitud.
+     * @param response Objeto HttpServletResponse para enviar la respuesta.
+     * @throws ServletException si ocurre un error en el servlet.
+     * @throws IOException si ocurre un error de entrada/salida.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -86,13 +93,12 @@ public class AdminFacturaServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
+     * Devuelve una breve descripción del servlet.
      *
-     * @return a String containing servlet description
+     * @return Una cadena con la descripción del servlet.
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Servlet para la gestión de facturas en EcoField";
+    }
 }

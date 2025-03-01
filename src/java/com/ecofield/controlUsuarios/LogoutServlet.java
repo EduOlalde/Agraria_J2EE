@@ -5,7 +5,6 @@
 package com.ecofield.controlUsuarios;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,39 +12,45 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
+ * Servlet encargado de manejar la desconexión de un usuario.
+ * <p>
+ * Este servlet invalida la sesión del usuario y lo redirige a la página de login.
+ * </p>
+ * 
  * @author Eduardo Olalde
  */
 public class LogoutServlet extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Procesa las solicitudes de logout, invalidando la sesión del usuario y redirigiéndolo al login.
+     * 
+     * @param request La solicitud HTTP que contiene los detalles de la sesión.
+     * @param response La respuesta HTTP que redirige al usuario después de cerrar sesión.
+     * @throws ServletException Si ocurre un error durante el procesamiento del servlet.
+     * @throws IOException Si ocurre un error de entrada/salida durante el procesamiento.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(false);  // Recupera la sesión sin crear una nueva
         
         if (session != null) {
-            session.invalidate();
+            session.invalidate();  // Invalida la sesión actual
         }
-        response.sendRedirect("login.jsp");
+        
+        response.sendRedirect("login.jsp");  // Redirige al usuario al login después de cerrar sesión
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    
     /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP <code>GET</code> para el logout.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP.
+     * @param response La respuesta HTTP.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,12 +59,13 @@ public class LogoutServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP <code>POST</code> para el logout.
+     * Delegamos la solicitud al método procesador principal.
+     * 
+     * @param request La solicitud HTTP.
+     * @param response La respuesta HTTP.
+     * @throws ServletException Si ocurre un error durante el procesamiento.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -68,13 +74,13 @@ public class LogoutServlet extends HttpServlet {
     }
 
     /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
+     * Retorna una breve descripción del servlet.
+     * 
+     * @return Una cadena que contiene una descripción corta del servlet.
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Servlet para manejar la desconexión de un usuario.";
     }// </editor-fold>
 
 }

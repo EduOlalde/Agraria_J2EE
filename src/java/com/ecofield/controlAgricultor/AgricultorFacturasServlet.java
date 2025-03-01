@@ -14,11 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
+ * Servlet para gestionar las facturas de los agricultores.
+ * Permite realizar el pago de una factura y actualizar su estado en la base de datos.
  *
  * @author Eduardo Olalde
  */
 public class AgricultorFacturasServlet extends HttpServlet {
 
+    /**
+     * Método que actualiza el estado de una factura a "Pagada" en la base de datos.
+     * Si se produce un error al intentar pagar, se muestra un mensaje de error.
+     * 
+     * @param request La solicitud HTTP del cliente.
+     * @param session La sesión HTTP del usuario.
+     * @param facturaDAO El objeto DAO para la gestión de facturas en la base de datos.
+     */
     private void pagarFactura(HttpServletRequest request, HttpSession session, FacturaDAO facturaDAO) {
         try {
             int idFactura = Integer.parseInt(request.getParameter("id_factura"));
@@ -35,13 +45,13 @@ public class AgricultorFacturasServlet extends HttpServlet {
     }
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Procesa las solicitudes HTTP <code>GET</code> y <code>POST</code>.
+     * Este método se encarga de gestionar el pago de la factura y redirigir al usuario al dashboard.
      *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @param request La solicitud HTTP del cliente.
+     * @param response La respuesta HTTP que se enviará al cliente.
+     * @throws ServletException Si ocurre un error específico de servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,44 +66,41 @@ public class AgricultorFacturasServlet extends HttpServlet {
         response.sendRedirect("dashboard");
     }
 
-
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-/**
- * Handles the HTTP <code>GET</code> method.
- *
- * @param request servlet request
- * @param response servlet response
- * @throws ServletException if a servlet-specific error occurs
- * @throws IOException if an I/O error occurs
- */
-@Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    /**
+     * Maneja las solicitudes HTTP <code>GET</code>.
+     * 
+     * @param request La solicitud HTTP del cliente.
+     * @param response La respuesta HTTP que se enviará al cliente.
+     * @throws ServletException Si ocurre un error específico de servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * Maneja las solicitudes HTTP <code>POST</code>.
+     * 
+     * @param request La solicitud HTTP del cliente.
+     * @param response La respuesta HTTP que se enviará al cliente.
+     * @throws ServletException Si ocurre un error específico de servlet.
+     * @throws IOException Si ocurre un error de entrada/salida.
      */
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
     /**
-     * Returns a short description of the servlet.
+     * Devuelve una descripción corta del servlet.
      *
-     * @return a String containing servlet description
+     * @return Una cadena que contiene la descripción del servlet.
      */
     @Override
-public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    public String getServletInfo() {
+        return "Servlet para gestionar el pago de facturas de los agricultores.";
+    }
 }
