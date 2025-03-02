@@ -16,17 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet que gestiona las operaciones del dashboard en función del rol del usuario.
- * Dependiendo del rol del usuario (Administrador, Agricultor, Maquinista),
- * se presentan diferentes módulos y funcionalidades en el dashboard.
+ * Servlet que gestiona las operaciones del dashboard en función del rol del
+ * usuario. Dependiendo del rol del usuario (Administrador, Agricultor,
+ * Maquinista), se presentan diferentes módulos y funcionalidades en el
+ * dashboard.
  *
  * @author Eduardo Olalde
  */
 public class DashboardServlet extends HttpServlet {
 
     /**
-     * Procesa las solicitudes tanto para los métodos HTTP <code>GET</code> como <code>POST</code>.
-     * Dependiendo del rol del usuario, carga distintos módulos en el dashboard y redirige a la vista correspondiente.
+     * Procesa las solicitudes tanto para los métodos HTTP <code>GET</code> como
+     * <code>POST</code>. Dependiendo del rol del usuario, carga distintos
+     * módulos en el dashboard y redirige a la vista correspondiente.
      *
      * @param request servlet request
      * @param response servlet response
@@ -139,11 +141,11 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("listaTrabajos", listaTrabajos);
 
             // Módulo admin facturas
-            List<Factura> facturasPendientes = facturaDAO.obtenerFacturasPendientes();
-            request.setAttribute("facturasPendientes", facturasPendientes);
+            List<Factura> facturasPendientes = facturaDAO.obtenerFacturas(null, "Pendiente de generar");
+            request.setAttribute("adminFacturasPendientes", facturasPendientes);
 
-            List<Factura> historialFacturas = facturaDAO.obtenerHistorialFacturas(null);
-            request.setAttribute("historialFacturas", historialFacturas);
+            List<Factura> historialFacturas = facturaDAO.obtenerFacturas(null, "Historial");
+            request.setAttribute("adminHistorialFacturas", historialFacturas);
         }
 
         // Si el usuario es un Agricultor, carga los módulos correspondientes
@@ -198,8 +200,8 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("trabajosEnRevision", trabajosEnRevision);
 
             // Módulo facturación
-            List<Factura> facturasPendientes = facturaDAO.obtenerFacturasPendientesPago(idAgricultor);
-            List<Factura> facturasPagadas = facturaDAO.obtenerFacturasPagadas(idAgricultor);
+            List<Factura> facturasPendientes = facturaDAO.obtenerFacturas(idAgricultor, "Pendiente de pagar");
+            List<Factura> facturasPagadas = facturaDAO.obtenerFacturas(idAgricultor, "Pagada");
             request.setAttribute("facturasPendientes", facturasPendientes);
             request.setAttribute("facturasPagadas", facturasPagadas);
         }

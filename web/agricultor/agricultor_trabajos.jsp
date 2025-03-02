@@ -73,12 +73,14 @@
                 }
             %>
         </select>
-
         <label for="fecha_inicio">Fecha Inicio:</label>
-        <input type="date" name="fecha_inicio" value="<%= fechaInicio%>">
+        <input type="date" name="fecha_inicio" 
+               <%= (fechaInicio != null) ? "value='" + fechaInicio + "'" : ""%> >
 
         <label for="fecha_fin">Fecha Fin:</label>
-        <input type="date" name="fecha_fin" value="<%= fechaFin%>">
+        <input type="date" name="fecha_fin" 
+               <%= (fechaFin != null) ? "value='" + fechaFin + "'" : ""%> >
+
 
         <button type="submit">Aplicar Filtros</button>
     </div>

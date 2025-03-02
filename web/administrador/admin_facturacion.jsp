@@ -8,10 +8,10 @@
 <%@page import="com.ecofield.modelos.Factura"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Factura> facturasPendientesDeGenerar = (List<Factura>) request.getAttribute("facturasPendientes");
-    List<Factura> historialFacturas = (List<Factura>) request.getAttribute("historialFacturas");
-%>
+    List<Factura> facturasPendientesDeGenerar = (List<Factura>) request.getAttribute("adminFacturasPendientes");
 
+    List<Factura> historialFacturas = (List<Factura>) request.getAttribute("adminHistorialFacturas");
+%>
 <h3>Facturas Pendientes de Generar</h3>
 <% if (facturasPendientesDeGenerar != null && !facturasPendientesDeGenerar.isEmpty()) { %>
 <table border="1">

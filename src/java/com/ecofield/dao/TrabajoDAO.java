@@ -12,8 +12,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Esta clase se encarga de interactuar con la base de datos para realizar operaciones relacionadas
- * con los trabajos registrados en el sistema, como obtener, iniciar, finalizar trabajos, y realizar filtros.
+ * Esta clase se encarga de interactuar con la base de datos para realizar
+ * operaciones relacionadas con los trabajos registrados en el sistema, como
+ * obtener, iniciar, finalizar trabajos, y realizar filtros.
  */
 public class TrabajoDAO {
 
@@ -21,7 +22,7 @@ public class TrabajoDAO {
 
     /**
      * Constructor de la clase TrabajoDAO.
-     * 
+     *
      * @param conn Conexión a la base de datos.
      */
     public TrabajoDAO(Connection conn) {
@@ -29,12 +30,15 @@ public class TrabajoDAO {
     }
 
     /**
-     * Obtiene una lista de trabajos basados en varios filtros, como agricultor, tipo de trabajo, estado, fechas y orden de fecha.
-     * 
-     * @param agricultorFiltro Filtro por el agricultor (propietario de la parcela).
+     * Obtiene una lista de trabajos basados en varios filtros, como agricultor,
+     * tipo de trabajo, estado, fechas y orden de fecha.
+     *
+     * @param agricultorFiltro Filtro por el agricultor (propietario de la
+     * parcela).
      * @param tipoTrabajoFiltro Filtro por tipo de trabajo.
      * @param estado Filtro por estado del trabajo.
-     * @param ordenFecha Orden en que se deben mostrar los trabajos por fecha (ASC/DESC).
+     * @param ordenFecha Orden en que se deben mostrar los trabajos por fecha
+     * (ASC/DESC).
      * @param filtroFechaInicio Filtro por fecha de inicio.
      * @param filtroFechaFin Filtro por fecha de finalización.
      * @return Lista de trabajos que cumplen con los filtros proporcionados.
@@ -112,11 +116,13 @@ public class TrabajoDAO {
     }
 
     /**
-     * Obtiene una lista de trabajos basados en el estado para un maquinista específico.
-     * 
+     * Obtiene una lista de trabajos basados en el estado para un maquinista
+     * específico.
+     *
      * @param idMaquinista ID del maquinista.
      * @param estado Estado de los trabajos a filtrar.
-     * @return Lista de trabajos asociados al maquinista y con el estado especificado.
+     * @return Lista de trabajos asociados al maquinista y con el estado
+     * especificado.
      */
     public List<Trabajo> obtenerTrabajosPorEstado(int idMaquinista, String estado) {
         List<Trabajo> trabajos = new ArrayList<>();
@@ -155,9 +161,10 @@ public class TrabajoDAO {
 
     /**
      * Obtiene un trabajo específico a partir de su ID.
-     * 
+     *
      * @param idTrabajo ID del trabajo a obtener.
-     * @return El trabajo correspondiente al ID proporcionado, o null si no se encuentra.
+     * @return El trabajo correspondiente al ID proporcionado, o null si no se
+     * encuentra.
      */
     public Trabajo obtenerTrabajoPorId(int idTrabajo) {
         Trabajo trabajo = null;
@@ -188,11 +195,13 @@ public class TrabajoDAO {
     }
 
     /**
-     * Inicia un trabajo, cambiando su estado a "En curso" y estableciendo la fecha de inicio.
-     * 
+     * Inicia un trabajo, cambiando su estado a "En curso" y estableciendo la
+     * fecha de inicio.
+     *
      * @param idTrabajo ID del trabajo que se desea iniciar.
      * @param fechaInicio Fecha en la que comienza el trabajo.
-     * @return true si el trabajo fue iniciado correctamente, false en caso contrario.
+     * @return true si el trabajo fue iniciado correctamente, false en caso
+     * contrario.
      */
     public boolean iniciarTrabajo(int idTrabajo, Date fechaInicio) {
         String sql = "UPDATE trabajos SET Estado = 'En curso', Fec_Inicio = ? WHERE ID_Trabajo = ?";
@@ -207,13 +216,15 @@ public class TrabajoDAO {
     }
 
     /**
-     * Finaliza un trabajo, actualizando su estado a "Finalizado", registrando la fecha de fin y las horas trabajadas.
-     * También actualiza el estado de la máquina y genera una factura con el monto calculado.
-     * 
+     * Finaliza un trabajo, actualizando su estado a "Finalizado", registrando
+     * la fecha de fin y las horas trabajadas. También actualiza el estado de la
+     * máquina y genera una factura con el monto calculado.
+     *
      * @param idTrabajo ID del trabajo que se desea finalizar.
      * @param fechaFin Fecha en la que finaliza el trabajo.
      * @param horas Cantidad de horas trabajadas.
-     * @return true si el trabajo fue finalizado correctamente, false en caso contrario.
+     * @return true si el trabajo fue finalizado correctamente, false en caso
+     * contrario.
      */
     public boolean finalizarTrabajo(int idTrabajo, Date fechaFin, double horas) {
         try {
@@ -246,16 +257,32 @@ public class TrabajoDAO {
                     stmt.executeUpdate();
                 }
 
-                // Generar factura
-                double montoFactura = horas * obtenerPrecioPorHoraMaquina(idMaquina);
-                generarFactura(idTrabajo, montoFactura);
+                //Calcular monto
+                String sqlExtension = "SELECT p.Extension FROM trabajos t JOIN parcelas p ON t.Num_parcela = p.Num_Parcela WHERE t.ID_Trabajo = ?";
+                double monto = 0;
+                try (PreparedStatement stmt = conn.prepareStatement(sqlExtension)) {
+                    stmt.setInt(1, idTrabajo);
+                    stmt.executeQuery();
+                    ResultSet rs = stmt.executeQuery();
+                    if (rs.next()) {
+                        double extension = rs.getDouble("Extension");
+                        monto = 30 * horas * extension;
+                    }
+                }
+
+                // Insertar factura                
+                String sqlFactura = "INSERT INTO facturas (ID_Trabajo, Monto) VALUES (?, ?)";
+                try (PreparedStatement stmt = conn.prepareStatement(sqlFactura)) {
+                    stmt.setInt(1, idTrabajo);
+                    stmt.setDouble(2, monto);
+                    stmt.executeUpdate();
+                }
 
                 conn.commit();
                 return true;
-            } catch (SQLException ex) {
+            } catch (SQLException e) {
                 conn.rollback();
-                Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
-                return false;
+                throw e;
             } finally {
                 conn.setAutoCommit(true);
             }
@@ -263,26 +290,5 @@ public class TrabajoDAO {
             Logger.getLogger(TrabajoDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
-    }
-
-    /**
-     * Obtiene el precio por hora de la máquina según su ID.
-     * 
-     * @param idMaquina ID de la máquina.
-     * @return El precio por hora de la máquina.
-     */
-    private double obtenerPrecioPorHoraMaquina(int idMaquina) {
-        // Implementar la consulta para obtener el precio por hora de la máquina
-        return 50.0;  // Este valor es un ejemplo
-    }
-
-    /**
-     * Genera una factura para el trabajo con el monto especificado.
-     * 
-     * @param idTrabajo ID del trabajo para el que se genera la factura.
-     * @param montoFactura Monto de la factura.
-     */
-    private void generarFactura(int idTrabajo, double montoFactura) {
-        // Implementar la generación de la factura
     }
 }
