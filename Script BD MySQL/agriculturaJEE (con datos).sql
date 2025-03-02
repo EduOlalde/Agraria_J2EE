@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 23, 2025 at 11:51 PM
+-- Generation Time: Jan 29, 2025 at 02:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,8 +20,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `agricultura`
 --
-CREATE DATABASE IF NOT EXISTS agricultura;
-USE agricultura;
+CREATE DATABASE IF NOT EXISTS agriculturaJEE;
+USE agriculturaJEE;
+
 -- --------------------------------------------------------
 
 --
@@ -37,6 +38,14 @@ CREATE TABLE `facturas` (
   `Monto` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `facturas`
+--
+
+INSERT INTO `facturas` (`ID_Factura`, `ID_Trabajo`, `Estado`, `Fecha_Emision`, `Fecha_Pago`, `Monto`) VALUES
+(1, 1, 'Pagada', '2025-01-29', '2025-01-29', 2640.00),
+(2, 2, 'Pagada', '2025-01-29', '2025-01-29', 5580.00);
+
 -- --------------------------------------------------------
 
 --
@@ -50,6 +59,25 @@ CREATE TABLE `maquinas` (
   `Modelo` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `maquinas`
+--
+
+INSERT INTO `maquinas` (`ID_Maquina`, `Estado`, `Tipo_Maquina`, `Modelo`) VALUES
+(1, 'Disponible', 1, 'm1'),
+(2, 'Disponible', 1, 'm1'),
+(3, 'Disponible', 2, 'm1'),
+(4, 'Disponible', 2, 'm2'),
+(5, 'Disponible', 3, 'm1'),
+(6, 'Disponible', 3, 'm4'),
+(7, 'Disponible', 4, 'm1'),
+(8, 'Disponible', 5, 'm2'),
+(9, 'Disponible', 5, 'm2'),
+(10, 'Disponible', 5, 'm3'),
+(11, 'Disponible', 6, 'm1'),
+(12, 'Disponible', 6, 'm5'),
+(13, 'Disponible', 7, 'm1'),
+(14, 'Disponible', 7, 'm19');
 
 -- --------------------------------------------------------
 
@@ -61,6 +89,24 @@ CREATE TABLE `maquinista_tipo_trabajo` (
   `ID_Maquinista` int(11) NOT NULL,
   `ID_Tipo_Trabajo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `maquinista_tipo_trabajo`
+--
+
+INSERT INTO `maquinista_tipo_trabajo` (`ID_Maquinista`, `ID_Tipo_Trabajo`) VALUES
+(5, 1),
+(5, 5),
+(6, 1),
+(6, 2),
+(6, 3),
+(7, 4),
+(7, 5),
+(7, 6),
+(8, 1),
+(8, 2),
+(8, 6),
+(8, 7);
 
 -- --------------------------------------------------------
 
@@ -74,6 +120,22 @@ CREATE TABLE `parcelas` (
   `Extension` decimal(10,2) NOT NULL,
   `Propietario` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `parcelas`
+--
+
+INSERT INTO `parcelas` (`Num_Parcela`, `ID_Catastro`, `Extension`, `Propietario`) VALUES
+(1, '0001', 11.00, 2),
+(2, '0002', 32.00, 2),
+(3, '0003', 8.00, 3),
+(4, '0004', 8.00, 3),
+(5, '0005', 41.00, 4),
+(6, '0006', 19.00, 4),
+(7, '0007', 24.00, 4),
+(8, '0008', 11.00, 8),
+(9, '0009', 31.00, 8),
+(10, '0010', 51.00, 8);
 
 -- --------------------------------------------------------
 
@@ -150,6 +212,14 @@ CREATE TABLE `trabajos` (
   `Estado` enum('Pendiente','En curso','Finalizado','') NOT NULL DEFAULT 'Pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `trabajos`
+--
+
+INSERT INTO `trabajos` (`ID_Trabajo`, `Num_parcela`, `ID_Maquina`, `ID_Maquinista`, `Fec_inicio`, `Fec_fin`, `Horas`, `Tipo`, `Estado`) VALUES
+(1, 1, 7, 7, '2025-01-29', '2025-01-30', 8, 4, 'Finalizado'),
+(2, 9, 4, 8, '2025-01-29', '2025-01-29', 6, 2, 'Finalizado');
+
 -- --------------------------------------------------------
 
 --
@@ -164,6 +234,14 @@ CREATE TABLE `trabajos_solicitados` (
   `Estado` enum('En revision','Aprobado','Rechazado') DEFAULT 'En revision',
   `Fecha_Solicitud` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `trabajos_solicitados`
+--
+
+INSERT INTO `trabajos_solicitados` (`ID_Solicitud`, `Num_Parcela`, `Propietario`, `ID_Tipo_Trabajo`, `Estado`, `Fecha_Solicitud`) VALUES
+(1, 1, 2, 4, 'Aprobado', '2025-01-29'),
+(2, 9, 8, 2, 'Aprobado', '2025-01-29');
 
 -- --------------------------------------------------------
 
@@ -185,7 +263,14 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`ID_Usuario`, `Nombre`, `Contrasenia`, `Telefono`, `Email`, `Habilitado`) VALUES
-(1, 'admin', '$2y$10$8wGSkAGDKDuvNS0Jo.o6s.9CRuosxnMp/MF5kWdQCfb.n2p.9KGCW', '123456789', 'admin@email.com', 1);
+(1, 'admin', 'pass', '123456789', 'admin@email.com', 1),
+(2, 'agricultor1', 'pass', '123123123', 'agri1@email.com', 1),
+(3, 'agricultor2', 'pass', '123213131', 'agri2@email.com', 1),
+(4, 'agricultor3', 'pass', '1341256122', 'agri3@email.com', 1),
+(5, 'maquinista1', 'pass', '141251325', 'maq1@email.com', 1),
+(6, 'maquinista2', 'pass', '156132512', 'maq2@email.com', 1),
+(7, 'maquinista3', 'pass', '581726512', 'maq3@email.com', 1),
+(8, 'usuarioTotal', 'pass', '617298412', 'ut@email.com', 1);
 
 -- --------------------------------------------------------
 
@@ -203,7 +288,16 @@ CREATE TABLE `usuarios_roles` (
 --
 
 INSERT INTO `usuarios_roles` (`ID_Usuario`, `ID_Rol`) VALUES
-(1, 1);
+(1, 1),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 3),
+(6, 3),
+(7, 3),
+(8, 1),
+(8, 2),
+(8, 3);
 
 --
 -- Indexes for dumped tables
@@ -222,7 +316,6 @@ ALTER TABLE `facturas`
 ALTER TABLE `maquinas`
   ADD PRIMARY KEY (`ID_Maquina`),
   ADD KEY `Tipo_Maquina` (`Tipo_Maquina`);
-
 
 --
 -- Indexes for table `maquinista_tipo_trabajo`
@@ -266,7 +359,8 @@ ALTER TABLE `trabajos`
   ADD PRIMARY KEY (`ID_Trabajo`),
   ADD KEY `fk_Num_parcela` (`Num_parcela`),
   ADD KEY `ID_Maquina` (`ID_Maquina`),
-  ADD KEY `Tipo` (`Tipo`);
+  ADD KEY `Tipo` (`Tipo`),
+  ADD KEY `trabajos_ibfk_3` (`ID_Maquinista`);
 
 --
 -- Indexes for table `trabajos_solicitados`
@@ -301,19 +395,19 @@ ALTER TABLE `usuarios_roles`
 -- AUTO_INCREMENT for table `facturas`
 --
 ALTER TABLE `facturas`
-  MODIFY `ID_Factura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Factura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `maquinas`
 --
 ALTER TABLE `maquinas`
-  MODIFY `ID_Maquina` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Maquina` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `parcelas`
 --
 ALTER TABLE `parcelas`
-  MODIFY `Num_Parcela` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Num_Parcela` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `puntos`
@@ -331,19 +425,19 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `trabajos`
 --
 ALTER TABLE `trabajos`
-  MODIFY `ID_Trabajo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Trabajo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `trabajos_solicitados`
 --
 ALTER TABLE `trabajos_solicitados`
-  MODIFY `ID_Solicitud` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Solicitud` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `ID_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables
