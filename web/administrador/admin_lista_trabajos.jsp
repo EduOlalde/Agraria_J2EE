@@ -11,7 +11,9 @@
 <%@page import="com.ecofield.modelos.Trabajo"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    List<Trabajo> trabajos = (List<Trabajo>) request.getAttribute("listaTrabajos");
+    List<Trabajo> trabajosPendientes = (List<Trabajo>) request.getAttribute("adminTrabajosPendientes");
+    List<Trabajo> trabajosEnCurso = (List<Trabajo>) request.getAttribute("adminTrabajosEnCurso");
+    List<Trabajo> trabajosFinalizados = (List<Trabajo>) request.getAttribute("adminTrabajosFinalizados");
     List<TipoTrabajo> tiposTrabajo = (List<TipoTrabajo>) request.getAttribute("tiposTrabajo");
     List<Usuario> agricultores = (List<Usuario>) request.getAttribute("agricultores");
     String agricultorSeleccionado = request.getParameter("agricultor");
@@ -70,28 +72,6 @@
     </div>
     <button type="submit">Aplicar Filtros</button>
 </form>
-
-<%-- Trabajos Pendientes --%>
-<%
-    List<Trabajo> trabajosPendientes = new ArrayList<>();
-    List<Trabajo> trabajosEnCurso = new ArrayList<>();
-    List<Trabajo> trabajosFinalizados = new ArrayList<>();
-    if (trabajos != null) {
-        for (Trabajo trabajo : trabajos) {
-            switch (trabajo.getEstado()) {
-                case "Pendiente":
-                    trabajosPendientes.add(trabajo);
-                    break;
-                case "En Curso":
-                    trabajosEnCurso.add(trabajo);
-                    break;
-                case "Finalizado":
-                    trabajosFinalizados.add(trabajo);
-                    break;
-            }
-        }
-    }
-%>
 
 <%-- Trabajos Pendientes --%>
 <% if (trabajosPendientes != null && !trabajosPendientes.isEmpty()) { %>

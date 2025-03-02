@@ -8,6 +8,7 @@ import com.ecofield.dao.*;
 import com.ecofield.modelos.*;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -138,7 +139,28 @@ public class DashboardServlet extends HttpServlet {
             String ordenFecha = (paramOrdenFecha != null && paramOrdenFecha.equals("asc")) ? "ASC" : "DESC";
 
             List<Trabajo> listaTrabajos = trabajoDAO.obtenerTrabajos(filtroAgricultor, filtroTipoTrabajo, null, ordenFecha, null, null);
-            request.setAttribute("listaTrabajos", listaTrabajos);
+            List<Trabajo> trabajosPendientes = new ArrayList<>();
+            List<Trabajo> trabajosEnCurso = new ArrayList<>();
+            List<Trabajo> trabajosFinalizados = new ArrayList<>();
+            if (listaTrabajos != null) {
+                for (Trabajo trabajo : listaTrabajos) {
+                    switch (trabajo.getEstado()) {
+                        case "Pendiente":
+                            trabajosPendientes.add(trabajo);
+                            break;
+                        case "En Curso":
+                            trabajosEnCurso.add(trabajo);
+                            break;
+                        case "Finalizado":
+                            trabajosFinalizados.add(trabajo);
+                            break;
+                    }
+                }
+            }
+
+            request.setAttribute("adminTrabajosPendientes", trabajosPendientes);
+            request.setAttribute("adminTrabajosEnCurso", trabajosEnCurso);
+            request.setAttribute("adminTrabajosFinalizados", trabajosFinalizados);
 
             // Módulo admin facturas
             List<Factura> facturasPendientes = facturaDAO.obtenerFacturas(null, "Pendiente de generar");
