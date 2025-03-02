@@ -2,6 +2,7 @@ package com.ecofield.controlUsuarios;
 
 import com.ecofield.dao.UsuarioDAO;
 import com.ecofield.modelos.Usuario;
+import com.ecofield.utils.Seguridad;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -11,21 +12,19 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet encargado de gestionar el panel de usuario, permitiendo la edición de
- * los datos del usuario y la actualización de su contraseña.
- *
+ * Servlet encargado de gestionar el panel de usuario, permitiendo la edición
+ * de los datos del usuario y la actualización de su contraseña.
+ * 
  * @author Eduardo Olalde
  */
 public class PanelUsuarioServlet extends HttpServlet {
 
     /**
      * Actualiza los datos del usuario (incluida la contraseña si es necesario).
-     *
-     * @param request La solicitud HTTP que contiene los parámetros de
-     * actualización.
+     * 
+     * @param request La solicitud HTTP que contiene los parámetros de actualización.
      * @param session La sesión del usuario para almacenar mensajes de estado.
-     * @param usuarioDAO DAO para actualizar los datos del usuario en la base de
-     * datos.
+     * @param usuarioDAO DAO para actualizar los datos del usuario en la base de datos.
      */
     private void actualizarUsuario(HttpServletRequest request, HttpSession session, UsuarioDAO usuarioDAO) {
         try {
@@ -36,7 +35,7 @@ public class PanelUsuarioServlet extends HttpServlet {
 
             // Verifica la contraseña actual y las contraseñas nuevas
             Usuario usuario = (Usuario) session.getAttribute("usuario");
-            if (!passActual.equals(usuario.getContrasenia())) {
+            if (!usuario.verificarContrasena(passActual)) {
                 session.setAttribute("error", "Contraseña incorrecta.");
                 return;
             } else if (!contrasenia.isEmpty() && !contrasenia.equals(repetirContrasenia)) {
@@ -72,10 +71,9 @@ public class PanelUsuarioServlet extends HttpServlet {
 
     /**
      * Procesa solicitudes HTTP tanto de tipo GET como POST.
-     *
+     * 
      * @param request Objeto HttpServletRequest con la solicitud del cliente.
-     * @param response Objeto HttpServletResponse para enviar la respuesta al
-     * cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
      * @throws ServletException Si ocurre un error específico del servlet.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
@@ -109,10 +107,9 @@ public class PanelUsuarioServlet extends HttpServlet {
 
     /**
      * Maneja las solicitudes HTTP GET.
-     *
+     * 
      * @param request Objeto HttpServletRequest con la solicitud del cliente.
-     * @param response Objeto HttpServletResponse para enviar la respuesta al
-     * cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
      * @throws ServletException Si ocurre un error específico del servlet.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
@@ -124,10 +121,9 @@ public class PanelUsuarioServlet extends HttpServlet {
 
     /**
      * Maneja las solicitudes HTTP POST.
-     *
+     * 
      * @param request Objeto HttpServletRequest con la solicitud del cliente.
-     * @param response Objeto HttpServletResponse para enviar la respuesta al
-     * cliente.
+     * @param response Objeto HttpServletResponse para enviar la respuesta al cliente.
      * @throws ServletException Si ocurre un error específico del servlet.
      * @throws IOException Si ocurre un error de entrada/salida.
      */
@@ -139,7 +135,7 @@ public class PanelUsuarioServlet extends HttpServlet {
 
     /**
      * Devuelve una descripción breve del servlet.
-     *
+     * 
      * @return Una cadena con la descripción del servlet.
      */
     @Override

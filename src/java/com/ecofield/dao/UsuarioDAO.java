@@ -2,6 +2,7 @@ package com.ecofield.dao;
 
 import com.ecofield.modelos.Rol;
 import com.ecofield.modelos.Usuario;
+import com.ecofield.utils.Seguridad;
 import com.mysql.jdbc.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -198,11 +199,13 @@ public class UsuarioDAO {
      * @return Un mensaje indicando el resultado de la operación.
      */
     public String registrarUsuario(String nombre, String contrasenia, String telefono, String email) {
+        
+        String passEncriptada = Seguridad.hashPassword(contrasenia);
         String sql = "INSERT INTO Usuarios (Nombre, Contrasenia, Telefono, Email) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nombre);
-            stmt.setString(2, contrasenia);
+            stmt.setString(2, passEncriptada);
             stmt.setString(3, telefono);
             stmt.setString(4, email);
 
@@ -284,6 +287,7 @@ public class UsuarioDAO {
      * @return Un mensaje indicando el resultado de la operación.
      */
     public String registrarUsuario(Usuario usuario, List<Rol> roles) {
+        String passEncriptada = Seguridad.hashPassword(usuario.getContrasenia());
         String sqlUsuario = "INSERT INTO usuarios (nombre, email, telefono, contrasenia, habilitado) VALUES (?, ?, ?, ?, ?)";
         String sqlRol = "INSERT INTO usuarios_roles (id_usuario, id_rol) VALUES (?, ?)";
 
@@ -291,7 +295,7 @@ public class UsuarioDAO {
             stmtUsuario.setString(1, usuario.getNombre());
             stmtUsuario.setString(2, usuario.getEmail());
             stmtUsuario.setString(3, usuario.getTelefono());
-            stmtUsuario.setString(4, usuario.getContrasenia());
+            stmtUsuario.setString(4, passEncriptada);
             stmtUsuario.setBoolean(5, usuario.isHabilitado());
 
             int filasAfectadas = stmtUsuario.executeUpdate();
