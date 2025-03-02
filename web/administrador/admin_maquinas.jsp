@@ -87,7 +87,7 @@
         <input type="hidden" name="accion" value="actualizar_estado_maquina">
         <input type="hidden" name="id_maquina" value="<%= maquina.getIdMaquina()%>">
         <td>
-            <select name="estado_maquina" onchange="this.form.submit()">
+            <select name="estado_maquina" onchange="guardarSeccionActiva('sec_administrador', 'admin_maquinas'); this.form.submit();">
                 <option value="Disponible" <%= maquina.getEstado().equals("Disponible") ? "selected" : ""%>>Disponible</option>
                 <option value="Asignada" <%= maquina.getEstado().equals("Asignada") ? "selected" : ""%>>Asignada</option>
                 <option value="Fuera de servicio" <%= maquina.getEstado().equals("Fuera de servicio") ? "selected" : ""%>>Fuera de servicio</option>
