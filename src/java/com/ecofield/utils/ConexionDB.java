@@ -19,7 +19,9 @@ import java.util.logging.Logger;
 public class ConexionDB {
     
     /** La URL de la base de datos */
+
     private static final String URL = "jdbc:mysql://localhost/agricultura";
+
     
     /** El nombre de usuario para la base de datos */
     private static final String USER = "root";
