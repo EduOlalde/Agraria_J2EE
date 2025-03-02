@@ -1,36 +1,53 @@
 package com.ecofield.modelos;
 
+import com.ecofield.utils.Seguridad;
 import java.util.ArrayList;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
- * Representa un usuario en el sistema.
- * Esta clase almacena la información personal de un usuario, como su nombre, correo electrónico,
- * teléfono, contraseña y estado de habilitación. Además, gestiona los roles del usuario en el sistema.
- * 
+ * Representa un usuario en el sistema. Esta clase almacena la información
+ * personal de un usuario, como su nombre, correo electrónico, teléfono,
+ * contraseña y estado de habilitación. Además, gestiona los roles del usuario
+ * en el sistema.
+ *
  * @author Eduardo Olalde
  */
 public class Usuario {
 
-    /** El identificador único del usuario */
+    /**
+     * El identificador único del usuario
+     */
     private int id;
 
-    /** El nombre completo del usuario */
+    /**
+     * El nombre completo del usuario
+     */
     private String nombre;
 
-    /** El correo electrónico del usuario */
+    /**
+     * El correo electrónico del usuario
+     */
     private String email;
 
-    /** La contraseña del usuario */
+    /**
+     * La contraseña del usuario
+     */
     private String contrasenia;
 
-    /** El número de teléfono del usuario */
+    /**
+     * El número de teléfono del usuario
+     */
     private String telefono;
 
-    /** Indica si el usuario está habilitado en el sistema */
+    /**
+     * Indica si el usuario está habilitado en el sistema
+     */
     private boolean habilitado;
 
-    /** La lista de roles asociados al usuario */
+    /**
+     * La lista de roles asociados al usuario
+     */
     private List<Rol> roles = new ArrayList<>();
 
     /**
@@ -41,7 +58,7 @@ public class Usuario {
 
     /**
      * Constructor para crear un usuario con su identificador y nombre.
-     * 
+     *
      * @param id El identificador único del usuario.
      * @param nombre El nombre completo del usuario.
      */
@@ -51,12 +68,14 @@ public class Usuario {
     }
 
     /**
-     * Constructor para crear un usuario con su identificador, nombre, correo electrónico y estado de habilitación.
-     * 
+     * Constructor para crear un usuario con su identificador, nombre, correo
+     * electrónico y estado de habilitación.
+     *
      * @param id El identificador único del usuario.
      * @param nombre El nombre completo del usuario.
      * @param email El correo electrónico del usuario.
-     * @param habilitado El estado de habilitación del usuario (true si está habilitado, false si no lo está).
+     * @param habilitado El estado de habilitación del usuario (true si está
+     * habilitado, false si no lo está).
      */
     public Usuario(int id, String nombre, String email, boolean habilitado) {
         this.id = id;
@@ -66,8 +85,9 @@ public class Usuario {
     }
 
     /**
-     * Constructor para crear un usuario con su identificador, nombre y correo electrónico.
-     * 
+     * Constructor para crear un usuario con su identificador, nombre y correo
+     * electrónico.
+     *
      * @param id El identificador único del usuario.
      * @param nombre El nombre completo del usuario.
      * @param email El correo electrónico del usuario.
@@ -79,8 +99,9 @@ public class Usuario {
     }
 
     /**
-     * Constructor para crear un usuario con su nombre, correo electrónico, contraseña y teléfono.
-     * 
+     * Constructor para crear un usuario con su nombre, correo electrónico,
+     * contraseña y teléfono.
+     *
      * @param nombre El nombre completo del usuario.
      * @param email El correo electrónico del usuario.
      * @param contrasenia La contraseña del usuario.
@@ -94,9 +115,9 @@ public class Usuario {
     }
 
     /**
-     * Constructor para crear un usuario con todos sus datos: id, nombre, email, contraseña, teléfono,
-     * habilitación y roles.
-     * 
+     * Constructor para crear un usuario con todos sus datos: id, nombre, email,
+     * contraseña, teléfono, habilitación y roles.
+     *
      * @param id El identificador único del usuario.
      * @param nombre El nombre completo del usuario.
      * @param email El correo electrónico del usuario.
@@ -114,8 +135,9 @@ public class Usuario {
     }
 
     /**
-     * Constructor para crear un usuario con su id, nombre, email, teléfono, habilitación y lista de roles.
-     * 
+     * Constructor para crear un usuario con su id, nombre, email, teléfono,
+     * habilitación y lista de roles.
+     *
      * @param id El identificador único del usuario.
      * @param nombre El nombre completo del usuario.
      * @param email El correo electrónico del usuario.
@@ -135,17 +157,17 @@ public class Usuario {
 
     /**
      * Verifica si la contraseña ingresada coincide con la almacenada.
-     * 
+     *
      * @param passwordIngresada La contraseña ingresada para verificar.
      * @return true si la contraseña ingresada es correcta, false si no lo es.
      */
     public boolean verificarContrasena(String passwordIngresada) {
-        return passwordIngresada.equals(this.contrasenia);
+        return Seguridad.verificarPassword(passwordIngresada, this.contrasenia);
     }
 
     /**
      * Obtiene el identificador único del usuario.
-     * 
+     *
      * @return El identificador único del usuario.
      */
     public int getId() {
@@ -154,7 +176,7 @@ public class Usuario {
 
     /**
      * Establece el identificador único del usuario.
-     * 
+     *
      * @param id El identificador único del usuario.
      */
     public void setId(int id) {
@@ -163,7 +185,7 @@ public class Usuario {
 
     /**
      * Obtiene el nombre completo del usuario.
-     * 
+     *
      * @return El nombre completo del usuario.
      */
     public String getNombre() {
@@ -172,7 +194,7 @@ public class Usuario {
 
     /**
      * Establece el nombre completo del usuario.
-     * 
+     *
      * @param nombre El nombre completo del usuario.
      */
     public void setNombre(String nombre) {
@@ -181,7 +203,7 @@ public class Usuario {
 
     /**
      * Obtiene el correo electrónico del usuario.
-     * 
+     *
      * @return El correo electrónico del usuario.
      */
     public String getEmail() {
@@ -190,7 +212,7 @@ public class Usuario {
 
     /**
      * Establece el correo electrónico del usuario.
-     * 
+     *
      * @param email El correo electrónico del usuario.
      */
     public void setEmail(String email) {
@@ -199,7 +221,7 @@ public class Usuario {
 
     /**
      * Obtiene la contraseña del usuario.
-     * 
+     *
      * @return La contraseña del usuario.
      */
     public String getContrasenia() {
@@ -207,17 +229,17 @@ public class Usuario {
     }
 
     /**
-     * Establece la contraseña del usuario.
-     * 
+     * Establece la contraseña del usuario usando encriptación con BCrypt.
+     *
      * @param contrasenia La contraseña del usuario.
      */
     public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
+        this.contrasenia = Seguridad.hashPassword(contrasenia);
     }
 
     /**
      * Obtiene el número de teléfono del usuario.
-     * 
+     *
      * @return El número de teléfono del usuario.
      */
     public String getTelefono() {
@@ -226,7 +248,7 @@ public class Usuario {
 
     /**
      * Establece el número de teléfono del usuario.
-     * 
+     *
      * @param telefono El número de teléfono del usuario.
      */
     public void setTelefono(String telefono) {
@@ -235,7 +257,7 @@ public class Usuario {
 
     /**
      * Verifica si el usuario está habilitado en el sistema.
-     * 
+     *
      * @return true si el usuario está habilitado, false si no lo está.
      */
     public boolean isHabilitado() {
@@ -244,7 +266,7 @@ public class Usuario {
 
     /**
      * Establece el estado de habilitación del usuario.
-     * 
+     *
      * @param habilitado El estado de habilitación del usuario.
      */
     public void setHabilitado(boolean habilitado) {
@@ -253,7 +275,7 @@ public class Usuario {
 
     /**
      * Obtiene la lista de roles asociados al usuario.
-     * 
+     *
      * @return La lista de roles del usuario.
      */
     public List<Rol> getRoles() {
@@ -262,7 +284,7 @@ public class Usuario {
 
     /**
      * Establece la lista de roles asociados al usuario.
-     * 
+     *
      * @param roles La lista de roles a asociar al usuario.
      */
     public void setRoles(List<Rol> roles) {
@@ -271,7 +293,7 @@ public class Usuario {
 
     /**
      * Devuelve una representación en formato de cadena del usuario.
-     * 
+     *
      * @return Una cadena que representa el usuario con todos sus detalles.
      */
     @Override
