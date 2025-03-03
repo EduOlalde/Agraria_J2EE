@@ -122,8 +122,8 @@ public class DashboardServlet extends HttpServlet {
             request.setAttribute("tiposTrabajo", tipoTrabajoDAO.obtenerTiposTrabajo());
 
             // Módulo gestión solicitudes
-            List<TrabajoSolicitado> trabajosSolicitados = trabajoSolicitadoDAO.obtenerTrabajosSolicitadosPorEstado("En revision");
-            request.setAttribute("trabajosSolicitados", trabajosSolicitados);
+            List<TrabajoSolicitado> adminTrabajosSolicitados = trabajoSolicitadoDAO.obtenerTrabajosSolicitadosPorEstado("En revision");
+            request.setAttribute("adminTrabajosSolicitados", adminTrabajosSolicitados);
 
             List<Maquina> maquinasDisponibles = maquinaDAO.getMaquinasDisponibles();
             request.setAttribute("maquinasDisponibles", maquinasDisponibles);
